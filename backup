@@ -1,0 +1,140 @@
+
+\( |
+\) |
+:		{ printf("%s:é um delimitador\n", yytext);}
+
+int	|
+real |
+complex	|
+single |
+double |
+string |
+enum |
+struct |
+set_of |
+matrix_of |
+end_struct |
+const |
+ref |
+if |
+else |
+for |
+while |
+switch |
+case |
+break |
+other |
+end_if |
+end_for |
+end_while |
+end_switch |
+false |
+true |
+procedure |
+function |
+return			{ printf("%s:é uma palavra-chave\n", yytext);}
+
+
+
+
+
+
+"+=" |
+"-=" |
+"*=" |
+"/=" |
+"%=" |
+"++" |
+"--" |
+"&&" |
+"||" |
+"<=" |
+">=" |
+"==" |
+"<>" |
+"="	 |
+"-"  |		
+"+"  |		
+"*"  |		
+"/"  |	
+"%"  |	
+"<"  |	
+">"  |	
+"<-" |	
+"^"  |		{ printf("(OPERATOR %s)\n", yytext);}
+
+
+
+int | 
+real |
+complex |
+single |
+double |
+string |
+enum |
+struct |
+set_of |
+matrix_of |
+end_struct |
+const |
+ref |
+if |
+else |
+for |
+while |
+switch |
+case |
+break |
+other |
+end_if |
+end_for |
+end_while |
+end_switch |
+false |
+true |
+procedure |
+function |
+return		{ printf("(KEYWORD %s)\n", yytext);}
+
+
+{NUMERO}	{ printf("(LITERAL %s)\n", yytext);}
+\".*\"		{ printf("(LITERAL %s)\n", yytext);}
+
+{ID}		{ printf("(IDENTIFIER %s)\n", yytext);}
+
+";"	 |
+","	 |
+":"	 |
+"("	 |
+")"	 |
+"["  |	
+"]"  |		
+".."		{ printf("(DELIMITER %s)\n", yytext);}
+
+"+=" |
+"-=" |
+"*=" |
+"/=" |
+"%=" |
+"++" |
+"--" |
+"&&" |
+"||" |
+"<=" |
+">=" |
+"==" |
+"<>" |
+"="	 |
+"-"  |		
+"+"  |		
+"*"  |		
+"/"  |	
+"%"  |	
+"<"  |	
+">"  |	
+"<-" |	
+"^"  |		{ printf("(OPERATOR %s)\n", yytext);}
+
+
+
+
