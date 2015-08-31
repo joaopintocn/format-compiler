@@ -1,22 +1,25 @@
 /* definições regulares */
 DELIM 		[ \t\n]
 WS			{DELIM}+
-LETRA		[A-Za-z]
+LETRA		[a-zA-Z_]
 DIGITO		[0-9]
-ID 			[{LETRA}_][{LETRA}|{DIGITO}|_]*
 NUMERO 		{DIGITO}+(.{DIGITO}+)?(E[+-]?{DIGITO}+)?
+NUMERO_COMPLEX ({NUMERO}i)
+	
+%{
 
-/* {ID}		{ printf("(IDENTIFIER %s)\n", yytext);} */
+%}
 
 %%
 
-\%%.*	{ printf("(COMMENT %s)\n", yytext);}
+"/*"	{ printf("(COMMENT %s)\n", yytext);}
 
+\"(\\.|[^\\"])*\" { printf("(STRING %s)\n", yytext);} 
 int | 
 real |
 complex |
-single |
-double |
+single_real |
+double_real |
 string |
 enum |
 struct |
@@ -41,6 +44,8 @@ false |
 true |
 procedure |
 function |
+input |
+output |
 return		{ printf("(KEYWORD %s)\n", yytext);}
 
 
@@ -65,9 +70,8 @@ return		{ printf("(KEYWORD %s)\n", yytext);}
 "<-" |	
 "<=" |
 ">=" |
-"==" |
+"=" |
 "<>" |
-"="	 |
 "-"  |		
 "+"  |		
 "*"  |		
@@ -75,11 +79,11 @@ return		{ printf("(KEYWORD %s)\n", yytext);}
 "%"  |	
 "<"  |	
 ">"  |	
-"^"  |		{ printf("(OPERATOR %s)\n", yytext);}
-
-{NUMERO}	{ printf("(LITERAL %s)\n", yytext);}
-\".*\"		{ printf("(LITERAL %s)\n", yytext);}
-
+"^"  |	
+"."	 { printf("(OPERATOR %s)\n", yytext);}
+{NUMERO} { printf("(NUMERO %s)\n", yytext);}
+{LETRA}({LETRA}|{DIGITO})*	{ printf("(IDENTIFIER %s)\n", yytext);}
+{NUMERO_COMPLEX} { printf("(´COMPLEX NUMBER %s)\n", yytext);}
 
 {WS}									{ /* whitespace separates tokens */ }
 .										{ /* discard bad characters */ printf("(OTHER %s)\n", yytext); }
@@ -91,3 +95,8 @@ int main (void) {
 	return yylex ();
 }
 /* This is the "default main program" anyway, so it could be omitted. */
+
+yywrap()
+{
+	return(1);
+}
