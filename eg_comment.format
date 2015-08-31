@@ -1,0 +1,3 @@
+%% Primeiro exemplo de código usado no primeiro relatório 
+%% Contador atualizado pelos iteradores secundários
+count <- i + j;          %% i -- mais externo; j -- mais interno.
