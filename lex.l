@@ -15,27 +15,35 @@ unsigned charCount = 0, wordCount = 0, lineCount = 0;
 
 %}
 
-/* definições regulares */
-
 word [^ \t\n]+
 eol  \n
 
-DELIM 		[ \t\n]
-WS			{DELIM}+
-/* ???: Porque letra está incorporando o "underline"? */
-LETRA		[a-zA-Z_]
-DIGITO		[0-9]
-NUMERO 		{DIGITO}+(.{DIGITO}+)?(E[+-]?{DIGITO}+)?
-NUMERO_COMPLEX ({NUMERO}i)
-	
-%{
 
-%}
+WS			[ \t\r\n]+
+
+LETRA			[a-zA-Z]
+
+DIGITO			[0-9]
+EXPOENTE 		(e|E)[+-]+{DIGITO}
+FRACAO 			\.{DIGITO}+
+PARTE_INT		{DIGITO}+
+NUM_PONTO 		{PARTE_INT}{FRACAO}|{PARTE_INT}\.
+NUM_EXPOENTE	({PARTE_INT}|{NUM_PONTO}){EXPOENTE}
+PARTE_IMG	 	({NUM_PONTO}|{PARTE_INT})(i|I)
+NUM_REAL 		{NUM_PONTO}|{NUM_EXPOENTE}
+NUMERO 			{NUM_REAL}[{PARTE_IMG}]
+
+ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
+
+
+
+
 
 %%
 
 	/* Foi especificado no primeiro relatório que os comentários seriam definidos através de %% */
 \%%.*	{ printf("(COMMENT %s)\n", yytext);}
+
 
 \"(\\.|[^\\"])*\" { printf("(STRING %s)\n", yytext);} 
 int | 
@@ -68,7 +76,7 @@ true |
 procedure |
 function |
 input |
-output | /* TO-DO: Adicionar no relatório essas palavras chaves (joãopinto). */
+output |
 return		{ printf("(KEYWORD %s)\n", yytext);}
 
 
@@ -104,19 +112,21 @@ return		{ printf("(KEYWORD %s)\n", yytext);}
 ">"  |	
 "^"  |	
 "."	 { printf("(OPERATOR %s)\n", yytext);}
-{NUMERO} { printf("(NUMERO %s)\n", yytext);}
-{LETRA}({LETRA}|{DIGITO})*	{ printf("(IDENTIFIER %s)\n", yytext);}
-{NUMERO_COMPLEX} { printf("(´COMPLEX NUMBER %s)\n", yytext);}
+	
+{NUMERO}	{ printf("(NUMERO %s)\n", yytext);}
+{ID}		{ printf("(IDENTIFIER %s)\n", yytext);}
 
+
+	/*
 {word}	{ wordCount++; charCount += yyleng; }
 {eol}	{ charCount++; lineCount++; }
+	*/
 
 {WS}	{ /* whitespace separates tokens */ }
-	/* lex.l: 115: warning, rule cannot be matched TO-DO: Não sei como resolver...*/
-.		{ /* discard bad characters */ printf("(OTHER %s)\n", yytext); charCount++;}
+.		{ charCount++; printf("(OTHER %s)\n", yytext); /* discard bad characters */ }
+
 
 %%
-
 
 
 int main(argc,argv)
