@@ -1,6 +1,28 @@
+%{
+
+/* Arquivo: lex.l
+ * Autores: Breno Cardoso
+ *			Elaine Lima
+ *			João Pinto
+ * 			Viviane Pinheiro
+ *
+ * A leitura de código através de arquivos foi retirada do livro 
+ * "Lex & Yacc" de John R. Levine, Tony Mason e Doug Brown.
+ */
+
+
+unsigned charCount = 0, wordCount = 0, lineCount = 0;
+
+%}
+
 /* definições regulares */
+
+word [^ \t\n]+
+eol  \n
+
 DELIM 		[ \t\n]
 WS			{DELIM}+
+/* ???: Porque letra está incorporando o "underline"? */
 LETRA		[a-zA-Z_]
 DIGITO		[0-9]
 NUMERO 		{DIGITO}+(.{DIGITO}+)?(E[+-]?{DIGITO}+)?
@@ -12,7 +34,8 @@ NUMERO_COMPLEX ({NUMERO}i)
 
 %%
 
-"/*"	{ printf("(COMMENT %s)\n", yytext);}
+	/* Foi especificado no primeiro relatório que os comentários seriam definidos através de %% */
+\%%.*	{ printf("(COMMENT %s)\n", yytext);}
 
 \"(\\.|[^\\"])*\" { printf("(STRING %s)\n", yytext);} 
 int | 
@@ -45,7 +68,7 @@ true |
 procedure |
 function |
 input |
-output |
+output | /* TO-DO: Adicionar no relatório essas palavras chaves (joãopinto). */
 return		{ printf("(KEYWORD %s)\n", yytext);}
 
 
@@ -85,18 +108,41 @@ return		{ printf("(KEYWORD %s)\n", yytext);}
 {LETRA}({LETRA}|{DIGITO})*	{ printf("(IDENTIFIER %s)\n", yytext);}
 {NUMERO_COMPLEX} { printf("(´COMPLEX NUMBER %s)\n", yytext);}
 
-{WS}									{ /* whitespace separates tokens */ }
-.										{ /* discard bad characters */ printf("(OTHER %s)\n", yytext); }
+{word}	{ wordCount++; charCount += yyleng; }
+{eol}	{ charCount++; lineCount++; }
+
+{WS}	{ /* whitespace separates tokens */ }
+	/* lex.l: 115: warning, rule cannot be matched TO-DO: Não sei como resolver...*/
+.		{ /* discard bad characters */ printf("(OTHER %s)\n", yytext); charCount++;}
 
 %%
 
 
-int main (void) {
-	return yylex ();
-}
-/* This is the "default main program" anyway, so it could be omitted. */
 
-yywrap()
+int main(argc,argv)
+int argc;
+char **argv;
+{
+
+	if (argc > 1) {
+		FILE *file;
+
+		file = fopen(argv[1], "r");
+		if (!file) {
+			fprintf(stderr,"could not open %s\n",argv[1]);
+			exit(1);
+		}
+		yyin = file;
+	}
+	yylex();
+	printf("caracteres: %d, palavras: %d, linhas: %d\n",charCount, wordCount, lineCount);
+	return 0;
+}
+
+/* Para mim foi gerado um warning. 
+	Qual a necessidade dessa instrução?
+ */
+int yywrap()
 {
 	return(1);
 }
