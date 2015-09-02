@@ -71,69 +71,52 @@
 #define IMPORT 290
 #define RETURN 291
 
-
 #define SEMICOLON 292           // ;
 #define COMMA 293               // ,
 #define COLON 294               // :
-#define OPEN_PARENTHESES 295     // (
-#define CLOSE_PARENTHESES 296    // )
+#define OPEN_PARENTHESIS 295     // (
+#define CLOSE_PARENTHESIS 296    // )
 #define OPEN_BRACKETS 297       // [
 #define CLOSE_BRACKETS 298      // ]
 #define RANGE 299               // ..
 
- NEQ GT GTE LT LTE
+#define ADD_ASSIGN_OP 300
+#define SUB_ASSIGN_OP 301
+#define MULT_ASSIGN_OP 302
+#define DIV_ASSIGN_OP 303
+#define MOD_ASSIGN_OP 304
+#define INCREMENT_OP 305
+#define DECREMENT_OP 306
+#define AND_OP 307
+#define OR_OP 308
+#define ASSIGN_OP 309
+#define LEQ_OP 310
+#define BEQ_OP 311
+#define EQ_OP 312
+#define NEQ_OP 313
+#define SUB_OP 314
+#define ADD_OP 315
+#define MULT_OP 316
+#define DIV_OP 317
+#define MOD_OP 318
+#define LT_OP 319
+#define BT_OP 320
+#define EXP_OP 321
+#define DOT_OP 322   
+#define ID 323 
+#define INT_NUMBER 324
+#define COMPLEX_NUMBER 324
+#define REAL_NUMBER 324   
 
-#define END_WHILE 280           // +=
-#define END_SWITCH 281          // -=
-#define FALSE 282               // *=
-#define TRUE 283                // /=
-#define PROCEDURE 284           // %=
-#define FUNCTION 285            // ++
-#define RETURN 286              // --
-#define OP_EQ 280               // ==
-#define OP_BOOL_SWITCH 281          // ||
-#define OP_BOOL_ITCH 281          // ||
-#define OP_BOOL_SWITCH 281          // ||
-#define FALSE 282               // <-
-#define DEC_OP_LTE 283          // <=
-#define DEC_OP_GTE 284          // >=
-#define DEC_OP_NEQ 285          // <>
-#define RETURN 286              // -
-#define END_WHILE 280           // +
-#define END_SWITCH 281          // *
-#define FALSE 282               // /
-#define TRUE 283                // %
-#define DEC_OP_LT 284           // <
-#define DEC_OP_GT 285           // >
-#define RETURN 286              // ^
-#define END_WHILE 280           // .
+
+
+
+
 
 
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 58 "sketch.y"
-typedef union YYSTYPE {
-  char *str;
-  FLOAT flt;
-  POINT_3D pt;
-  VECTOR_3D vec;
-  TRANSFORM xf;
-  EXPR_VAL exv;
-  SYMBOL_NAME name;
-  SYMBOL_NAME_NODE *name_list;
-  OBJECT *obj;
-  OPTS *opts;
-  int bool;
-  int index;
-} YYSTYPE;
-/* Line 1447 of yacc.c.  */
-#line 145 "y.tab.h"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
-
-extern YYSTYPE yylval;
-
-
-
