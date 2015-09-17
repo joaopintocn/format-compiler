@@ -1,0 +1,18 @@
+procedure selection_sort(matrix_of int num[], int tam)
+	int i, j, min, aux;
+
+	for (i = 0; i < (tam-1); i++)
+		min = i;
+		for (j = (i+1); j < tam; j++)
+			if(num[j] < num[min])
+				min = j;
+			end_if;
+		end_for;
+
+   		if (i != min)
+			aux = num[i];
+			num[i] = num[min];
+			num[min] = aux;
+		end_if;
+	end_for;
+end_procedure;
