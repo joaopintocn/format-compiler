@@ -109,7 +109,7 @@ return				{return RETURN;	}
 "%"  				{return MOD_OP; }
 "<"  				{return LT_OP; }
 ">"  				{return BT_OP;}
-"^"  			    {return EXP_OP;}
+"^"  			    {return EXPO_OP;}
 "."	 				{return DOT_OP;}
 
 {ID}				{ return ID;}

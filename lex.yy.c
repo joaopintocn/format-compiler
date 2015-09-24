@@ -1213,7 +1213,7 @@ YY_RULE_SETUP
 case 67:
 YY_RULE_SETUP
 #line 112 "lex.l"
-{return EXP_OP;}
+{return EXPO_OP;}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP

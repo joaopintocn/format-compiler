@@ -4,8 +4,8 @@
 
 int lookahead;
 
-void match(int);
-void start(), list(), expr(), moreterms(), term(), morefactors(), factor();
+void eat(int);
+void start(), list(), expr(), term_tail(), term(), factor_tail(), factor(), expo_tail(), expo();
 
 void parse()  /*  parses and translates expression list  */
 {
@@ -16,57 +16,56 @@ void parse()  /*  parses and translates expression list  */
 void start ()
 {
   /* Just one production for start, so we don't need to check lookahead */
-  list(); match(DONE);
+  list(); eat(DONE);
 }
 
 void list()
 {
-  if (lookahead == '(' || lookahead == ID || lookahead == INT_NUMBER) {
-    expr(); match(';'); list();
+  if (lookahead == OPEN_PARENTHESIS || lookahead == ID || lookahead == INT_NUMBER) {
+    expr(); eat(SEMICOLON); list();
   }
   else {
     /* Empty */
   }
 }
+
 
 void expr ()
 {
   /* Just one production for expr, so we don't need to check lookahead */
-  term(); moreterms();
+  term(); term_tail();
 }
 
-void moreterms()
+void term_tail()
 {
   if (lookahead == ADD_OP) {
-    match(ADD_OP); term(); emit(ADD_OP, yytext); moreterms();
+    eat(ADD_OP); term(); emit(ADD_OP, yytext); term_tail();
   }
   else if (lookahead == SUB_OP) {
-    match(SUB_OP); term(); emit(SUB_OP, yytext); moreterms();
+    eat(SUB_OP); term(); emit(SUB_OP, yytext); term_tail();
   }
   else {
     /* Empty */
   }
 }
 
+
 void term ()
 {
   /* Just one production for term, so we don't need to check lookahead */
-  factor(); morefactors();
+  factor(); factor_tail();
 }
 
-void morefactors ()
+void factor_tail ()
 {
   if (lookahead == MULT_OP) {
-    match(MULT_OP); factor(); emit(MULT_OP, yytext); morefactors();
+    eat(MULT_OP); factor(); emit(MULT_OP, yytext); factor_tail();
   }
   else if (lookahead == DIV_OP) {
-    match(DIV_OP); factor(); emit(DIV_OP, yytext); morefactors();
-  }
-  else if (lookahead == DIV_OP) {
-    match(DIV_OP); factor(); emit(DIV_OP, yytext); morefactors();
+    eat(DIV_OP); factor(); emit(DIV_OP, yytext); factor_tail();
   }
   else if (lookahead == MOD_OP) {
-    match(MOD_OP); factor(); emit(MOD_OP, yytext); morefactors();
+    eat(MOD_OP); factor(); emit(MOD_OP, yytext); factor_tail();
   }
   else {
     /* Empty */
@@ -75,24 +74,39 @@ void morefactors ()
 
 void factor ()
 {
-  if (lookahead == '(') {
-    match('('); expr(); match(')');
+  expo(); expo_tail();
+}
+
+void expo_tail ()
+{
+ if (lookahead == EXPO_OP) {
+    eat(EXPO_OP); expo(); emit(EXPO_OP, yytext); expo_tail();
+  }
+  else {
+    /* Empty */
+  }
+}
+
+void expo ()
+{
+  if (lookahead == OPEN_PARENTHESIS) {
+    eat(OPEN_PARENTHESIS); expr(); eat(CLOSE_PARENTHESIS);
   }
   else if (lookahead == ID) {
     char* id_lexeme = yytext;
-    match(ID);
+    eat(ID);
     emit(ID, id_lexeme);
   }
   else if (lookahead == INT_NUMBER) {
     char* INT_NUMBER_value = yytext;
-    match(INT_NUMBER);
+    eat(INT_NUMBER);
     emit(INT_NUMBER, INT_NUMBER_value);
   }
   else
     error("syntax error in factor");
 }
 
-void match(int t)
+void eat(int t)
 {
   if (lookahead == t)
     lookahead = yylex();

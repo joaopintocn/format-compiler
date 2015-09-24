@@ -76,12 +76,12 @@
 #define MOD_OP 318
 #define LT_OP 319
 #define BT_OP 320
-#define EXP_OP 321
+#define EXPO_OP 321
 #define DOT_OP 322   
 #define ID 323 
 #define INT_NUMBER 324
-#define COMPLEX_NUMBER 324
-#define REAL_NUMBER 324   
+#define COMPLEX_NUMBER 325
+#define REAL_NUMBER 326
 
 #define DONE   328
 
