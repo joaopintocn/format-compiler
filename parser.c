@@ -16,18 +16,22 @@ void list(), values(), term_tail(), term(), factor_tail(), factor(), expo_tail()
 void dimensions() {} ;
 void subprogram_declaration(), procedure_declaration(), function_declaration();
 void procedure_header(), procedure_body(), function_header(), function_body();
-void parameter_list();
+void parameter_list(), statement();
 
 
 
 
 void parse(char *src)  /*  parses and translates expression list  */
 {
-    FILE *file = fopen(src, "r");
+    FILE *file = fopen(src, "eg_sub_procedure.format");
     if (!file) {
+	//printf("fail\n");
         fprintf(stderr,"could not open %s\n",src);
         exit(1);
+    } else {
+	//printf("open\n");
     }
+
     yyin = file;
     lookahead = yylex();
     start();
@@ -372,6 +376,10 @@ void function_body()
 void parameter_list()
 {
 	
+}
+
+void statement(){
+
 }
 
 void identifier() {
