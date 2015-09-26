@@ -11,20 +11,25 @@ int lookahead;
 
 void eat(int);
 void start(), program(), program_header(), program_body(), import(), variable_declaration(), subprogram_declaration();
-void simple_variable_declaration(), compost_variable_declaration();
-void list(), expr(), term_tail(), term(), factor_tail(), factor(), expo_tail(), expo();
+void simple_variable_declaration(), compost_variable_declaration(), type(), expression(), identifier();
+void list(), values(), term_tail(), term(), factor_tail(), factor(), expo_tail(), expo();
+void dimensions() {} ;
 
 
 
 
 
 
-
-
-void parse()  /*  parses and translates expression list  */
+void parse(char *src)  /*  parses and translates expression list  */
 {
-  lookahead = yylex();
-  start();
+    FILE *file = fopen(src, "r");
+    if (!file) {
+        fprintf(stderr,"could not open %s\n",src);
+        exit(1);
+    }
+    yyin = file;
+    lookahead = yylex();
+    start();
 }
 
 void start ()
@@ -55,9 +60,9 @@ void program_header()
  * 
  */ 
 
-  if (lookahead != VARIABLES_SECTION && lookahead != SUBPROGRAMS_SECTION) {
-    import();
-  }
+    if (lookahead != VARIABLES_SECTION && lookahead != SUBPROGRAMS_SECTION) {
+        import();
+    }
 }
 
 
@@ -131,6 +136,128 @@ void variable_declaration()
 
 }  
 
+
+void simple_variable_declaration()
+{
+/*
+ * <simple_variable_declaration> ::=
+ *    [ ‘const’ | ‘ref’ ] <type> <id> [ ‘=’ <expression> ] ‘;’
+ * 
+ */
+
+    if ( lookahead == CONST )
+        eat(CONST);
+
+    if ( lookahead == REF )
+        eat(REF);
+
+    type();
+
+    identifier();
+
+    if ( lookahead == ASSIGN_OP ) {
+        eat(ASSIGN_OP);
+
+        printf("%s\n", "jahjhsjh");
+        if ( lookahead == DOUBLE_QUOTES ) {
+            eat(STRING);
+        } else {
+            expression();    
+        }
+    }
+      
+    eat(SEMICOLON);
+
+}
+
+void compost_variable_declaration()
+{
+/*
+ * <compost_variable_declaration> ::=
+ *      ‘matrix_of’ <type> ‘[’ <dimensions> ‘]’ <identifier> 
+ *            [ ‘=’ ‘{’ <values> ‘}’ { ‘,’ ‘{’ <values> ‘}’ } ] ‘;’ |
+ *
+ *      ‘set_of’ <type> <identifier> [ ‘=’ ‘{’ ‘}’ ]‘;’ |
+ * 
+ *      ‘enum’ <identifier> ‘:’ ( <identifier> [ ‘=’ <value> ] ‘,’ )+ ‘end_enum’ ‘;’ |
+ *
+ *      ‘struct’ <identifier> ‘:’ ( <simple_variable_declaration> )+ ‘end_struct’ ‘;’
+ *
+ */
+
+    if ( lookahead == MATRIX_OF ) {
+        eat(MATRIX_OF);
+        type();
+        eat(OPEN_BRACKETS);
+        dimensions();
+        eat(CLOSE_BRACKETS);
+        identifier();
+
+        if ( lookahead == ASSIGN_OP ) {
+            eat(ASSIGN_OP);
+            eat(OPEN_BRACES);
+            values();
+            eat(CLOSE_BRACES);
+
+            while (lookahead == COMMA) {
+                eat(OPEN_BRACES);
+                values();
+                eat(CLOSE_BRACES);
+            }
+        }
+
+        eat(SEMICOLON);
+        return;
+    }
+
+    if ( lookahead == SET_OF ) {
+        eat(SET_OF);
+        type();
+        identifier();
+
+        if ( lookahead == ASSIGN_OP ) {
+            eat(ASSIGN_OP);
+            values(); //TO-DO: Não sei ainda como definir/implementar isso.
+        }
+
+        eat(SEMICOLON);
+        return;
+    }
+
+    if ( lookahead == ENUM ) {
+        eat(ENUM);
+        identifier();
+        eat(COLON);
+
+        while (lookahead != END_ENUM) {
+            identifier();
+            if ( lookahead == ASSIGN_OP ) {
+                eat(ASSIGN_OP);
+                expression(); //TO-DO: Não sei ainda como definir/implementar isso.
+            }
+        }
+
+        eat(END_ENUM);
+        eat(SEMICOLON);
+        return;
+    }
+
+    if ( lookahead == STRUCT ) {
+        eat(STRUCT);
+        identifier();
+        eat(COLON);
+
+        while (lookahead != END_STRUCT) {
+            simple_variable_declaration();
+        }
+
+        eat(END_STRUCT);
+        eat(SEMICOLON);
+        return;
+    }
+
+}
+
 void subprogram_declaration()
 {
 
@@ -139,22 +266,50 @@ void subprogram_declaration()
 }
 
 
-void simple_variable_declaration()
-{
-
-printf("void simple_variable_declaration()\n");
+void identifier() {
+  char* id_lexeme = yytext;
+  eat(ID);
+  emit(ID, id_lexeme);
 }
 
-void compost_variable_declaration()
-{
+
+void type() {
+/*
+ * <type> ::=
+ *    int | [double] real | string | complex 
+ *
+ */
+
+  if ( lookahead == INT ) {
+      eat(INT); return;
+  }
+
+  if ( lookahead == DOUBLE ) {
+    eat(DOUBLE);
+    if ( lookahead == REAL ) {
+      eat(REAL); return;
+    }
+  }
+
+  if ( lookahead == REAL ) {
+      eat(REAL); return;
+    }
+
+  if ( lookahead == STRING ) {
+      eat(STRING); return;
+  }
+
+  if ( lookahead == COMPLEX ) {
+      eat(COMPLEX); return;
+  }
+} 
 
 
-}
 
 void list()
 {
   if (lookahead == OPEN_PARENTHESIS || lookahead == ID || lookahead == INT_NUMBER) {
-    expr(); eat(SEMICOLON); list();
+    expression(); eat(SEMICOLON); list();
   }
   else {
     /* Empty */
@@ -164,20 +319,24 @@ void list()
 
 
 
+
+void expression()
+{
 /*
  *  <expr>    ::=   <term> <term_tail>
  */
-void expr ()
-{
+
   term(); term_tail();
 }
 
+
+void term_tail()
+{
 /*
  *  <term_tail>     ::=   + <term> <term_tail> | 
  *                        - <term> <term_tail> |
  */
-void term_tail()
-{
+
   if (lookahead == ADD_OP) {
     eat(ADD_OP); term(); emit(ADD_OP, yytext); term_tail();
   }
@@ -190,21 +349,24 @@ void term_tail()
 }
 
 
+void term ()
+{
 /*
  *  <term>    ::=  <factor> <factor_tail>
  */
-void term ()
-{
+
   factor(); factor_tail();
 }
 
+
+void factor_tail ()
+{
 /*
  *  <factor_tail>   ::=   x <factor> <factor_tail> |
  *                        / <factor> <factor_tail> |
  *                        % <factor> <factor_tail> |
  */
-void factor_tail ()
-{
+
   if (lookahead == MULT_OP) {
     eat(MULT_OP); factor(); emit(MULT_OP, yytext); factor_tail();
   }
@@ -219,19 +381,22 @@ void factor_tail ()
   }
 }
 
+
+void factor ()
+{
 /*
  *  <factor>    ::=   <expo> <expo_tail>
  */
-void factor ()
-{
+
   expo(); expo_tail();
 }
 
+void expo_tail ()
+{
 /*
  * <expo_tail>   ::=   ^ <expo> <expo_tail> |
  */
-void expo_tail ()
-{
+
  if (lookahead == EXPO_OP) {
     eat(EXPO_OP); expo(); emit(EXPO_OP, yytext); expo_tail();
   }
@@ -240,28 +405,44 @@ void expo_tail ()
   }
 }
 
+
+void expo ()
+{
 /*
  * <expo>    ::=    <id> | <lit> | (<expr>)
  */
-void expo ()
-{
-  if (lookahead == OPEN_PARENTHESIS) {
-    eat(OPEN_PARENTHESIS); expr(); eat(CLOSE_PARENTHESIS);
-  }
-  else if (lookahead == ID) {
-    char* id_lexeme = yytext;
-    eat(ID);
-    emit(ID, id_lexeme);
-  }
-  else if (lookahead == INT_NUMBER) {
-    char* INT_NUMBER_value = yytext;
-    eat(INT_NUMBER);
-    emit(INT_NUMBER, INT_NUMBER_value);
-  }
-  else
-    error("syntax error in factor");
+
+    if (lookahead == OPEN_PARENTHESIS) {
+        eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS);
+    }
+    else if (lookahead == ID) {
+        char* id_lexeme = yytext;
+        eat(ID);
+        emit(ID, id_lexeme);
+    }
+    else if (lookahead == INT_NUMBER) {
+        char* INT_NUMBER_value = yytext;
+        eat(INT_NUMBER);
+        emit(INT_NUMBER, INT_NUMBER_value);
+    }
+    else if (lookahead == REAL_NUMBER) {
+        char* REAL_NUMBER_value = yytext;
+        eat(REAL_NUMBER);
+        emit(REAL_NUMBER, REAL_NUMBER_value);
+    }
+    else if (lookahead == COMPLEX_NUMBER) {
+        char* COMPLEX_NUMBER_value = yytext;
+        eat(COMPLEX_NUMBER);
+        emit(COMPLEX_NUMBER, COMPLEX_NUMBER_value);
+    }
+    else
+        error("syntax error in factor");
 }
 
+
+void values() {
+
+}
 
 void eat(int t)
 {
@@ -271,5 +452,6 @@ void eat(int t)
     lookahead = yylex();
   else {
     error ("syntax error in match");
+    printf(": %d   %d\n", lookahead, t);
   }
 }

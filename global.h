@@ -19,12 +19,13 @@
 #define ENUM 264
 #define STRUCT 265
 #define SET_OF 266
-#define MATRIX_OF 266
-#define END_STRUCT 267
-#define CONST 268
-#define REF 269
-#define IF 270
-#define ELSE 271
+#define MATRIX_OF 267
+#define END_STRUCT 268
+#define END_ENUM 268
+#define CONST 269
+#define REF 270
+#define IF 271
+#define ELSE 272
 #define FOR 272
 #define WHILE 273
 #define SWITCH 274
@@ -46,13 +47,16 @@
 #define IMPORT 290
 #define RETURN 291
 
+#define DOUBLE_QUOTES 299       // "
 #define SEMICOLON 292           // ;
 #define COMMA 293               // ,
 #define COLON 294               // :
-#define OPEN_PARENTHESIS 295     // (
-#define CLOSE_PARENTHESIS 296    // )
+#define OPEN_PARENTHESIS 295    // (
+#define CLOSE_PARENTHESIS 296   // )
 #define OPEN_BRACKETS 297       // [
 #define CLOSE_BRACKETS 298      // ]
+#define OPEN_BRACES 297       	// {
+#define CLOSE_BRACES 298      	// }
 #define RANGE 299               // ..
 
 #define ADD_ASSIGN_OP 300
@@ -85,9 +89,11 @@
 
 #define VARIABLES_SECTION 327
 #define SUBPROGRAMS_SECTION 328
+#define COMMENT 329
 
 extern int yylineno;
 extern char *yytext;
+extern FILE *yyin;
 
 extern void error(char* m);  /*  generates all error messages  */
 extern int yylex();  /*  lexical analyzer  */

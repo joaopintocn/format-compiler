@@ -35,7 +35,7 @@ ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 %%
 
 	/* Foi especificado no primeiro relatório que os comentários seriam definidos através de %% */
-\%%.*	{ /* */ }
+\%%.*	{ emit(COMMENT, yytext); }
 
 
 \"(\\.|[^\\"])*\" 	{return STRING; } 
@@ -48,7 +48,8 @@ enum 				{return ENUM; }
 struct 				{return STRUCT; }
 set_of 				{return SET_OF; }
 matrix_of 			{return MATRIX_OF; }
-end_struct 			{return END_STRUCT ; }
+end_struct 			{return END_STRUCT; }
+end_enum 			{return END_ENUM; }
 const 				{return CONST; }
 ref 				{return REF; }
 if 					{return IF; }
@@ -94,10 +95,10 @@ subprograms			{return SUBPROGRAMS_SECTION; }
 "--" 				{return DECREMENT_OP; }
 "&&" 				{return AND_OP; }
 "||" 				{return OR_OP; }			
-"<-" 				{return ASSIGN_OP; }	
+"=" 				{return ASSIGN_OP; }	
 "<=" 				{return LEQ_OP;}
 ">=" 				{return BEQ_OP;}
-"=" 				{return EQ_OP; }
+"==" 				{return EQ_OP; }
 "<>" 				{return NEQ_OP;}
 "-"  				{return SUB_OP; }
 "+"  				{return ADD_OP; }

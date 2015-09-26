@@ -2,8 +2,13 @@
 
 #include "global.h"
 
-int main(void)
+
+int main(argc,argv)
+int argc;
+char **argv;
 {
-  parse();
-  exit(0);    /*  successful termination  */
-}
+	if (argc > 1) {
+		parse(argv[1]);
+	}	
+	return 0;
+ }
