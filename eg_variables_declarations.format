@@ -7,7 +7,7 @@ variables:
 	real pi = 3.145;
 	double real pi = 3.141516;
 	const complex aber = 6.5 + 1i;
-	string msg = “Olá Mundo”;
+	string msg = "Olá Mundo";
 	ref string msg;
 
 	%% Variáveis compostas

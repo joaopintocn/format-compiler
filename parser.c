@@ -120,7 +120,7 @@ void variable_declaration()
       lookahead == REAL ||
       lookahead == STRING || 
       lookahead == COMPLEX ) {
-
+    printf("simple_variable_declaration()  %s\n", yytext);
     simple_variable_declaration();
 
   } 
@@ -158,16 +158,14 @@ void simple_variable_declaration()
     if ( lookahead == ASSIGN_OP ) {
         eat(ASSIGN_OP);
 
-        printf("%s\n", "jahjhsjh");
-        if ( lookahead == DOUBLE_QUOTES ) {
+        if ( lookahead == STRING ) {
             eat(STRING);
         } else {
-            expression();    
+            expression();        
         }
     }
-      
+    
     eat(SEMICOLON);
-
 }
 
 void compost_variable_declaration()
@@ -452,6 +450,5 @@ void eat(int t)
     lookahead = yylex();
   else {
     error ("syntax error in match");
-    printf(": %d   %d\n", lookahead, t);
   }
 }
