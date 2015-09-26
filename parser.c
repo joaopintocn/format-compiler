@@ -10,12 +10,13 @@
 int lookahead;
 
 void eat(int);
-void start(), program(), program_header(), program_body(), import(), variable_declaration(), subprogram_declaration();
+void start(), program(), program_header(), program_body(), import(), variable_declaration();
 void simple_variable_declaration(), compost_variable_declaration(), type(), expression(), identifier();
 void list(), values(), term_tail(), term(), factor_tail(), factor(), expo_tail(), expo();
 void dimensions() {} ;
-
-
+void subprogram_declaration(), procedure_declaration(), function_declaration();
+void procedure_header(), procedure_body(), function_header(), function_body();
+void parameter_list();
 
 
 
@@ -120,7 +121,7 @@ void variable_declaration()
       lookahead == REAL ||
       lookahead == STRING || 
       lookahead == COMPLEX ) {
-    printf("simple_variable_declaration()  %s\n", yytext);
+
     simple_variable_declaration();
 
   } 
@@ -158,14 +159,16 @@ void simple_variable_declaration()
     if ( lookahead == ASSIGN_OP ) {
         eat(ASSIGN_OP);
 
-        if ( lookahead == STRING ) {
+        printf("%s\n", "jahjhsjh");
+        if ( lookahead == DOUBLE_QUOTES ) {
             eat(STRING);
         } else {
-            expression();        
+            expression();    
         }
     }
-    
+      
     eat(SEMICOLON);
+
 }
 
 void compost_variable_declaration()
@@ -258,11 +261,118 @@ void compost_variable_declaration()
 
 void subprogram_declaration()
 {
+	/* 
+	<subprogram_declaration> ::=	
+		( <procedure_declaration> | <function_declaration> )" */
+		
+	if (lookahead == PROCEDURE)
+	{
+		procedure_declaration();
+	} 
 
+	if (lookahead == FUNCTION)
+	{
+		function_declaration();
+	}
+}
 
+void procedure_declaration()
+{
+	/* 
+	<procedure_declaration> ::=	
+		<procedure_header> <procedure_body>*/
+	procedure_header(); procedure_body();
+}
+
+void function_declaration()
+{
+	/* 
+	<function_declaration> ::=	
+		<function_header> <function_body>*/
+		
+	function_header(); function_body();
 
 }
 
+void procedure_header() //não finalizado
+{
+	/* 
+	<procedure_header> ::=	
+		‘procedure’ <identifier> ‘(’[ <parameter_list> ]‘)’ ‘:’ 	*/
+	eat(PROCEDURE);
+	identifier();
+	eat(OPEN_PARENTHESIS);
+	
+	parameter_list();
+	
+	eat(CLOSE_PARENTHESIS);
+	eat(COLON);
+	
+}
+
+void function_header() //não finalizado
+{
+	/*<function_header> 	::=	
+		‘function’ <type> <identifier> ‘(’[ <parameter_list> ]‘)’ ‘:’  */
+		
+	eat(FUNCTION);
+	type();
+	identifier();
+	eat(OPEN_PARENTHESIS);
+	
+	parameter_list();
+	
+	eat(CLOSE_PARENTHESIS);
+	eat(COLON);
+}
+
+void procedure_body()
+{
+	/*
+	<procedure_body> ::=
+		{ { <variable_declaration> } | { <statement> } } 
+		‘end_procedure’ <identifier> ‘;’
+	*/
+	
+	while (lookahead != END_PROCEDURE) {
+		if (lookahead == VARIABLES_SECTION) {
+			variable_declaration();
+		} else {
+			statement();
+		}
+	}
+	
+	eat(END_PROCEDURE);
+	identifier();
+	eat(SEMICOLON);
+}
+
+void function_body()
+{
+	/* 
+	<function_body> ::=
+		{ { <variable_declaration> } | { <statement> } } 
+		<return_statement>
+		‘end_function’ <identifier> ‘;’
+	*/
+	
+	while (lookahead != END_FUNCTION) {
+		if (lookahead == VARIABLES_SECTION) {
+			variable_declaration();
+		} else {
+			statement();
+		}
+	}
+	
+	eat(END_FUNCTION);
+	identifier();
+	eat(SEMICOLON);
+}
+
+void parameter_list()
+{
+	
+}
 
 void identifier() {
   char* id_lexeme = yytext;
@@ -450,5 +560,6 @@ void eat(int t)
     lookahead = yylex();
   else {
     error ("syntax error in match");
+    printf(": %d   %d\n", lookahead, t);
   }
 }
