@@ -10,7 +10,7 @@
 #define EOS    '\0'
 
 /* Tokens.  */
-#define INT 258 
+#define INT 258
 #define REAL 259
 #define COMPLEX 260
 //#define SINGLE_REAL 261
@@ -21,75 +21,75 @@
 #define SET_OF 266
 #define MATRIX_OF 267
 #define END_STRUCT 268
-#define END_ENUM 268
-#define CONST 269
-#define REF 270
-#define IF 271
-#define ELSE 272
-#define FOR 272
-#define WHILE 273
-#define SWITCH 274
-#define CASE 275
-#define BREAK 276
-#define OTHER 277
-#define END_IF 278
-#define END_FOR 279
-#define END_WHILE 280
-#define END_SWITCH 281
-#define FALSE 282
-#define TRUE 283
-#define PROCEDURE 284
-#define END_PROCEDURE 285
-#define FUNCTION 286
-#define END_FUNCTION 287
-#define MODULE 288
-#define END_MODULE 289   
-#define IMPORT 290
-#define RETURN 291
+#define END_ENUM 269
+#define CONST 270
+#define REF 271
+#define IF 272
+#define ELSE 273
+#define FOR 274
+#define WHILE 275
+#define SWITCH 276
+#define CASE 277
+#define BREAK 278
+#define OTHER 279
+#define END_IF 280
+#define END_FOR 281
+#define END_WHILE 282
+#define END_SWITCH 283
+#define FALSE 284
+#define TRUE 285
+#define PROCEDURE 286
+#define END_PROCEDURE 287
+#define FUNCTION 288
+#define END_FUNCTION 289
+#define MODULE 290
+#define END_MODULE 291   
+#define IMPORT 292
+#define RETURN 293
 
-#define DOUBLE_QUOTES 299       // "
-#define SEMICOLON 292           // ;
-#define COMMA 293               // ,
-#define COLON 294               // :
-#define OPEN_PARENTHESIS 295    // (
-#define CLOSE_PARENTHESIS 296   // )
-#define OPEN_BRACKETS 297       // [
-#define CLOSE_BRACKETS 298      // ]
-#define OPEN_BRACES 297       	// {
-#define CLOSE_BRACES 298      	// }
-#define RANGE 299               // ..
+#define DOUBLE_QUOTES 294       // "
+#define SEMICOLON 295           // ;
+#define COMMA 296               // ,
+#define COLON 297               // :
+#define OPEN_PARENTHESIS 298    // (
+#define CLOSE_PARENTHESIS 299   // )
+#define OPEN_BRACKETS 300       // [
+#define CLOSE_BRACKETS 301      // ]
+#define OPEN_BRACES 302       	// {
+#define CLOSE_BRACES 303      	// }
+#define RANGE 304               // ..
 
-#define ADD_ASSIGN_OP 300
-#define SUB_ASSIGN_OP 301
-#define MULT_ASSIGN_OP 302
-#define DIV_ASSIGN_OP 303
-#define MOD_ASSIGN_OP 304
-#define INCREMENT_OP 305
-#define DECREMENT_OP 306
-#define AND_OP 307
-#define OR_OP 308
-#define ASSIGN_OP 309
-#define LEQ_OP 310
-#define BEQ_OP 311
-#define EQ_OP 312
-#define NEQ_OP 313
-#define SUB_OP 314
-#define ADD_OP 315
-#define MULT_OP 316
-#define DIV_OP 317
-#define MOD_OP 318
-#define LT_OP 319
-#define BT_OP 320
-#define EXPO_OP 321
-#define DOT_OP 322   
-#define ID 323 
-#define INT_NUMBER 324
-#define COMPLEX_NUMBER 325
-#define REAL_NUMBER 326
+#define ADD_ASSIGN_OP 305
+#define SUB_ASSIGN_OP 306
+#define MULT_ASSIGN_OP 307
+#define DIV_ASSIGN_OP 308
+#define MOD_ASSIGN_OP 309
+#define INCREMENT_OP 310
+#define DECREMENT_OP 311
+#define AND_OP 312
+#define OR_OP 313
+#define ASSIGN_OP 314
+#define LEQ_OP 315
+#define BEQ_OP 316
+#define EQ_OP 317
+#define NEQ_OP 318
+#define SUB_OP 319
+#define ADD_OP 320
+#define MULT_OP 321
+#define DIV_OP 322
+#define MOD_OP 323
+#define LT_OP 324
+#define BT_OP 325
+#define EXPO_OP 326
+#define DOT_OP 327   
+#define ID 328 
+#define INT_NUMBER 329
+#define COMPLEX_NUMBER 330
+#define REAL_NUMBER 331
 
-#define VARIABLES_SECTION 327
-#define SUBPROGRAMS_SECTION 328
-#define COMMENT 329
+#define VARIABLES_SECTION 332
+#define SUBPROGRAMS_SECTION 333
+#define COMMENT 334
 
 extern int yylineno;
 extern char *yytext;
