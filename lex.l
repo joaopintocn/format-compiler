@@ -14,11 +14,8 @@
 
 %}
 
-word [^ \t\n]+
-eol  \n
-
-
-WS			[ \t\r\n]+
+WS				[ \t\r\n]+
+EOF				-1
 
 LETRA			[a-zA-Z]
 DIGITO			[0-9]
@@ -45,12 +42,11 @@ ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 int 				{return INT; }
 real  				{return REAL; }
 complex  			{return COMPLEX; }
-single_real 		{return SINGLE_REAL; }
-double_real 		{return DOUBLE_REAL; }
+double 				{return DOUBLE; }
 string 				{return STRING;}
 enum 				{return ENUM; }
 struct 				{return STRUCT; }
-SET_OF 				{return SET_OF; }
+set_of 				{return SET_OF; }
 matrix_of 			{return MATRIX_OF; }
 end_struct 			{return END_STRUCT ; }
 const 				{return CONST; }
@@ -77,7 +73,8 @@ function 			{return FUNCTION; }
 import				{return IMPORT; }
 module 				{return MODULE; }
 return				{return RETURN;	}
-
+variables			{return VARIABLES_SECTION; }
+subprograms			{return SUBPROGRAMS_SECTION; }
 
 ";"	 				{return SEMICOLON; }			
 ","	 				{return COMMA; }
@@ -117,6 +114,7 @@ return				{return RETURN;	}
 {NUM_COM}			{ return COMPLEX_NUMBER; }
 {NUM_REAL} 			{ return REAL_NUMBER; }
 
+{EOF}				{ return EOF; }
 
 {WS}	{ /* whitespace separates tokens */ }
 .		{ /* discard bad characters */ }

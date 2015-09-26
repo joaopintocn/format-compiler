@@ -2,10 +2,24 @@
 
 #include "global.h"
 
+
+
+
+
+
 int lookahead;
 
 void eat(int);
-void start(), list(), expr(), term_tail(), term(), factor_tail(), factor(), expo_tail(), expo();
+void start(), program(), program_header(), program_body(), import(), variable_declaration(), subprogram_declaration();
+void simple_variable_declaration(), compost_variable_declaration();
+void list(), expr(), term_tail(), term(), factor_tail(), factor(), expo_tail(), expo();
+
+
+
+
+
+
+
 
 void parse()  /*  parses and translates expression list  */
 {
@@ -16,7 +30,125 @@ void parse()  /*  parses and translates expression list  */
 void start ()
 {
   /* Just one production for start, so we don't need to check lookahead */
-  list(); eat(DONE);
+  program(); eat(EOF);
+}
+
+
+void program()
+{
+/*
+ * <program> ::=
+ *    <program_header> <program_body>
+ *
+ */
+
+  program_header(); program_body(); 
+
+}
+
+
+void program_header()
+{
+/*
+ * <program_header> ::=
+ *      { <import> }
+ * 
+ */ 
+
+  if (lookahead != VARIABLES_SECTION && lookahead != SUBPROGRAMS_SECTION) {
+    import();
+  }
+}
+
+
+void program_body()
+{
+/*
+ * <program_body> ::=  
+ *    [ ‘variables’ ‘:’ ( <variable_declaration> )+ ]
+ *    [ ‘subprograms’ ‘:’ ( <subprogram_declaration> )+ ]
+ */
+ if (lookahead == VARIABLES_SECTION) {
+    eat(VARIABLES_SECTION); eat(COLON); 
+
+    while (lookahead != SUBPROGRAMS_SECTION) {
+      variable_declaration();  
+    }
+
+ } else if (lookahead == SUBPROGRAMS_SECTION) {
+    eat(SUBPROGRAMS_SECTION); eat(COLON); 
+        
+    while (lookahead != EOF) {
+      subprogram_declaration();  
+    }
+
+ } else {
+    /* Empty */
+ }
+}
+
+
+void import()
+{
+/*
+ * <import> ::=   
+ *      ‘import’ <identifier>
+ *
+ */
+
+  eat(IMPORT); eat(STRING);
+
+}
+
+void variable_declaration() 
+{
+/*
+ * <variable_declaration> ::=
+ *    ( <simple_variable_declaration> | <compost_variable_declaration> )
+ *
+ */
+
+  if (lookahead == CONST || 
+      lookahead == REF ||
+      lookahead == INT || 
+      lookahead == DOUBLE || 
+      lookahead == REAL ||
+      lookahead == STRING || 
+      lookahead == COMPLEX ) {
+
+    simple_variable_declaration();
+
+  } 
+
+  if (lookahead == MATRIX_OF || 
+      lookahead == SET_OF ||
+      lookahead == ENUM || 
+      lookahead == STRUCT ) {
+
+    compost_variable_declaration();
+
+  }
+
+}  
+
+void subprogram_declaration()
+{
+
+
+
+}
+
+
+void simple_variable_declaration()
+{
+
+printf("void simple_variable_declaration()\n");
+}
+
+void compost_variable_declaration()
+{
+
+
 }
 
 void list()
@@ -30,12 +162,20 @@ void list()
 }
 
 
+
+
+/*
+ *  <expr>    ::=   <term> <term_tail>
+ */
 void expr ()
 {
-  /* Just one production for expr, so we don't need to check lookahead */
   term(); term_tail();
 }
 
+/*
+ *  <term_tail>     ::=   + <term> <term_tail> | 
+ *                        - <term> <term_tail> |
+ */
 void term_tail()
 {
   if (lookahead == ADD_OP) {
@@ -50,12 +190,19 @@ void term_tail()
 }
 
 
+/*
+ *  <term>    ::=  <factor> <factor_tail>
+ */
 void term ()
 {
-  /* Just one production for term, so we don't need to check lookahead */
   factor(); factor_tail();
 }
 
+/*
+ *  <factor_tail>   ::=   x <factor> <factor_tail> |
+ *                        / <factor> <factor_tail> |
+ *                        % <factor> <factor_tail> |
+ */
 void factor_tail ()
 {
   if (lookahead == MULT_OP) {
@@ -72,11 +219,17 @@ void factor_tail ()
   }
 }
 
+/*
+ *  <factor>    ::=   <expo> <expo_tail>
+ */
 void factor ()
 {
   expo(); expo_tail();
 }
 
+/*
+ * <expo_tail>   ::=   ^ <expo> <expo_tail> |
+ */
 void expo_tail ()
 {
  if (lookahead == EXPO_OP) {
@@ -87,6 +240,9 @@ void expo_tail ()
   }
 }
 
+/*
+ * <expo>    ::=    <id> | <lit> | (<expr>)
+ */
 void expo ()
 {
   if (lookahead == OPEN_PARENTHESIS) {
@@ -106,10 +262,14 @@ void expo ()
     error("syntax error in factor");
 }
 
+
 void eat(int t)
 {
+
+  printf("%d   %d\n", lookahead, t);
   if (lookahead == t)
     lookahead = yylex();
-  else
+  else {
     error ("syntax error in match");
+  }
 }

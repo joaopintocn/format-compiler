@@ -13,8 +13,8 @@
 #define INT 258 
 #define REAL 259
 #define COMPLEX 260
-#define SINGLE_REAL 261
-#define DOUBLE_REAL 262
+//#define SINGLE_REAL 261
+#define DOUBLE 262
 #define STRING 263
 #define ENUM 264
 #define STRUCT 265
@@ -83,8 +83,8 @@
 #define COMPLEX_NUMBER 325
 #define REAL_NUMBER 326
 
-#define DONE   328
-
+#define VARIABLES_SECTION 327
+#define SUBPROGRAMS_SECTION 328
 
 extern int yylineno;
 extern char *yytext;
