@@ -46,50 +46,51 @@
 #define END_MODULE 291   
 #define IMPORT 292
 #define RETURN 293
+#define IN 294
 
-#define DOUBLE_QUOTES 294       // "
-#define SEMICOLON 295           // ;
-#define COMMA 296               // ,
-#define COLON 297               // :
-#define OPEN_PARENTHESIS 298    // (
-#define CLOSE_PARENTHESIS 299   // )
-#define OPEN_BRACKETS 300       // [
-#define CLOSE_BRACKETS 301      // ]
-#define OPEN_BRACES 302       	// {
-#define CLOSE_BRACES 303      	// }
-#define RANGE 304               // ..
+#define DOUBLE_QUOTES 295       // "
+#define SEMICOLON 296           // ;
+#define COMMA 297               // ,
+#define COLON 298               // :
+#define OPEN_PARENTHESIS 299    // (
+#define CLOSE_PARENTHESIS 300   // )
+#define OPEN_BRACKETS 301       // [
+#define CLOSE_BRACKETS 302      // ]
+#define OPEN_BRACES 303       	// {
+#define CLOSE_BRACES 304      	// }
+#define RANGE 305               // ..
 
-#define ADD_ASSIGN_OP 305
-#define SUB_ASSIGN_OP 306
-#define MULT_ASSIGN_OP 307
-#define DIV_ASSIGN_OP 308
-#define MOD_ASSIGN_OP 309
-#define INCREMENT_OP 310
-#define DECREMENT_OP 311
-#define AND_OP 312
-#define OR_OP 313
-#define ASSIGN_OP 314
-#define LEQ_OP 315
-#define BEQ_OP 316
-#define EQ_OP 317
-#define NEQ_OP 318
-#define SUB_OP 319
-#define ADD_OP 320
-#define MULT_OP 321
-#define DIV_OP 322
-#define MOD_OP 323
-#define LT_OP 324
-#define BT_OP 325
-#define EXPO_OP 326
-#define DOT_OP 327   
-#define ID 328 
-#define INT_NUMBER 329
-#define COMPLEX_NUMBER 330
-#define REAL_NUMBER 331
+#define ADD_ASSIGN_OP 306
+#define SUB_ASSIGN_OP 307
+#define MULT_ASSIGN_OP 308
+#define DIV_ASSIGN_OP 309
+#define MOD_ASSIGN_OP 310
+#define INCREMENT_OP 311
+#define DECREMENT_OP 312
+#define AND_OP 313
+#define OR_OP 314
+#define ASSIGN_OP 315
+#define LEQ_OP 316
+#define BEQ_OP 317
+#define EQ_OP 318
+#define NEQ_OP 319
+#define SUB_OP 320
+#define ADD_OP 321
+#define MULT_OP 322
+#define DIV_OP 323
+#define MOD_OP 324
+#define LT_OP 325
+#define BT_OP 326
+#define EXPO_OP 327
+#define DOT_OP 328   
+#define ID 329 
+#define INT_NUMBER 330
+#define COMPLEX_NUMBER 331
+#define REAL_NUMBER 332
 
-#define VARIABLES_SECTION 332
-#define SUBPROGRAMS_SECTION 333
-#define COMMENT 334
+#define VARIABLES_SECTION 333
+#define SUBPROGRAMS_SECTION 334
+#define COMMENT 335
 
 extern int yylineno;
 extern char *yytext;
