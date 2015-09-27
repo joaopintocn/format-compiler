@@ -23,13 +23,10 @@ void parameter_list(), statement();
 
 void parse(char *src)  /*  parses and translates expression list  */
 {
-    FILE *file = fopen(src, "eg_sub_procedure.format");
+    FILE *file = fopen(src, "r");
     if (!file) {
-	//printf("fail\n");
         fprintf(stderr,"could not open %s\n",src);
         exit(1);
-    } else {
-	//printf("open\n");
     }
 
     yyin = file;
@@ -163,8 +160,7 @@ void simple_variable_declaration()
     if ( lookahead == ASSIGN_OP ) {
         eat(ASSIGN_OP);
 
-        printf("%s\n", "jahjhsjh");
-        if ( lookahead == DOUBLE_QUOTES ) {
+        if ( lookahead == STRING ) {
             eat(STRING);
         } else {
             expression();    
