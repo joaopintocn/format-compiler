@@ -426,96 +426,146 @@ void type() {
   }
 } 
 
-void parameter_list() {
-  if (lookahead == CONST || 
-    lookahead == REF ||
-    lookahead == INT || 
-    lookahead == DOUBLE || 
-    lookahead == REAL ||
-    lookahead == STRING || 
-    lookahead == COMPLEX ||
-    lookahead == MATRIX_OF || 
-    lookahead == SET_OF ||
-    lookahead == ENUM || 
-    lookahead == STRUCT ) {
-      variable_declaration(); eat(COMMA); parameter_list();
-  } else {
-    variable_declaration();
-  }
+void parameter_list() 
+{
+/*
+ * <parameter_list> ::=    
+ *      <variable_declaration> ',' <parameter_list> |
+ *      <variable_declaration>
+ */
+    if (lookahead == CONST || 
+        lookahead == REF ||
+        lookahead == INT || 
+        lookahead == DOUBLE || 
+        lookahead == REAL ||
+        lookahead == STRING || 
+        lookahead == COMPLEX ||
+        lookahead == MATRIX_OF || 
+        lookahead == SET_OF ||
+        lookahead == ENUM || 
+        lookahead == STRUCT ) {
+        variable_declaration(); eat(COMMA); parameter_list();
+    } else {
+        variable_declaration();
+    }
 }
 
-void statement () {
-  if (lookahead == IF) {
-    if_statement(); return;
-  }
+void statement () 
+{
+/*
+ * <statement> ::=
+ *      <assignment_statement> |
+ *      <if_statement> |
+ *      <switch_statement> |
+ *      <while_statement> |  
+ *      <for_statement> |    
+ *      <subprogram_call>
+ */
 
-  if (lookahead == SWITCH)
-  {
-    switch_statement(); return;
-  }
+    if (lookahead == IF) {
+        if_statement(); return;
+    }
 
-  if (lookahead == WHILE)
-  {
-     while_statement(); return;
-  }
+    if (lookahead == SWITCH) {
+        switch_statement(); return;
+    }
 
-  if (lookahead == FOR)
-  {
-    for_statement(); return;
-  }
+    if (lookahead == WHILE) {
+        while_statement(); return;
+    }
 
-  if (lookahead == PROCEDURE ||
-      lookahead == FUNCTION)
-  {
-    subprogram_call(); return;
-  }
+    if (lookahead == FOR) {
+        for_statement(); return;
+    }
 
-  assignment_statement();
+    if (lookahead == PROCEDURE || lookahead == FUNCTION) {
+        subprogram_call(); return;
+    }
+
+    assignment_statement();
+
 } 
 
 
-void return_statement () {
-  eat(RETURN); expression(); eat(SEMICOLON);
-}
+void return_statement () 
+{
+/*
+ * <return_statement> ::=    
+ *      ‘return’ <expression> ‘;’
+ *
+ */
 
-void assignment_statement () {
-  destination(); eat(ASSIGN_OP); expression();
-}
-
-void if_statement() {
-
-  eat(IF); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS); eat(COLON);
-  while (lookahead != ELSE) {
-    statement();
-  }
-
-  if(lookahead == ELSE) {
-    while (lookahead != END_IF) {
-      statement();
-    }
-  }
-
-  eat(END_IF); eat(SEMICOLON);
+    eat(RETURN); expression(); eat(SEMICOLON);
 
 }
 
-void switch_statement () {
-
-  eat(SWITCH); eat(OPEN_PARENTHESIS); identifier(); eat(CLOSE_PARENTHESIS); eat(COLON);
+void assignment_statement () 
+{
+/*
+ * <assignment_statement> ::=    
+ *      <destination> '=' <expression>
+ */
   
-  while (lookahead != OTHER | lookahead != END_SWITCH) {
-    case_clasule();
-  }
-
-  if (lookahead == OTHER) {
-    eat(OTHER); eat(COLON); statement(); 
-  }
-
-  eat(END_SWITCH);
+    destination(); eat(ASSIGN_OP); expression();
 
 }
 
-void case_clasule () {
+void if_statement() 
+{
+/*
+ * <if_statement> ::=    
+ *     'if' '(' <expression> ')' ':' ( <statement> )+    
+ *    [ 'else' ( <statement> )+ ]
+ *    'end_if' ‘;’
+ */
+
+    eat(IF); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS); eat(COLON);
+    while (lookahead != ELSE) {
+        statement();
+    }
+
+    if(lookahead == ELSE) {
+        while (lookahead != END_IF) {
+            statement();
+        }
+    }
+
+    eat(END_IF); eat(SEMICOLON);
+
+}
+
+void switch_statement () 
+{
+/*
+ * <switch_statement> ::= 
+ *      ‘switch’ ‘(’ <identifier> ‘)’ ‘:’
+ *          (<case_clasule>)+
+ *          ['other' ':' <statement> ]
+ *      'end_switch'';'
+ */
+
+    eat(SWITCH); eat(OPEN_PARENTHESIS); identifier(); eat(CLOSE_PARENTHESIS); eat(COLON);
+
+    while (lookahead != OTHER | lookahead != END_SWITCH) {
+        case_clasule();
+    }
+
+    if (lookahead == OTHER) {
+        eat(OTHER); eat(COLON); statement(); 
+    }
+
+    eat(END_SWITCH);
+
+}
+
+void case_clasule () 
+{
+/*
+ * <case_clasule> ::=  
+ * ‘case’ ‘(’ <expression> ‘)’ ‘:’
+ * <statement>
+ * ‘break’ ‘;’
+ */
 
   eat(CASE); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS); eat(COLON);
   statement();
@@ -523,7 +573,14 @@ void case_clasule () {
 
 }
 
-void while_statement () {
+void while_statement () 
+{
+/*
+ * <while_statement> ::=
+ *      'while' (<expression>)
+ *              <statement>
+ *      'end_while'';'
+ */
 
   eat(WHILE); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS);
   statement();
@@ -531,7 +588,14 @@ void while_statement () {
 
 }
 
-void for_statement () {
+void for_statement () 
+{
+/*
+ * <for_statement> ::=
+ *      'for' <identifier> 'in' <identifier>:
+ *              (<statement>)+
+ *      ‘end_for’ ‘;’
+*/
 
   eat(FOR); identifier(); eat(IN); identifier();
 
@@ -543,7 +607,12 @@ void for_statement () {
 
 }
 
-void subprogram_call () {
+void subprogram_call () 
+{
+/*
+ * <subprogram_call> ::=    
+ *      <identifier> '(' [ <argument_list> ] ')'
+*/
   
   identifier(); eat(OPEN_PARENTHESIS); 
 
@@ -556,7 +625,12 @@ void subprogram_call () {
 
 }
 
-void destination () {
+void destination () 
+{
+/*
+ * <destination> ::= 
+ *      <identifier> [ ‘[’ <expression> ‘]’ ]
+ */
 
   identifier();
 
