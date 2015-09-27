@@ -60,33 +60,33 @@
 #define CLOSE_BRACES 304      	// }
 #define RANGE 305               // ..
 
-#define ADD_ASSIGN_OP 306
-#define SUB_ASSIGN_OP 307
-#define MULT_ASSIGN_OP 308
-#define DIV_ASSIGN_OP 309
-#define MOD_ASSIGN_OP 310
-#define INCREMENT_OP 311
-#define DECREMENT_OP 312
-#define AND_OP 313
-#define OR_OP 314
-#define ASSIGN_OP 315
-#define LEQ_OP 316
-#define BEQ_OP 317
-#define EQ_OP 318
-#define NEQ_OP 319
-#define SUB_OP 320
-#define ADD_OP 321
-#define MULT_OP 322
-#define DIV_OP 323
-#define MOD_OP 324
-#define LT_OP 325
-#define BT_OP 326
-#define EXPO_OP 327
-#define DOT_OP 328   
-#define ID 329 
-#define INT_NUMBER 330
-#define COMPLEX_NUMBER 331
-#define REAL_NUMBER 332
+#define ADD_ASSIGN_OP 306		// =+
+#define SUB_ASSIGN_OP 307		// =-
+#define MULT_ASSIGN_OP 308		// =x
+#define DIV_ASSIGN_OP 309		// =÷
+#define MOD_ASSIGN_OP 310		// =%
+#define INCREMENT_OP 311		// ++
+#define DECREMENT_OP 312		// --
+#define AND_OP 313				// &&
+#define OR_OP 314				// ||
+#define ASSIGN_OP 315			// =
+#define LEQ_OP 316				// <=
+#define BEQ_OP 317				// >=
+#define EQ_OP 318				// ==
+#define NEQ_OP 319				// <>
+#define SUB_OP 320				// -
+#define ADD_OP 321				// +
+#define MULT_OP 322				//
+#define DIV_OP 323				//
+#define MOD_OP 324				//
+#define LT_OP 325				//
+#define BT_OP 326				//	
+#define EXPO_OP 327				//
+#define DOT_OP 328   			//
+#define ID 329 					//
+#define INT_NUMBER 330			//
+#define COMPLEX_NUMBER 331		//
+#define REAL_NUMBER 332			//
 
 #define VARIABLES_SECTION 333
 #define SUBPROGRAMS_SECTION 334

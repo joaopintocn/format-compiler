@@ -4,10 +4,7 @@
 
 
 
-
-
-
-int lookahead;
+int lookahead; 
 
 void eat(int);
 void start(), program(), program_header(), program_body(), import(), variable_declaration();
@@ -19,7 +16,9 @@ void procedure_header(), procedure_body(), function_header(), function_body();
 void parameter_list(), statement(), return_statement(), assignment_statement();
 void if_statement(), switch_statement(), case_clasule(), while_statement(), for_statement();
 void subprogram_call(), destination(), argument_list();
-
+void return_statement(), case_clasule(), argument_list(), destination(); 
+void term_or(), term_or_tail(), term_and(), term_and_tail(), term_comparison(), term_and_tail(), term_comparison_tail();
+void incr_decr(), incr_decr_tail(), term_and(), term_and_tail(), term_comparison(), term_and_tail(), term_comparison_tail();
 
 
 void parse(char *src)  /*  parses and translates expression list  */
@@ -73,14 +72,14 @@ void program_body()
 {
 /*
  * <program_body> ::=  
- *    [ ‘variables’ ‘:’ ( <variable_declaration> )+ ]
+ *    [ ‘variables’ ‘:’ ( <variable_declaration> ‘;’)+ ]
  *    [ ‘subprograms’ ‘:’ ( <subprogram_declaration> )+ ]
  */
  if (lookahead == VARIABLES_SECTION) {
     eat(VARIABLES_SECTION); eat(COLON); 
 
     while (lookahead != SUBPROGRAMS_SECTION) {
-      variable_declaration();  
+      variable_declaration();  eat(SEMICOLON);
     }
 
  } else if (lookahead == SUBPROGRAMS_SECTION) {
@@ -144,7 +143,7 @@ void simple_variable_declaration()
 {
 /*
  * <simple_variable_declaration> ::=
- *    [ ‘const’ | ‘ref’ ] <type> <id> [ ‘=’ <expression> ] ‘;’
+ *    [ ‘const’ | ‘ref’ ] <type> <id> [ ‘=’ <expression> ] 
  * 
  */
 
@@ -167,8 +166,6 @@ void simple_variable_declaration()
             expression();    
         }
     }
-      
-    eat(SEMICOLON);
 
 }
 
@@ -177,13 +174,13 @@ void compost_variable_declaration()
 /*
  * <compost_variable_declaration> ::=
  *      ‘matrix_of’ <type> ‘[’ <dimensions> ‘]’ <identifier> 
- *            [ ‘=’ ‘{’ <values> ‘}’ { ‘,’ ‘{’ <values> ‘}’ } ] ‘;’ |
+ *            [ ‘=’ ‘{’ <values> ‘}’ { ‘,’ ‘{’ <values> ‘}’ } ] |
  *
- *      ‘set_of’ <type> <identifier> [ ‘=’ ‘{’ ‘}’ ]‘;’ |
+ *      ‘set_of’ <type> <identifier> [ ‘=’ ‘{’ ‘}’ ] |
  * 
- *      ‘enum’ <identifier> ‘:’ ( <identifier> [ ‘=’ <value> ] ‘,’ )+ ‘end_enum’ ‘;’ |
+ *      ‘enum’ <identifier> ‘:’ ( <identifier> [ ‘=’ <value> ] ‘,’ )+ ‘end_enum’ |
  *
- *      ‘struct’ <identifier> ‘:’ ( <simple_variable_declaration> )+ ‘end_struct’ ‘;’
+ *      ‘struct’ <identifier> ‘:’ ( <simple_variable_declaration> )+ ‘end_struct’
  *
  */
 
@@ -208,7 +205,6 @@ void compost_variable_declaration()
             }
         }
 
-        eat(SEMICOLON);
         return;
     }
 
@@ -222,7 +218,6 @@ void compost_variable_declaration()
             values(); //TO-DO: Não sei ainda como definir/implementar isso.
         }
 
-        eat(SEMICOLON);
         return;
     }
 
@@ -240,7 +235,6 @@ void compost_variable_declaration()
         }
 
         eat(END_ENUM);
-        eat(SEMICOLON);
         return;
     }
 
@@ -254,7 +248,6 @@ void compost_variable_declaration()
         }
 
         eat(END_STRUCT);
-        eat(SEMICOLON);
         return;
     }
 
@@ -368,31 +361,16 @@ void function_body()
     	variable_declaration();
     	statement();
 	}
-	
-    return_statement();
 
 	eat(END_FUNCTION);
 	identifier();
 	eat(SEMICOLON);
 }
 
-/*void parameter_list()
-{
-	
-}
-
-void statement(){
-
-}
-
-void return_statement() {
-
-}*/
 
 void identifier() {
   char* id_lexeme = yytext;
   eat(ID);
-  emit(ID, id_lexeme);
 }
 
 
@@ -431,7 +409,7 @@ void parameter_list()
 {
 /*
  * <parameter_list> ::=    
- *      <variable_declaration> ',' <parameter_list> |
+ *      <variable_declaration> { ',' <parameter_list> } |
  *      <variable_declaration>
  */
     if (lookahead == CONST || 
@@ -445,7 +423,10 @@ void parameter_list()
         lookahead == SET_OF ||
         lookahead == ENUM || 
         lookahead == STRUCT ) {
-        variable_declaration(); eat(COMMA); parameter_list();
+        variable_declaration(); 
+            if (lookahead == COMMA) {
+                eat(COMMA); parameter_list();
+            }
     } else {
         variable_declaration();
     }
@@ -459,7 +440,8 @@ void statement ()
  *      <if_statement> |
  *      <switch_statement> |
  *      <while_statement> |  
- *      <for_statement> |    
+ *      <for_statement> |   
+ *      <return_statement> | 
  *      <subprogram_call>
  */
 
@@ -477,6 +459,10 @@ void statement ()
 
     if (lookahead == FOR) {
         for_statement(); return;
+    }
+
+    if (lookahead == RETURN) {
+        return_statement(); return;
     }
 
     if (lookahead == PROCEDURE || lookahead == FUNCTION) {
@@ -659,16 +645,122 @@ void list ()
 
 
 
-
 void expression()
 {
 /*
- *  <expr>    ::=   <term> <term_tail>
+ *  <expr>    ::=   <term_or> <term_or_tail>
+ */
+
+  term_or(); term_or_tail();
+
+}
+
+
+void term_or_tail()
+{
+/*
+ * <term_or_tail> ::= 
+ *      ‘||’ <term_or> <term_or_tail> |
+ */
+
+    if (lookahead == OR_OP) {
+        eat(OR_OP); term_and(); term_and_tail();      
+    } else {
+        // Empty
+    }
+
+}
+
+void term_or()
+{
+/*
+ * <term_or>:= 
+ *    <term_and><term_and_tail>
+ */
+
+  term_and(); term_and_tail();
+
+}
+
+void term_and_tail()
+{
+/*
+ * <term_and_tail> ::= 
+ * ‘&&’ <term_and> <term_and_tail> |
+ */
+
+    if (lookahead == AND_OP) {
+        eat(AND_OP); term_and(); term_and_tail();      
+    } else {
+        // Empty
+    }
+  
+
+}
+
+
+void term_and()
+{
+/*
+ * <term_and> ::=
+ *    <term_comparison> <term_comparison_tail>
+ */
+
+  term_comparison(); term_comparison_tail();
+
+}
+
+
+void  term_comparison_tail()
+{
+/*
+* <term_comparison_tail>::=
+ *    ‘<>’ <term_comparison> <term_comparison_tail> |
+ *    ‘<=’ <term_comparison> <term_comparison_tail> |
+ *    ‘>=’ <term_comparison> <term_comparison_tail> |
+ *    ‘<’ <term_comparison> <term_comparison_tail> |
+ *    ‘>’ <term_comparison> <term_comparison_tail> |
+ */
+
+    if (lookahead == NEQ_OP) {
+        eat(NEQ_OP); term_comparison(); term_comparison_tail();
+        return;      
+    }
+
+    if (lookahead == LEQ_OP) {
+        eat(LEQ_OP); term_comparison(); term_comparison_tail();
+        return;      
+    }
+
+    if (lookahead == BEQ_OP) {
+        eat(BEQ_OP); term_comparison(); term_comparison_tail();
+        return;      
+    }
+
+    if (lookahead == LT_OP) {
+        eat(LT_OP); term_comparison(); term_comparison_tail();
+        return;      
+    }
+
+    if (lookahead == BT_OP) {
+        eat(BT_OP); term_comparison(); term_comparison_tail();
+        return;      
+    }
+
+}
+
+ 
+void term_comparison()
+{
+/*
+ * 
+ *<term_comparison> :=
+ *      <term> <term_tail>
  */
 
   term(); term_tail();
-}
 
+}
 
 void term_tail()
 {
@@ -725,55 +817,86 @@ void factor_tail ()
 void factor ()
 {
 /*
- *  <factor>    ::=   <expo> <expo_tail>
+ *  <factor>    ::=   <incr_decr> <expo_tail>
  */
 
-  expo(); expo_tail();
+  incr_decr(); expo_tail();
+
 }
 
-void expo_tail ()
+void expo_tail()
 {
 /*
- * <expo_tail>   ::=   ^ <expo> <expo_tail> |
+ * <expo_tail>   ::=   ^ <incr_decr> <expo_tail> |
  */
 
  if (lookahead == EXPO_OP) {
-    eat(EXPO_OP); expo(); emit(EXPO_OP, yytext); expo_tail();
+    eat(EXPO_OP); incr_decr();  expo_tail();
   }
   else {
     /* Empty */
   }
+
 }
 
 
-void expo ()
+void expo() 
 {
 /*
- * <expo>    ::=    <id> | <lit> | (<expr>)
+ * <expo>  ::= 
+ *     <incr_decr> <incr_decr_tail> |
+ */
+ 
+    incr_decr(); incr_decr_tail();
+}
+
+
+void incr_decr_tail()
+{
+/*
+ * <incr_decr_tail> := 
+ *     ‘++’<incr_decr><incr_decr_tail>|
+ *     ‘--’<incr_decr><incr_decr_tail>|
+ */
+
+    if (lookahead == INCREMENT_OP ) {
+        eat(INCREMENT_OP); incr_decr(); incr_decr_tail();
+        return;
+    }
+
+    if (lookahead == DECREMENT_OP ) {
+        eat(DECREMENT_OP); incr_decr(); incr_decr_tail();
+        return;
+    }
+  
+}
+
+
+void incr_decr()
+{
+/*
+ * <incr_decr>    ::=    
+ *       <id> | <lit> | (<expr>)
  */
 
     if (lookahead == OPEN_PARENTHESIS) {
         eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS);
     }
-    else if (lookahead == ID) {
+    else if (lookahead == ID ) {
         char* id_lexeme = yytext;
         eat(ID);
-        emit(ID, id_lexeme);
     }
     else if (lookahead == INT_NUMBER) {
         char* INT_NUMBER_value = yytext;
         eat(INT_NUMBER);
-        emit(INT_NUMBER, INT_NUMBER_value);
     }
     else if (lookahead == REAL_NUMBER) {
         char* REAL_NUMBER_value = yytext;
         eat(REAL_NUMBER);
-        emit(REAL_NUMBER, REAL_NUMBER_value);
     }
     else if (lookahead == COMPLEX_NUMBER) {
         char* COMPLEX_NUMBER_value = yytext;
         eat(COMPLEX_NUMBER);
-        emit(COMPLEX_NUMBER, COMPLEX_NUMBER_value);
     }
     else
         error("syntax error in factor");
@@ -787,11 +910,12 @@ void values() {
 void eat(int t)
 {
 
-  printf("%d   %d\n", lookahead, t);
+  emit(t, yytext);
   if (lookahead == t)
     lookahead = yylex();
   else {
+    printf("\n---------------------\n");
+    printf("RECEBIDO: %d  ESPERADO: %d\n", lookahead, t);
     error ("syntax error in match");
-    printf(": %d   %d\n", lookahead, t);
   }
 }

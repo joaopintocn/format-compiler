@@ -58,7 +58,7 @@ for  				{return FOR; }
 while  				{return WHILE; }
 switch 				{return SWITCH; }
 case 				{return CASE; }
-break 				{return MATRIX_OF; }
+break 				{return BREAK; }
 other               {return OTHER; } 
 end_if 				{return END_IF;}
 end_for 			{return END_FOR; }
