@@ -416,9 +416,148 @@ void type() {
   }
 } 
 
+void parameter_list() {
+  if (lookahead == CONST || 
+    lookahead == REF ||
+    lookahead == INT || 
+    lookahead == DOUBLE || 
+    lookahead == REAL ||
+    lookahead == STRING || 
+    lookahead == COMPLEX ||
+    lookahead == MATRIX_OF || 
+    lookahead == SET_OF ||
+    lookahead == ENUM || 
+    lookahead == STRUCT ) {
+      variable_declaration(); eat(COMMA); parameter_list();
+  } else {
+    variable_declaration();
+  }
+}
+
+void statement () {
+  if (lookahead == IF) {
+    if_statement(); return;
+  }
+
+  if (lookahead == SWITCH)
+  {
+    switch_statement(); return;
+  }
+
+  if (lookahead == WHILE)
+  {
+     while_statement(); return;
+  }
+
+  if (lookahead == FOR)
+  {
+    for_statement(); return;
+  }
+
+  if (lookahead == PROCEDURE ||
+      lookahead == FUNCTION)
+  {
+    subprogram_call(); return;
+  }
+
+  assignment_statement();
+} 
 
 
-void list()
+void return_statement () {
+  eat(RETURN); expression(); eat(SEMICOLON);
+}
+
+void assignment_statement () {
+  destination(); eat(ASSIGN_OP); expression();
+}
+
+void if_statement() {
+
+  eat(IF); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS); eat(COLON);
+  while (lookahead != ELSE) {
+    statement();
+  }
+
+  if(lookahead == ELSE) {
+    while (lookahead != END_IF) {
+      statement();
+    }
+  }
+
+  eat(END_IF); eat(SEMICOLON);
+
+}
+
+void switch_statement () {
+
+  eat(SWITCH); eat(OPEN_PARENTHESIS); identifier(); eat(CLOSE_PARENTHESIS); eat(COLON);
+  
+  while (lookahead != OTHER | lookahead != END_SWITCH) {
+    case_clasule();
+  }
+
+  if (lookahead == OTHER) {
+    eat(OTHER); eat(COLON); statement(); 
+  }
+
+  eat(END_SWITCH);
+
+}
+
+void case_clasule () {
+
+  eat(CASE); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS); eat(COLON);
+  statement();
+  eat(BREAK); eat(SEMICOLON);
+
+}
+
+void while_statement () {
+
+  eat(WHILE); eat(OPEN_PARENTHESIS); expression(); eat(CLOSE_PARENTHESIS);
+  statement();
+  eat(END_WHILE);
+
+}
+
+void for_statement () {
+
+  eat(FOR); identifier(); eat(IN); identifier();
+
+  while (lookahead != END_FOR) {
+    statement();
+  }
+
+  eat(END_FOR); eat(SEMICOLON);
+
+}
+
+void subprogram_call () {
+  
+  identifier(); eat(OPEN_PARENTHESIS); 
+
+  if (lookahead != CLOSE_PARENTHESIS)
+  {
+    argument_list();
+  }
+
+  eat(CLOSE_PARENTHESIS);
+
+}
+
+void destination () {
+
+  identifier();
+
+  if (lookahead == OPEN_BRACKETS)
+  {
+    eat(OPEN_BRACKETS); expression(); eat(CLOSE_BRACKETS);
+  }
+
+}
+
+void list ()
 {
   if (lookahead == OPEN_PARENTHESIS || lookahead == ID || lookahead == INT_NUMBER) {
     expression(); eat(SEMICOLON); list();
