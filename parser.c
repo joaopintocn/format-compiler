@@ -16,8 +16,9 @@ void list(), values(), term_tail(), term(), factor_tail(), factor(), expo_tail()
 void dimensions() {} ;
 void subprogram_declaration(), procedure_declaration(), function_declaration();
 void procedure_header(), procedure_body(), function_header(), function_body();
-void parameter_list(), statement(), return_statement();
-
+void parameter_list(), statement(), return_statement(), assignment_statement();
+void if_statement(), switch_statement(), case_clasule(), while_statement(), for_statement();
+void subprogram_call(), destination(), argument_list();
 
 
 
@@ -375,7 +376,7 @@ void function_body()
 	eat(SEMICOLON);
 }
 
-void parameter_list()
+/*void parameter_list()
 {
 	
 }
@@ -386,7 +387,7 @@ void statement(){
 
 void return_statement() {
 
-}
+}*/
 
 void identifier() {
   char* id_lexeme = yytext;
@@ -604,6 +605,10 @@ void for_statement ()
   }
 
   eat(END_FOR); eat(SEMICOLON);
+
+}
+
+void argument_list() {
 
 }
 
