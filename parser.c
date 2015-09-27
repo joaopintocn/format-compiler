@@ -16,7 +16,7 @@ void list(), values(), term_tail(), term(), factor_tail(), factor(), expo_tail()
 void dimensions() {} ;
 void subprogram_declaration(), procedure_declaration(), function_declaration();
 void procedure_header(), procedure_body(), function_header(), function_body();
-void parameter_list(), statement();
+void parameter_list(), statement(), return_statement();
 
 
 
@@ -261,44 +261,50 @@ void compost_variable_declaration()
 
 void subprogram_declaration()
 {
-	/* 
-	<subprogram_declaration> ::=	
-		( <procedure_declaration> | <function_declaration> )" */
+/* 
+ *	<subprogram_declaration> ::=	
+ *		( <procedure_declaration> | <function_declaration> )" 
+ */
 		
-	if (lookahead == PROCEDURE)
-	{
+	if (lookahead == PROCEDURE) {
 		procedure_declaration();
+        return;
 	} 
 
-	if (lookahead == FUNCTION)
-	{
+	if (lookahead == FUNCTION) {
 		function_declaration();
+        return;
 	}
 }
 
 void procedure_declaration()
 {
-	/* 
-	<procedure_declaration> ::=	
-		<procedure_header> <procedure_body>*/
+/* 
+ *	<procedure_declaration> ::=	
+ *		<procedure_header> <procedure_body>
+ */
+
 	procedure_header(); procedure_body();
 }
 
 void function_declaration()
 {
-	/* 
-	<function_declaration> ::=	
-		<function_header> <function_body>*/
+/* 
+ * <function_declaration> ::=	
+ * 		<function_header> <function_body>
+ */
 		
 	function_header(); function_body();
 
 }
 
-void procedure_header() //não finalizado
+void procedure_header()
 {
-	/* 
-	<procedure_header> ::=	
-		‘procedure’ <identifier> ‘(’[ <parameter_list> ]‘)’ ‘:’ 	*/
+/* 
+ *	<procedure_header> ::=	
+ *		‘procedure’ <identifier> ‘(’[ <parameter_list> ]‘)’ ‘:’ 	
+ */
+
 	eat(PROCEDURE);
 	identifier();
 	eat(OPEN_PARENTHESIS);
@@ -310,10 +316,12 @@ void procedure_header() //não finalizado
 	
 }
 
-void function_header() //não finalizado
+void function_header()
 {
-	/*<function_header> 	::=	
-		‘function’ <type> <identifier> ‘(’[ <parameter_list> ]‘)’ ‘:’  */
+/*  
+ * <function_header> 	::=	
+ *      ‘function’ <type> <identifier> ‘(’[ <parameter_list> ]‘)’ ‘:’  
+ */
 		
 	eat(FUNCTION);
 	type();
@@ -328,18 +336,16 @@ void function_header() //não finalizado
 
 void procedure_body()
 {
-	/*
-	<procedure_body> ::=
-		{ { <variable_declaration> } | { <statement> } } 
-		‘end_procedure’ <identifier> ‘;’
-	*/
+/*
+ *	<procedure_body> ::=
+ *		{ { <variable_declaration> } | { <statement> } } 
+ *		‘end_procedure’ <identifier> ‘;’
+ */
 	
-	while (lookahead != END_PROCEDURE) {
-		if (lookahead == VARIABLES_SECTION) {
-			variable_declaration();
-		} else {
-			statement();
-		}
+	while (lookahead != END_PROCEDURE) {	
+        //XXX: Não tenho certeza se está correto
+		variable_declaration();
+		statement();
 	}
 	
 	eat(END_PROCEDURE);
@@ -349,21 +355,21 @@ void procedure_body()
 
 void function_body()
 {
-	/* 
-	<function_body> ::=
-		{ { <variable_declaration> } | { <statement> } } 
-		<return_statement>
-		‘end_function’ <identifier> ‘;’
-	*/
+/* 
+ *	<function_body> ::=
+ *		{ { <variable_declaration> } | { <statement> } } 
+ *		<return_statement>
+ *		‘end_function’ <identifier> ‘;’
+ */
 	
 	while (lookahead != END_FUNCTION) {
-		if (lookahead == VARIABLES_SECTION) {
-			variable_declaration();
-		} else {
-			statement();
-		}
+        //XXX: Não tenho certeza se está correto
+    	variable_declaration();
+    	statement();
 	}
 	
+    return_statement();
+
 	eat(END_FUNCTION);
 	identifier();
 	eat(SEMICOLON);
@@ -375,6 +381,10 @@ void parameter_list()
 }
 
 void statement(){
+
+}
+
+void return_statement() {
 
 }
 
