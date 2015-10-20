@@ -1,10 +1,24 @@
 /* yacc -d format.y*/
 %{
 	#include <stdio.h>
+
+	int yyerror (char *s);
+
+	int yylex();
+
 %}
 
+
+%union {
+	int 	iValue; 	//
+	char 	cValue;		//
+	char * 	sValue;		//
+};
+
+%token <sValue> identifier
+%token <iVlaue> NUMBER
 %token
-NUMBER
+
 NAME					/* nome de alguma coisa */
 
 IMPORT					/* import*/
