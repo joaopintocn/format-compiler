@@ -29,6 +29,8 @@ void parse(char *src)  /*  parses and translates expression list  */
         exit(1);
     }
 
+    printf("\n---------------------\n");
+
     yyin = file;
     lookahead = yylex();
     start();
@@ -900,6 +902,17 @@ void incr_decr()
     }
     else
         error("syntax error in factor");
+}
+
+
+
+void logic() {
+
+}
+
+
+void logic_tail() {
+
 }
 
 
