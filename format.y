@@ -112,21 +112,21 @@ import :
 	;
 
 program_body : 
-	variable_declarations subprogram_declarations
+	variable_section subprogram_section
+	;
+
+variable_section :
+	VARIABLES_SECTION COLON variable_declarations
+	|
 	;
 
 variable_declarations :
-	VARIABLES_SECTION COLON variable_declarations_P
+	variable_declaration SEMICOLON variable_declarations_tail
 	|
 	;
 
-variable_declarations_P :
-	variable_declaration SEMICOLON variable_declarations_PP
-	|
-	;
-
-variable_declarations_PP  :
-	variable_declarations_P
+variable_declarations_tail  :
+	variable_declarations
 	|
 	;
 
