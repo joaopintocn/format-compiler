@@ -1,0 +1,13 @@
+%% Exemplo teste relativo a declaração de variáveis
+
+variables:
+
+	%% Variáveis simples
+	int x = 3;
+	real pi = 3.145;
+	double real pi = 3.141516;
+	const complex aber = 6.5 + 1i;
+	string msg = "Olá Mundo";
+	ref string msg;
+
+	%% Variáveis compostas

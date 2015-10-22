@@ -1,0 +1,9 @@
+subprograms: 
+
+	function int fun():
+
+	end_function fun;
+
+	procedure add():
+
+	end_procedure add;

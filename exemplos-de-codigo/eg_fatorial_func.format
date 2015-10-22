@@ -1,8 +1,13 @@
 %% Segundo exemplo de código usado no primeiro relatório 
-function int factorial ( int n )
-   if( n <> 0 )
-      return 1;
-   return n * factorial( n - 1 );
-end_function
 
-int x <- factorial(4);
+subprograms:
+
+	function int factorial ( int n ): 
+	   if( n <> 0 ):
+	      return 1;
+	   %% return n * factorial( n - 1 );
+	   aux = factorial( n - 1 );
+	   return n * aux;
+	end_function
+
+	int x = factorial(4);
