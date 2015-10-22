@@ -17,7 +17,7 @@
 
 %start program
 
-%token <sValue> NAME ID		/* nome de alguma coisa */
+%token <sValue> NAME IDENTIFIER		/* nome de alguma coisa */
 %token <iValue> NUMBER COMPLEX_NUMBER REAL_NUMBER INT_NUMBER
 %token					
 
@@ -153,9 +153,9 @@ variable_declaration :
 
 
 simple_variable_declaration : 
-	type identifier simple_variable_declaration_value
-	| CONST type identifier ASSIGN_OP expression 
-	| REF type identifier simple_variable_declaration_value
+	type IDENTIFIER simple_variable_declaration_value
+	| CONST type IDENTIFIER ASSIGN_OP expression 
+	| REF type IDENTIFIER simple_variable_declaration_value
 	;
 
 simple_variable_declaration_value :
@@ -173,10 +173,10 @@ type :
 	;
 
 compost_variable_declaration :
-	MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS identifier matrix_assignment
-	| SET_OF type identifier set_assignment
-	| ENUM identifier COLON identifier identifier_list END_ENUM
-	| STRUCT identifier COLON variable_declarations END_STRUCT
+	MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
+	| SET_OF type IDENTIFIER set_assignment
+	| ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM
+	| STRUCT IDENTIFIER COLON variable_declarations END_STRUCT
 	;
 
 matrix_assignment : 
@@ -195,9 +195,15 @@ matrix_assignment_aux_aux :
 	;
 
 values_group_list :
-	COMMA matrix_assignment_aux_aux
+	values_group_list_aux
 	|
 	;
+
+
+values_group_list_aux :
+	COMMA matrix_assignment_aux_aux
+	;
+
 
 set_assignment :
 	set_assignment_aux
@@ -219,7 +225,7 @@ values_list :
 	;
 
 identifier_list :
-	COMMA identifier identifier_list
+	COMMA IDENTIFIER identifier_list
 	|
 	;
 
@@ -247,13 +253,13 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON 
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON 
 		statement_list
 	END_PROCEDURE SEMICOLON
 	;
 
 function_declaration :
-	FUNCTION type identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON
+	FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON
 		statement_list
 	END_FUNCTION SEMICOLON
 	;
@@ -302,7 +308,7 @@ assignment_statement_tail :
 	;
 
 destination :
-	identifier identifier_tail
+	IDENTIFIER identifier_tail
 	;
 
 /* permite atribuição de valor a um elemento de matriz*/
@@ -324,7 +330,7 @@ else_clausule :
 	;
 
 switch_statement : 
-	SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON
+	SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON
 		case_clasule
 		other_clasule
 	END_SWITCH SEMICOLON
@@ -350,13 +356,13 @@ while_statement :
 	;
 
 for_statement :
-	FOR identifier IN identifier COLON
+	FOR IDENTIFIER IN IDENTIFIER COLON
 		statement_list
 	END_FOR SEMICOLON
 	;
 
 subprogram_call : 
-	identifier OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
+	IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
 	;
 
 argument_list :
@@ -453,24 +459,15 @@ negation_tail:
 	;	
 	
 negation :
-	identifier
+	IDENTIFIER
 	| NUMBER /* no lugar de <literal> */
 	| function_call /* no lugar de function call */
 	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
 	;
 
 function_call :
-	identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
+	IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
 	;
 
-/* as 3 regras abaixo foram usadas na gramática mas não estão declaradas
 
-	- incr_decr_tail
-	- term_comparison
-	- term_comparison_P
-
-*/
-
-identifier : STRING ;/* CORRIGIR
-	[a-zA-z]{[a-zA-Z0-9_]} só pra figurar mesmo, mas tem que ajeitar*/
 %%
