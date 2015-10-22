@@ -186,7 +186,17 @@ matrix_assignment :
 
 
 matrix_assignment_aux : 
-	ASSIGN_OP OPEN_BRACES values CLOSE_BRACES values_group_list
+	ASSIGN_OP matrix_assignment_aux_aux
+	;
+
+
+matrix_assignment_aux_aux : 
+	OPEN_BRACES values CLOSE_BRACES values_group_list
+	;
+
+values_group_list :
+	COMMA matrix_assignment_aux_aux
+	|
 	;
 
 set_assignment :
@@ -200,11 +210,6 @@ values :
 
 values_list :
 	COMMA values
-	|
-	;
-
-values_group_list :
-	COMMA OPEN_BRACES values CLOSE_BRACES values_group_list
 	|
 	;
 
@@ -350,12 +355,16 @@ subprogram_call :
 	;
 
 argument_list :
-	expression argument_list_tail
+	argument_list_aux
 	|
 	;
 
+argument_list_aux :
+	expression argument_list_tail
+	;
+
 argument_list_tail :
-	COMMA argument_list
+	COMMA argument_list_aux
 	|
 	;
 

@@ -11,8 +11,7 @@ Terminals which are not used
 State 128 conflicts: 1 shift/reduce
 State 224 conflicts: 1 reduce/reduce
 State 228 conflicts: 1 shift/reduce
-State 253 conflicts: 1 reduce/reduce
-State 269 conflicts: 1 shift/reduce
+State 270 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -155,73 +154,75 @@ Grammar
 
    90 subprogram_call: identifier OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
 
-   91 argument_list: expression argument_list_tail
+   91 argument_list: argument_list_aux
    92              | /* empty */
 
-   93 argument_list_tail: COMMA argument_list
-   94                   | /* empty */
+   93 argument_list_aux: expression argument_list_tail
 
-   95 expression: term_or term_or_tail
+   94 argument_list_tail: COMMA argument_list_aux
+   95                   | /* empty */
 
-   96 term_or_tail: OR_OP term_or term_or_tail
-   97             | /* empty */
+   96 expression: term_or term_or_tail
 
-   98 term_or: term_and term_and_tail
+   97 term_or_tail: OR_OP term_or term_or_tail
+   98             | /* empty */
 
-   99 term_and_tail: AND_OP term_and term_and_tail
-  100              | /* empty */
+   99 term_or: term_and term_and_tail
 
-  101 term_and: term_bool_comparison term_bool_comparison_tail
+  100 term_and_tail: AND_OP term_and term_and_tail
+  101              | /* empty */
 
-  102 term_bool_comparison_tail: EQ_OP term_comparison term_comparison_tail
-  103                          | NEQ_OP term_comparison term_comparison_tail
-  104                          | /* empty */
+  102 term_and: term_bool_comparison term_bool_comparison_tail
 
-  105 term_bool_comparison: term_arit_comparison term_arit_comparison_tail
+  103 term_bool_comparison_tail: EQ_OP term_comparison term_comparison_tail
+  104                          | NEQ_OP term_comparison term_comparison_tail
+  105                          | /* empty */
 
-  106 term_arit_comparison_tail: LEQ_OP term_comparison term_comparison_tail
-  107                          | BEQ_OP term_comparison term_comparison_tail
-  108                          | LT_OP term_comparison term_comparison_tail
-  109                          | BT_OP term_comparison term_comparison_tail
-  110                          | /* empty */
+  106 term_bool_comparison: term_arit_comparison term_arit_comparison_tail
 
-  111 term_arit_comparison: term term_tail
+  107 term_arit_comparison_tail: LEQ_OP term_comparison term_comparison_tail
+  108                          | BEQ_OP term_comparison term_comparison_tail
+  109                          | LT_OP term_comparison term_comparison_tail
+  110                          | BT_OP term_comparison term_comparison_tail
+  111                          | /* empty */
 
-  112 term_tail: ADD_OP term term_tail
-  113          | SUB_OP term term_tail
-  114          | /* empty */
+  112 term_arit_comparison: term term_tail
 
-  115 term: factor factor_tail
+  113 term_tail: ADD_OP term term_tail
+  114          | SUB_OP term term_tail
+  115          | /* empty */
 
-  116 factor_tail: MULT_OP factor factor_tail
-  117            | DIV_OP factor factor_tail
-  118            | MOD_OP factor factor_tail
-  119            | /* empty */
+  116 term: factor factor_tail
 
-  120 factor: expo expo_tail
+  117 factor_tail: MULT_OP factor factor_tail
+  118            | DIV_OP factor factor_tail
+  119            | MOD_OP factor factor_tail
+  120            | /* empty */
 
-  121 expo_tail: EXPO_OP incr_decr incr_decr_tail
-  122          | /* empty */
+  121 factor: expo expo_tail
 
-  123 expo: INCREMENT_OP incr_decr
-  124     | DECREMENT_OP incr_decr
-  125     | NEG_OP incr_decr
-  126     | /* empty */
+  122 expo_tail: EXPO_OP incr_decr incr_decr_tail
+  123          | /* empty */
 
-  127 incr_decr: identifier
-  128          | NUMBER
-  129          | function_call
-  130          | OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
+  124 expo: INCREMENT_OP incr_decr
+  125     | DECREMENT_OP incr_decr
+  126     | NEG_OP incr_decr
+  127     | /* empty */
 
-  131 function_call: identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
+  128 incr_decr: identifier
+  129          | NUMBER
+  130          | function_call
+  131          | OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
 
-  132 incr_decr_tail: STRING NUMBER
+  132 function_call: identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
 
-  133 term_comparison: NUMBER STRING
+  133 incr_decr_tail: STRING NUMBER
 
-  134 term_comparison_tail: COMMA STRING
+  134 term_comparison: NUMBER STRING
 
-  135 identifier: STRING
+  135 term_comparison_tail: COMMA STRING
+
+  136 identifier: STRING
 
 
 Terminals, with rules where they appear
@@ -230,7 +231,7 @@ $end (0) 0
 error (256)
 NAME (258) 4
 ID (259)
-NUMBER (260) 46 47 128 132 133
+NUMBER (260) 46 47 129 133 134
 COMPLEX_NUMBER (261)
 REAL_NUMBER (262)
 INT_NUMBER (263)
@@ -245,7 +246,7 @@ RETURN (271) 69
 INT (272) 23
 REAL (273) 24 25
 COMPLEX (274) 26
-STRING (275) 28 132 133 134 135
+STRING (275) 28 133 134 135 136
 DOUBLE (276) 24
 BOOLEAN (277) 27
 ENUM (278) 31
@@ -270,10 +271,10 @@ END_FOR (296) 89
 END_WHILE (297) 88
 END_SWITCH (298) 83
 SEMICOLON (299) 8 53 54 69 70 80 83 84 88 89
-COMMA (300) 39 41 43 49 57 93 134
+COMMA (300) 39 41 43 49 57 94 135
 COLON (301) 6 11 31 32 53 54 80 83 84 86 88 89
-OPEN_PARENTHESIS (302) 53 54 80 83 84 88 90 130 131
-CLOSE_PARENTHESIS (303) 53 54 80 83 84 88 90 130 131
+OPEN_PARENTHESIS (302) 53 54 80 83 84 88 90 131 132
+CLOSE_PARENTHESIS (303) 53 54 80 83 84 88 90 131 132
 OPEN_BRACKETS (304) 29 78
 CLOSE_BRACKETS (305) 29 78
 OPEN_BRACES (306) 35 36 41
@@ -285,23 +286,23 @@ SUB_ASSIGN_OP (311) 73
 MULT_ASSIGN_OP (312) 74
 DIV_ASSIGN_OP (313) 75
 MOD_ASSIGN_OP (314) 76
-INCREMENT_OP (315) 123
-DECREMENT_OP (316) 124
-NEG_OP (317) 125
-AND_OP (318) 99
-OR_OP (319) 96
-LEQ_OP (320) 106
-BEQ_OP (321) 107
-EQ_OP (322) 102
-NEQ_OP (323) 103
-SUB_OP (324) 113
-ADD_OP (325) 112
-MULT_OP (326) 116
-DIV_OP (327) 117
-MOD_OP (328) 118
-LT_OP (329) 108
-BT_OP (330) 109
-EXPO_OP (331) 121
+INCREMENT_OP (315) 124
+DECREMENT_OP (316) 125
+NEG_OP (317) 126
+AND_OP (318) 100
+OR_OP (319) 97
+LEQ_OP (320) 107
+BEQ_OP (321) 108
+EQ_OP (322) 103
+NEQ_OP (323) 104
+SUB_OP (324) 114
+ADD_OP (325) 113
+MULT_OP (326) 117
+DIV_OP (327) 118
+MOD_OP (328) 119
+LT_OP (329) 109
+BT_OP (330) 110
+EXPO_OP (331) 122
 DOT_OP (332)
 COMMENT (333)
 
@@ -369,7 +370,7 @@ procedure_declaration (107)
 function_declaration (108)
     on left: 54, on right: 52
 parameter_list (109)
-    on left: 55 56, on right: 53 54 131
+    on left: 55 56, on right: 53 54 132
 parameter_list_tail (110)
     on left: 57 58, on right: 55 57
 statement_list (111)
@@ -403,53 +404,55 @@ for_statement (124)
 subprogram_call (125)
     on left: 90, on right: 66
 argument_list (126)
-    on left: 91 92, on right: 90 93
-argument_list_tail (127)
-    on left: 93 94, on right: 91
-expression (128)
-    on left: 95, on right: 19 21 38 69 71 72 73 74 75 76 80 84 88 91
-    130
-term_or_tail (129)
-    on left: 96 97, on right: 95 96
-term_or (130)
-    on left: 98, on right: 95 96
-term_and_tail (131)
-    on left: 99 100, on right: 98 99
-term_and (132)
-    on left: 101, on right: 98 99
-term_bool_comparison_tail (133)
-    on left: 102 103 104, on right: 101
-term_bool_comparison (134)
-    on left: 105, on right: 101
-term_arit_comparison_tail (135)
-    on left: 106 107 108 109 110, on right: 105
-term_arit_comparison (136)
-    on left: 111, on right: 105
-term_tail (137)
-    on left: 112 113 114, on right: 111 112 113
-term (138)
-    on left: 115, on right: 111 112 113
-factor_tail (139)
-    on left: 116 117 118 119, on right: 115 116 117 118
-factor (140)
-    on left: 120, on right: 115 116 117 118
-expo_tail (141)
-    on left: 121 122, on right: 120
-expo (142)
-    on left: 123 124 125 126, on right: 120
-incr_decr (143)
-    on left: 127 128 129 130, on right: 121 123 124 125
-function_call (144)
-    on left: 131, on right: 129
-incr_decr_tail (145)
-    on left: 132, on right: 121
-term_comparison (146)
-    on left: 133, on right: 102 103 106 107 108 109
-term_comparison_tail (147)
-    on left: 134, on right: 102 103 106 107 108 109
-identifier (148)
-    on left: 135, on right: 18 19 20 29 30 31 32 43 53 54 77 83 89
-    90 127 131
+    on left: 91 92, on right: 90
+argument_list_aux (127)
+    on left: 93, on right: 91 94
+argument_list_tail (128)
+    on left: 94 95, on right: 93
+expression (129)
+    on left: 96, on right: 19 21 38 69 71 72 73 74 75 76 80 84 88 93
+    131
+term_or_tail (130)
+    on left: 97 98, on right: 96 97
+term_or (131)
+    on left: 99, on right: 96 97
+term_and_tail (132)
+    on left: 100 101, on right: 99 100
+term_and (133)
+    on left: 102, on right: 99 100
+term_bool_comparison_tail (134)
+    on left: 103 104 105, on right: 102
+term_bool_comparison (135)
+    on left: 106, on right: 102
+term_arit_comparison_tail (136)
+    on left: 107 108 109 110 111, on right: 106
+term_arit_comparison (137)
+    on left: 112, on right: 106
+term_tail (138)
+    on left: 113 114 115, on right: 112 113 114
+term (139)
+    on left: 116, on right: 112 113 114
+factor_tail (140)
+    on left: 117 118 119 120, on right: 116 117 118 119
+factor (141)
+    on left: 121, on right: 116 117 118 119
+expo_tail (142)
+    on left: 122 123, on right: 121
+expo (143)
+    on left: 124 125 126 127, on right: 121
+incr_decr (144)
+    on left: 128 129 130 131, on right: 122 124 125 126
+function_call (145)
+    on left: 132, on right: 130
+incr_decr_tail (146)
+    on left: 133, on right: 122
+term_comparison (147)
+    on left: 134, on right: 103 104 107 108 109 110
+term_comparison_tail (148)
+    on left: 135, on right: 103 104 107 108 109 110
+identifier (149)
+    on left: 136, on right: 18 19 20 29 30 31 32 43 53 54 77 83 89
+    90 128 132
 
 
 state 0
@@ -762,9 +765,9 @@ state 32
 
 state 33
 
-  135 identifier: STRING .
+  136 identifier: STRING .
 
-    $default  reduce using rule 135 (identifier)
+    $default  reduce using rule 136 (identifier)
 
 
 state 34
@@ -1007,7 +1010,7 @@ state 56
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 74
     term_or               go to state 75
@@ -1125,7 +1128,7 @@ state 69
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 93
     term_or               go to state 75
@@ -1146,7 +1149,7 @@ state 70
 
 state 71
 
-  123 expo: INCREMENT_OP . incr_decr
+  124 expo: INCREMENT_OP . incr_decr
 
     NUMBER            shift, and go to state 94
     STRING            shift, and go to state 33
@@ -1159,7 +1162,7 @@ state 71
 
 state 72
 
-  124 expo: DECREMENT_OP . incr_decr
+  125 expo: DECREMENT_OP . incr_decr
 
     NUMBER            shift, and go to state 94
     STRING            shift, and go to state 33
@@ -1172,7 +1175,7 @@ state 72
 
 state 73
 
-  125 expo: NEG_OP . incr_decr
+  126 expo: NEG_OP . incr_decr
 
     NUMBER            shift, and go to state 94
     STRING            shift, and go to state 33
@@ -1192,84 +1195,84 @@ state 74
 
 state 75
 
-   95 expression: term_or . term_or_tail
+   96 expression: term_or . term_or_tail
 
     OR_OP  shift, and go to state 101
 
-    $default  reduce using rule 97 (term_or_tail)
+    $default  reduce using rule 98 (term_or_tail)
 
     term_or_tail  go to state 102
 
 
 state 76
 
-   98 term_or: term_and . term_and_tail
+   99 term_or: term_and . term_and_tail
 
     AND_OP  shift, and go to state 103
 
-    $default  reduce using rule 100 (term_and_tail)
+    $default  reduce using rule 101 (term_and_tail)
 
     term_and_tail  go to state 104
 
 
 state 77
 
-  101 term_and: term_bool_comparison . term_bool_comparison_tail
+  102 term_and: term_bool_comparison . term_bool_comparison_tail
 
     EQ_OP   shift, and go to state 105
     NEQ_OP  shift, and go to state 106
 
-    $default  reduce using rule 104 (term_bool_comparison_tail)
+    $default  reduce using rule 105 (term_bool_comparison_tail)
 
     term_bool_comparison_tail  go to state 107
 
 
 state 78
 
-  105 term_bool_comparison: term_arit_comparison . term_arit_comparison_tail
+  106 term_bool_comparison: term_arit_comparison . term_arit_comparison_tail
 
     LEQ_OP  shift, and go to state 108
     BEQ_OP  shift, and go to state 109
     LT_OP   shift, and go to state 110
     BT_OP   shift, and go to state 111
 
-    $default  reduce using rule 110 (term_arit_comparison_tail)
+    $default  reduce using rule 111 (term_arit_comparison_tail)
 
     term_arit_comparison_tail  go to state 112
 
 
 state 79
 
-  111 term_arit_comparison: term . term_tail
+  112 term_arit_comparison: term . term_tail
 
     SUB_OP  shift, and go to state 113
     ADD_OP  shift, and go to state 114
 
-    $default  reduce using rule 114 (term_tail)
+    $default  reduce using rule 115 (term_tail)
 
     term_tail  go to state 115
 
 
 state 80
 
-  115 term: factor . factor_tail
+  116 term: factor . factor_tail
 
     MULT_OP  shift, and go to state 116
     DIV_OP   shift, and go to state 117
     MOD_OP   shift, and go to state 118
 
-    $default  reduce using rule 119 (factor_tail)
+    $default  reduce using rule 120 (factor_tail)
 
     factor_tail  go to state 119
 
 
 state 81
 
-  120 factor: expo . expo_tail
+  121 factor: expo . expo_tail
 
     EXPO_OP  shift, and go to state 120
 
-    $default  reduce using rule 122 (expo_tail)
+    $default  reduce using rule 123 (expo_tail)
 
     expo_tail  go to state 121
 
@@ -1338,7 +1341,7 @@ state 87
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     values                go to state 127
     expression            go to state 128
@@ -1399,20 +1402,20 @@ state 93
 
 state 94
 
-  128 incr_decr: NUMBER .
+  129 incr_decr: NUMBER .
 
-    $default  reduce using rule 128 (incr_decr)
+    $default  reduce using rule 129 (incr_decr)
 
 
 state 95
 
-  130 incr_decr: OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS
+  131 incr_decr: OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 132
     term_or               go to state 75
@@ -1426,51 +1429,51 @@ state 95
 
 state 96
 
-  123 expo: INCREMENT_OP incr_decr .
-
-    $default  reduce using rule 123 (expo)
-
-
-state 97
-
-  129 incr_decr: function_call .
-
-    $default  reduce using rule 129 (incr_decr)
-
-
-state 98
-
-  127 incr_decr: identifier .
-  131 function_call: identifier . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
-
-    OPEN_PARENTHESIS  shift, and go to state 133
-
-    $default  reduce using rule 127 (incr_decr)
-
-
-state 99
-
-  124 expo: DECREMENT_OP incr_decr .
+  124 expo: INCREMENT_OP incr_decr .
 
     $default  reduce using rule 124 (expo)
 
 
-state 100
+state 97
 
-  125 expo: NEG_OP incr_decr .
+  130 incr_decr: function_call .
+
+    $default  reduce using rule 130 (incr_decr)
+
+
+state 98
+
+  128 incr_decr: identifier .
+  132 function_call: identifier . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
+
+    OPEN_PARENTHESIS  shift, and go to state 133
+
+    $default  reduce using rule 128 (incr_decr)
+
+
+state 99
+
+  125 expo: DECREMENT_OP incr_decr .
 
     $default  reduce using rule 125 (expo)
 
 
+state 100
+
+  126 expo: NEG_OP incr_decr .
+
+    $default  reduce using rule 126 (expo)
+
+
 state 101
 
-   96 term_or_tail: OR_OP . term_or term_or_tail
+   97 term_or_tail: OR_OP . term_or term_or_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     term_or               go to state 134
     term_and              go to state 76
@@ -1483,20 +1486,20 @@ state 101
 
 state 102
 
-   95 expression: term_or term_or_tail .
+   96 expression: term_or term_or_tail .
 
-    $default  reduce using rule 95 (expression)
+    $default  reduce using rule 96 (expression)
 
 
 state 103
 
-   99 term_and_tail: AND_OP . term_and term_and_tail
+  100 term_and_tail: AND_OP . term_and term_and_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     term_and              go to state 135
     term_bool_comparison  go to state 77
@@ -1508,14 +1511,14 @@ state 103
 
 state 104
 
-   98 term_or: term_and term_and_tail .
+   99 term_or: term_and term_and_tail .
 
-    $default  reduce using rule 98 (term_or)
+    $default  reduce using rule 99 (term_or)
 
 
 state 105
 
-  102 term_bool_comparison_tail: EQ_OP . term_comparison term_comparison_tail
+  103 term_bool_comparison_tail: EQ_OP . term_comparison term_comparison_tail
 
     NUMBER  shift, and go to state 136
 
@@ -1524,7 +1527,7 @@ state 105
 
 state 106
 
-  103 term_bool_comparison_tail: NEQ_OP . term_comparison term_comparison_tail
+  104 term_bool_comparison_tail: NEQ_OP . term_comparison term_comparison_tail
 
     NUMBER  shift, and go to state 136
 
@@ -1533,14 +1536,14 @@ state 106
 
 state 107
 
-  101 term_and: term_bool_comparison term_bool_comparison_tail .
+  102 term_and: term_bool_comparison term_bool_comparison_tail .
 
-    $default  reduce using rule 101 (term_and)
+    $default  reduce using rule 102 (term_and)
 
 
 state 108
 
-  106 term_arit_comparison_tail: LEQ_OP . term_comparison term_comparison_tail
+  107 term_arit_comparison_tail: LEQ_OP . term_comparison term_comparison_tail
 
     NUMBER  shift, and go to state 136
 
@@ -1549,7 +1552,7 @@ state 108
 
 state 109
 
-  107 term_arit_comparison_tail: BEQ_OP . term_comparison term_comparison_tail
+  108 term_arit_comparison_tail: BEQ_OP . term_comparison term_comparison_tail
 
     NUMBER  shift, and go to state 136
 
@@ -1558,7 +1561,7 @@ state 109
 
 state 110
 
-  108 term_arit_comparison_tail: LT_OP . term_comparison term_comparison_tail
+  109 term_arit_comparison_tail: LT_OP . term_comparison term_comparison_tail
 
     NUMBER  shift, and go to state 136
 
@@ -1567,7 +1570,7 @@ state 110
 
 state 111
 
-  109 term_arit_comparison_tail: BT_OP . term_comparison term_comparison_tail
+  110 term_arit_comparison_tail: BT_OP . term_comparison term_comparison_tail
 
     NUMBER  shift, and go to state 136
 
@@ -1576,20 +1579,20 @@ state 111
 
 state 112
 
-  105 term_bool_comparison: term_arit_comparison term_arit_comparison_tail .
+  106 term_bool_comparison: term_arit_comparison term_arit_comparison_tail .
 
-    $default  reduce using rule 105 (term_bool_comparison)
+    $default  reduce using rule 106 (term_bool_comparison)
 
 
 state 113
 
-  113 term_tail: SUB_OP . term term_tail
+  114 term_tail: SUB_OP . term term_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     term    go to state 143
     factor  go to state 80
@@ -1598,13 +1601,13 @@ state 113
 
 state 114
 
-  112 term_tail: ADD_OP . term term_tail
+  113 term_tail: ADD_OP . term term_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     term    go to state 144
     factor  go to state 80
@@ -1613,20 +1616,20 @@ state 114
 
 state 115
 
-  111 term_arit_comparison: term term_tail .
+  112 term_arit_comparison: term term_tail .
 
-    $default  reduce using rule 111 (term_arit_comparison)
+    $default  reduce using rule 112 (term_arit_comparison)
 
 
 state 116
 
-  116 factor_tail: MULT_OP . factor factor_tail
+  117 factor_tail: MULT_OP . factor factor_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     factor  go to state 145
     expo    go to state 81
@@ -1634,13 +1637,13 @@ state 116
 
 state 117
 
-  117 factor_tail: DIV_OP . factor factor_tail
+  118 factor_tail: DIV_OP . factor factor_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     factor  go to state 146
     expo    go to state 81
@@ -1648,13 +1651,13 @@ state 117
 
 state 118
 
-  118 factor_tail: MOD_OP . factor factor_tail
+  119 factor_tail: MOD_OP . factor factor_tail
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     factor  go to state 147
     expo    go to state 81
@@ -1662,14 +1665,14 @@ state 118
 
 state 119
 
-  115 term: factor factor_tail .
+  116 term: factor factor_tail .
 
-    $default  reduce using rule 115 (term)
+    $default  reduce using rule 116 (term)
 
 
 state 120
 
-  121 expo_tail: EXPO_OP . incr_decr incr_decr_tail
+  122 expo_tail: EXPO_OP . incr_decr incr_decr_tail
 
     NUMBER            shift, and go to state 94
     STRING            shift, and go to state 33
@@ -1682,9 +1685,9 @@ state 120
 
 state 121
 
-  120 factor: expo expo_tail .
+  121 factor: expo expo_tail .
 
-    $default  reduce using rule 120 (factor)
+    $default  reduce using rule 121 (factor)
 
 
 state 122
@@ -1804,14 +1807,14 @@ state 131
 
 state 132
 
-  130 incr_decr: OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS
+  131 incr_decr: OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS
 
     CLOSE_PARENTHESIS  shift, and go to state 161
 
 
 state 133
 
-  131 function_call: identifier OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS
+  132 function_call: identifier OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS
 
     INT        shift, and go to state 14
     REAL       shift, and go to state 15
@@ -1837,36 +1840,36 @@ state 133
 
 state 134
 
-   96 term_or_tail: OR_OP term_or . term_or_tail
+   97 term_or_tail: OR_OP term_or . term_or_tail
 
     OR_OP  shift, and go to state 101
 
-    $default  reduce using rule 97 (term_or_tail)
+    $default  reduce using rule 98 (term_or_tail)
 
     term_or_tail  go to state 163
 
 
 state 135
 
-   99 term_and_tail: AND_OP term_and . term_and_tail
+  100 term_and_tail: AND_OP term_and . term_and_tail
 
     AND_OP  shift, and go to state 103
 
-    $default  reduce using rule 100 (term_and_tail)
+    $default  reduce using rule 101 (term_and_tail)
 
     term_and_tail  go to state 164
 
 
 state 136
 
-  133 term_comparison: NUMBER . STRING
+  134 term_comparison: NUMBER . STRING
 
     STRING  shift, and go to state 165
 
 
 state 137
 
-  102 term_bool_comparison_tail: EQ_OP term_comparison . term_comparison_tail
+  103 term_bool_comparison_tail: EQ_OP term_comparison . term_comparison_tail
 
     COMMA  shift, and go to state 166
 
@@ -1875,7 +1878,7 @@ state 137
 
 state 138
 
-  103 term_bool_comparison_tail: NEQ_OP term_comparison . term_comparison_tail
+  104 term_bool_comparison_tail: NEQ_OP term_comparison . term_comparison_tail
 
     COMMA  shift, and go to state 166
 
@@ -1884,7 +1887,7 @@ state 138
 
 state 139
 
-  106 term_arit_comparison_tail: LEQ_OP term_comparison . term_comparison_tail
+  107 term_arit_comparison_tail: LEQ_OP term_comparison . term_comparison_tail
 
     COMMA  shift, and go to state 166
 
@@ -1893,7 +1896,7 @@ state 139
 
 state 140
 
-  107 term_arit_comparison_tail: BEQ_OP term_comparison . term_comparison_tail
+  108 term_arit_comparison_tail: BEQ_OP term_comparison . term_comparison_tail
 
     COMMA  shift, and go to state 166
 
@@ -1902,7 +1905,7 @@ state 140
 
 state 141
 
-  108 term_arit_comparison_tail: LT_OP term_comparison . term_comparison_tail
+  109 term_arit_comparison_tail: LT_OP term_comparison . term_comparison_tail
 
     COMMA  shift, and go to state 166
 
@@ -1911,7 +1914,7 @@ state 141
 
 state 142
 
-  109 term_arit_comparison_tail: BT_OP term_comparison . term_comparison_tail
+  110 term_arit_comparison_tail: BT_OP term_comparison . term_comparison_tail
 
     COMMA  shift, and go to state 166
 
@@ -1920,70 +1923,70 @@ state 142
 
 state 143
 
-  113 term_tail: SUB_OP term . term_tail
+  114 term_tail: SUB_OP term . term_tail
 
     SUB_OP  shift, and go to state 113
     ADD_OP  shift, and go to state 114
 
-    $default  reduce using rule 114 (term_tail)
+    $default  reduce using rule 115 (term_tail)
 
     term_tail  go to state 173
 
 
 state 144
 
-  112 term_tail: ADD_OP term . term_tail
+  113 term_tail: ADD_OP term . term_tail
 
     SUB_OP  shift, and go to state 113
     ADD_OP  shift, and go to state 114
 
-    $default  reduce using rule 114 (term_tail)
+    $default  reduce using rule 115 (term_tail)
 
     term_tail  go to state 174
 
 
 state 145
 
-  116 factor_tail: MULT_OP factor . factor_tail
+  117 factor_tail: MULT_OP factor . factor_tail
 
     MULT_OP  shift, and go to state 116
     DIV_OP   shift, and go to state 117
     MOD_OP   shift, and go to state 118
 
-    $default  reduce using rule 119 (factor_tail)
+    $default  reduce using rule 120 (factor_tail)
 
     factor_tail  go to state 175
 
 
 state 146
 
-  117 factor_tail: DIV_OP factor . factor_tail
+  118 factor_tail: DIV_OP factor . factor_tail
 
     MULT_OP  shift, and go to state 116
     DIV_OP   shift, and go to state 117
     MOD_OP   shift, and go to state 118
 
-    $default  reduce using rule 119 (factor_tail)
+    $default  reduce using rule 120 (factor_tail)
 
     factor_tail  go to state 176
 
 
 state 147
 
-  118 factor_tail: MOD_OP factor . factor_tail
+  119 factor_tail: MOD_OP factor . factor_tail
 
     MULT_OP  shift, and go to state 116
     DIV_OP   shift, and go to state 117
     MOD_OP   shift, and go to state 118
 
-    $default  reduce using rule 119 (factor_tail)
+    $default  reduce using rule 120 (factor_tail)
 
     factor_tail  go to state 177
 
 
 state 148
 
-  121 expo_tail: EXPO_OP incr_decr . incr_decr_tail
+  122 expo_tail: EXPO_OP incr_decr . incr_decr_tail
 
     STRING  shift, and go to state 178
 
@@ -2049,7 +2052,7 @@ state 154
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     values                go to state 183
     expression            go to state 128
@@ -2106,135 +2109,135 @@ state 160
 
 state 161
 
-  130 incr_decr: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS .
+  131 incr_decr: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS .
 
-    $default  reduce using rule 130 (incr_decr)
+    $default  reduce using rule 131 (incr_decr)
 
 
 state 162
 
-  131 function_call: identifier OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS
+  132 function_call: identifier OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS
 
     CLOSE_PARENTHESIS  shift, and go to state 186
 
 
 state 163
 
-   96 term_or_tail: OR_OP term_or term_or_tail .
+   97 term_or_tail: OR_OP term_or term_or_tail .
 
-    $default  reduce using rule 96 (term_or_tail)
+    $default  reduce using rule 97 (term_or_tail)
 
 
 state 164
 
-   99 term_and_tail: AND_OP term_and term_and_tail .
+  100 term_and_tail: AND_OP term_and term_and_tail .
 
-    $default  reduce using rule 99 (term_and_tail)
+    $default  reduce using rule 100 (term_and_tail)
 
 
 state 165
 
-  133 term_comparison: NUMBER STRING .
+  134 term_comparison: NUMBER STRING .
 
-    $default  reduce using rule 133 (term_comparison)
+    $default  reduce using rule 134 (term_comparison)
 
 
 state 166
 
-  134 term_comparison_tail: COMMA . STRING
+  135 term_comparison_tail: COMMA . STRING
 
     STRING  shift, and go to state 187
 
 
 state 167
 
-  102 term_bool_comparison_tail: EQ_OP term_comparison term_comparison_tail .
-
-    $default  reduce using rule 102 (term_bool_comparison_tail)
-
-
-state 168
-
-  103 term_bool_comparison_tail: NEQ_OP term_comparison term_comparison_tail .
+  103 term_bool_comparison_tail: EQ_OP term_comparison term_comparison_tail .
 
     $default  reduce using rule 103 (term_bool_comparison_tail)
 
 
+state 168
+
+  104 term_bool_comparison_tail: NEQ_OP term_comparison term_comparison_tail .
+
+    $default  reduce using rule 104 (term_bool_comparison_tail)
+
+
 state 169
 
-  106 term_arit_comparison_tail: LEQ_OP term_comparison term_comparison_tail .
-
-    $default  reduce using rule 106 (term_arit_comparison_tail)
-
-
-state 170
-
-  107 term_arit_comparison_tail: BEQ_OP term_comparison term_comparison_tail .
+  107 term_arit_comparison_tail: LEQ_OP term_comparison term_comparison_tail .
 
     $default  reduce using rule 107 (term_arit_comparison_tail)
 
 
-state 171
+state 170
 
-  108 term_arit_comparison_tail: LT_OP term_comparison term_comparison_tail .
+  108 term_arit_comparison_tail: BEQ_OP term_comparison term_comparison_tail .
 
     $default  reduce using rule 108 (term_arit_comparison_tail)
 
 
-state 172
+state 171
 
-  109 term_arit_comparison_tail: BT_OP term_comparison term_comparison_tail .
+  109 term_arit_comparison_tail: LT_OP term_comparison term_comparison_tail .
 
     $default  reduce using rule 109 (term_arit_comparison_tail)
 
 
+state 172
+
+  110 term_arit_comparison_tail: BT_OP term_comparison term_comparison_tail .
+
+    $default  reduce using rule 110 (term_arit_comparison_tail)
+
+
 state 173
 
-  113 term_tail: SUB_OP term term_tail .
+  114 term_tail: SUB_OP term term_tail .
 
-    $default  reduce using rule 113 (term_tail)
+    $default  reduce using rule 114 (term_tail)
 
 
 state 174
 
-  112 term_tail: ADD_OP term term_tail .
+  113 term_tail: ADD_OP term term_tail .
 
-    $default  reduce using rule 112 (term_tail)
+    $default  reduce using rule 113 (term_tail)
 
 
 state 175
 
-  116 factor_tail: MULT_OP factor factor_tail .
-
-    $default  reduce using rule 116 (factor_tail)
-
-
-state 176
-
-  117 factor_tail: DIV_OP factor factor_tail .
+  117 factor_tail: MULT_OP factor factor_tail .
 
     $default  reduce using rule 117 (factor_tail)
 
 
-state 177
+state 176
 
-  118 factor_tail: MOD_OP factor factor_tail .
+  118 factor_tail: DIV_OP factor factor_tail .
 
     $default  reduce using rule 118 (factor_tail)
 
 
+state 177
+
+  119 factor_tail: MOD_OP factor factor_tail .
+
+    $default  reduce using rule 119 (factor_tail)
+
+
 state 178
 
-  132 incr_decr_tail: STRING . NUMBER
+  133 incr_decr_tail: STRING . NUMBER
 
     NUMBER  shift, and go to state 188
 
 
 state 179
 
-  121 expo_tail: EXPO_OP incr_decr incr_decr_tail .
+  122 expo_tail: EXPO_OP incr_decr incr_decr_tail .
 
-    $default  reduce using rule 121 (expo_tail)
+    $default  reduce using rule 122 (expo_tail)
 
 
 state 180
@@ -2318,7 +2321,7 @@ state 185
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     values                go to state 209
     expression            go to state 128
@@ -2333,23 +2336,23 @@ state 185
 
 state 186
 
-  131 function_call: identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS .
+  132 function_call: identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS .
 
-    $default  reduce using rule 131 (function_call)
+    $default  reduce using rule 132 (function_call)
 
 
 state 187
 
-  134 term_comparison_tail: COMMA STRING .
+  135 term_comparison_tail: COMMA STRING .
 
-    $default  reduce using rule 134 (term_comparison_tail)
+    $default  reduce using rule 135 (term_comparison_tail)
 
 
 state 188
 
-  132 incr_decr_tail: STRING NUMBER .
+  133 incr_decr_tail: STRING NUMBER .
 
-    $default  reduce using rule 132 (incr_decr_tail)
+    $default  reduce using rule 133 (incr_decr_tail)
 
 
 state 189
@@ -2367,7 +2370,7 @@ state 190
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 210
     term_or               go to state 75
@@ -2382,10 +2385,10 @@ state 190
 state 191
 
    28 type: STRING .
-  135 identifier: STRING .
+  136 identifier: STRING .
 
     STRING    reduce using rule 28 (type)
-    $default  reduce using rule 135 (identifier)
+    $default  reduce using rule 136 (identifier)
 
 
 state 192
@@ -2612,7 +2615,7 @@ state 211
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 230
     term_or               go to state 75
@@ -2639,7 +2642,7 @@ state 213
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 232
     term_or               go to state 75
@@ -2682,7 +2685,7 @@ state 217
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 235
     term_or               go to state 75
@@ -2702,7 +2705,7 @@ state 218
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 236
     term_or               go to state 75
@@ -2722,7 +2725,7 @@ state 219
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 237
     term_or               go to state 75
@@ -2742,7 +2745,7 @@ state 220
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 238
     term_or               go to state 75
@@ -2762,7 +2765,7 @@ state 221
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 239
     term_or               go to state 75
@@ -2782,7 +2785,7 @@ state 222
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
     expression            go to state 240
     term_or               go to state 75
@@ -2810,11 +2813,12 @@ state 224
     NEG_OP        shift, and go to state 73
 
     CLOSE_PARENTHESIS  reduce using rule 92 (argument_list)
-    CLOSE_PARENTHESIS  [reduce using rule 126 (expo)]
-    $default           reduce using rule 126 (expo)
+    CLOSE_PARENTHESIS  [reduce using rule 127 (expo)]
+    $default           reduce using rule 127 (expo)
 
     argument_list         go to state 242
-    expression            go to state 243
+    argument_list_aux     go to state 243
+    expression            go to state 244
     term_or               go to state 75
     term_and              go to state 76
     term_bool_comparison  go to state 77
@@ -2830,7 +2834,7 @@ state 225
 
     NUMBER  shift, and go to state 66
 
-    dimensions  go to state 244
+    dimensions  go to state 245
     range       go to state 68
 
 
@@ -2845,19 +2849,19 @@ state 227
 
    54 function_declaration: FUNCTION type identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list . END_FUNCTION SEMICOLON
 
-    END_FUNCTION  shift, and go to state 245
+    END_FUNCTION  shift, and go to state 246
 
 
 state 228
 
    35 matrix_assignment_aux: ASSIGN_OP OPEN_BRACES values CLOSE_BRACES . values_group_list
 
-    COMMA  shift, and go to state 246
+    COMMA  shift, and go to state 247
 
     COMMA     [reduce using rule 42 (values_group_list)]
     $default  reduce using rule 42 (values_group_list)
 
-    values_group_list  go to state 247
+    values_group_list  go to state 248
 
 
 state 229
@@ -2871,7 +2875,7 @@ state 230
 
    80 if_statement: IF OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
 
-    CLOSE_PARENTHESIS  shift, and go to state 248
+    CLOSE_PARENTHESIS  shift, and go to state 249
 
 
 state 231
@@ -2880,21 +2884,21 @@ state 231
 
     STRING  shift, and go to state 33
 
-    identifier  go to state 249
+    identifier  go to state 250
 
 
 state 232
 
    88 while_statement: WHILE OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
 
-    CLOSE_PARENTHESIS  shift, and go to state 250
+    CLOSE_PARENTHESIS  shift, and go to state 251
 
 
 state 233
 
    83 switch_statement: SWITCH OPEN_PARENTHESIS identifier . CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
 
-    CLOSE_PARENTHESIS  shift, and go to state 251
+    CLOSE_PARENTHESIS  shift, and go to state 252
 
 
 state 234
@@ -2957,97 +2961,102 @@ state 242
 
    90 subprogram_call: identifier OPEN_PARENTHESIS argument_list . CLOSE_PARENTHESIS
 
-    CLOSE_PARENTHESIS  shift, and go to state 252
+    CLOSE_PARENTHESIS  shift, and go to state 253
 
 
 state 243
 
-   91 argument_list: expression . argument_list_tail
+   91 argument_list: argument_list_aux .
 
-    COMMA  shift, and go to state 253
-
-    $default  reduce using rule 94 (argument_list_tail)
-
-    argument_list_tail  go to state 254
+    $default  reduce using rule 91 (argument_list)
 
 
 state 244
 
-   78 identifier_tail: OPEN_BRACKETS dimensions . CLOSE_BRACKETS
+   93 argument_list_aux: expression . argument_list_tail
 
-    CLOSE_BRACKETS  shift, and go to state 255
+    COMMA  shift, and go to state 254
+
+    $default  reduce using rule 95 (argument_list_tail)
+
+    argument_list_tail  go to state 255
 
 
 state 245
 
-   54 function_declaration: FUNCTION type identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION . SEMICOLON
+   78 identifier_tail: OPEN_BRACKETS dimensions . CLOSE_BRACKETS
 
-    SEMICOLON  shift, and go to state 256
+    CLOSE_BRACKETS  shift, and go to state 256
 
 
 state 246
 
-   41 values_group_list: COMMA . OPEN_BRACES values CLOSE_BRACES values_group_list
+   54 function_declaration: FUNCTION type identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION . SEMICOLON
 
-    OPEN_BRACES  shift, and go to state 257
+    SEMICOLON  shift, and go to state 257
 
 
 state 247
+
+   41 values_group_list: COMMA . OPEN_BRACES values CLOSE_BRACES values_group_list
+
+    OPEN_BRACES  shift, and go to state 258
+
+
+state 248
 
    35 matrix_assignment_aux: ASSIGN_OP OPEN_BRACES values CLOSE_BRACES values_group_list .
 
     $default  reduce using rule 35 (matrix_assignment_aux)
 
 
-state 248
-
-   80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list else_clausule END_IF SEMICOLON
-
-    COLON  shift, and go to state 258
-
-
 state 249
 
-   89 for_statement: FOR identifier IN identifier . COLON statement_list END_FOR SEMICOLON
+   80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list else_clausule END_IF SEMICOLON
 
     COLON  shift, and go to state 259
 
 
 state 250
 
-   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list END_WHILE SEMICOLON
+   89 for_statement: FOR identifier IN identifier . COLON statement_list END_FOR SEMICOLON
 
     COLON  shift, and go to state 260
 
 
 state 251
 
-   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS . COLON case_clasule other_clasule END_SWITCH SEMICOLON
+   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list END_WHILE SEMICOLON
 
     COLON  shift, and go to state 261
 
 
 state 252
 
+   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS . COLON case_clasule other_clasule END_SWITCH SEMICOLON
+
+    COLON  shift, and go to state 262
+
+
+state 253
+
    90 subprogram_call: identifier OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS .
 
     $default  reduce using rule 90 (subprogram_call)
 
 
-state 253
+state 254
 
-   93 argument_list_tail: COMMA . argument_list
+   94 argument_list_tail: COMMA . argument_list_aux
 
     INCREMENT_OP  shift, and go to state 71
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    CLOSE_PARENTHESIS  reduce using rule 92 (argument_list)
-    CLOSE_PARENTHESIS  [reduce using rule 126 (expo)]
-    $default           reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
-    argument_list         go to state 262
-    expression            go to state 243
+    argument_list_aux     go to state 263
+    expression            go to state 244
     term_or               go to state 75
     term_and              go to state 76
     term_bool_comparison  go to state 77
@@ -3057,28 +3066,28 @@ state 253
     expo                  go to state 81
 
 
-state 254
-
-   91 argument_list: expression argument_list_tail .
-
-    $default  reduce using rule 91 (argument_list)
-
-
 state 255
+
+   93 argument_list_aux: expression argument_list_tail .
+
+    $default  reduce using rule 93 (argument_list_aux)
+
+
+state 256
 
    78 identifier_tail: OPEN_BRACKETS dimensions CLOSE_BRACKETS .
 
     $default  reduce using rule 78 (identifier_tail)
 
 
-state 256
+state 257
 
    54 function_declaration: FUNCTION type identifier OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON .
 
     $default  reduce using rule 54 (function_declaration)
 
 
-state 257
+state 258
 
    41 values_group_list: COMMA OPEN_BRACES . values CLOSE_BRACES values_group_list
 
@@ -3086,9 +3095,9 @@ state 257
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
-    values                go to state 263
+    values                go to state 264
     expression            go to state 128
     term_or               go to state 75
     term_and              go to state 76
@@ -3099,50 +3108,9 @@ state 257
     expo                  go to state 81
 
 
-state 258
-
-   80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list else_clausule END_IF SEMICOLON
-
-    RETURN     shift, and go to state 190
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 191
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
-    IF         shift, and go to state 192
-    FOR        shift, and go to state 193
-    WHILE      shift, and go to state 194
-    SWITCH     shift, and go to state 195
-
-    $default  reduce using rule 60 (statement_list)
-
-    variable_declaration          go to state 196
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 264
-    statement                     go to state 198
-    return_statement              go to state 199
-    assignment_statement          go to state 200
-    destination                   go to state 201
-    if_statement                  go to state 202
-    switch_statement              go to state 203
-    while_statement               go to state 204
-    for_statement                 go to state 205
-    subprogram_call               go to state 206
-    identifier                    go to state 207
-
-
 state 259
 
-   89 for_statement: FOR identifier IN identifier COLON . statement_list END_FOR SEMICOLON
+   80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list else_clausule END_IF SEMICOLON
 
     RETURN     shift, and go to state 190
     INT        shift, and go to state 14
@@ -3183,7 +3151,7 @@ state 259
 
 state 260
 
-   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list END_WHILE SEMICOLON
+   89 for_statement: FOR identifier IN identifier COLON . statement_list END_FOR SEMICOLON
 
     RETURN     shift, and go to state 190
     INT        shift, and go to state 14
@@ -3224,85 +3192,126 @@ state 260
 
 state 261
 
-   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON . case_clasule other_clasule END_SWITCH SEMICOLON
+   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list END_WHILE SEMICOLON
 
-    CASE  shift, and go to state 267
+    RETURN     shift, and go to state 190
+    INT        shift, and go to state 14
+    REAL       shift, and go to state 15
+    COMPLEX    shift, and go to state 16
+    STRING     shift, and go to state 191
+    DOUBLE     shift, and go to state 18
+    BOOLEAN    shift, and go to state 19
+    ENUM       shift, and go to state 20
+    STRUCT     shift, and go to state 21
+    SET_OF     shift, and go to state 22
+    MATRIX_OF  shift, and go to state 23
+    CONST      shift, and go to state 24
+    REF        shift, and go to state 25
+    IF         shift, and go to state 192
+    FOR        shift, and go to state 193
+    WHILE      shift, and go to state 194
+    SWITCH     shift, and go to state 195
 
-    $default  reduce using rule 85 (case_clasule)
+    $default  reduce using rule 60 (statement_list)
 
-    case_clasule  go to state 268
+    variable_declaration          go to state 196
+    simple_variable_declaration   go to state 28
+    type                          go to state 29
+    compost_variable_declaration  go to state 30
+    statement_list                go to state 267
+    statement                     go to state 198
+    return_statement              go to state 199
+    assignment_statement          go to state 200
+    destination                   go to state 201
+    if_statement                  go to state 202
+    switch_statement              go to state 203
+    while_statement               go to state 204
+    for_statement                 go to state 205
+    subprogram_call               go to state 206
+    identifier                    go to state 207
 
 
 state 262
 
-   93 argument_list_tail: COMMA argument_list .
+   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON . case_clasule other_clasule END_SWITCH SEMICOLON
 
-    $default  reduce using rule 93 (argument_list_tail)
+    CASE  shift, and go to state 268
+
+    $default  reduce using rule 85 (case_clasule)
+
+    case_clasule  go to state 269
 
 
 state 263
 
-   41 values_group_list: COMMA OPEN_BRACES values . CLOSE_BRACES values_group_list
+   94 argument_list_tail: COMMA argument_list_aux .
 
-    CLOSE_BRACES  shift, and go to state 269
+    $default  reduce using rule 94 (argument_list_tail)
 
 
 state 264
 
-   80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . else_clausule END_IF SEMICOLON
+   41 values_group_list: COMMA OPEN_BRACES values . CLOSE_BRACES values_group_list
 
-    ELSE  shift, and go to state 270
-
-    $default  reduce using rule 82 (else_clausule)
-
-    else_clausule  go to state 271
+    CLOSE_BRACES  shift, and go to state 270
 
 
 state 265
 
-   89 for_statement: FOR identifier IN identifier COLON statement_list . END_FOR SEMICOLON
+   80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . else_clausule END_IF SEMICOLON
 
-    END_FOR  shift, and go to state 272
+    ELSE  shift, and go to state 271
+
+    $default  reduce using rule 82 (else_clausule)
+
+    else_clausule  go to state 272
 
 
 state 266
 
-   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . END_WHILE SEMICOLON
+   89 for_statement: FOR identifier IN identifier COLON statement_list . END_FOR SEMICOLON
 
-    END_WHILE  shift, and go to state 273
+    END_FOR  shift, and go to state 273
 
 
 state 267
 
-   84 case_clasule: CASE . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
+   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . END_WHILE SEMICOLON
 
-    OPEN_PARENTHESIS  shift, and go to state 274
+    END_WHILE  shift, and go to state 274
 
 
 state 268
 
-   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON case_clasule . other_clasule END_SWITCH SEMICOLON
+   84 case_clasule: CASE . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
 
-    OTHER  shift, and go to state 275
-
-    $default  reduce using rule 87 (other_clasule)
-
-    other_clasule  go to state 276
+    OPEN_PARENTHESIS  shift, and go to state 275
 
 
 state 269
 
+   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON case_clasule . other_clasule END_SWITCH SEMICOLON
+
+    OTHER  shift, and go to state 276
+
+    $default  reduce using rule 87 (other_clasule)
+
+    other_clasule  go to state 277
+
+
+state 270
+
    41 values_group_list: COMMA OPEN_BRACES values CLOSE_BRACES . values_group_list
 
-    COMMA  shift, and go to state 246
+    COMMA  shift, and go to state 247
 
     COMMA     [reduce using rule 42 (values_group_list)]
     $default  reduce using rule 42 (values_group_list)
 
-    values_group_list  go to state 277
+    values_group_list  go to state 278
 
 
-state 270
+state 271
 
    81 else_clausule: ELSE . statement_list
 
@@ -3330,7 +3339,7 @@ state 270
     simple_variable_declaration   go to state 28
     type                          go to state 29
     compost_variable_declaration  go to state 30
-    statement_list                go to state 278
+    statement_list                go to state 279
     statement                     go to state 198
     return_statement              go to state 199
     assignment_statement          go to state 200
@@ -3343,28 +3352,28 @@ state 270
     identifier                    go to state 207
 
 
-state 271
+state 272
 
    80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule . END_IF SEMICOLON
 
-    END_IF  shift, and go to state 279
-
-
-state 272
-
-   89 for_statement: FOR identifier IN identifier COLON statement_list END_FOR . SEMICOLON
-
-    SEMICOLON  shift, and go to state 280
+    END_IF  shift, and go to state 280
 
 
 state 273
 
-   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE . SEMICOLON
+   89 for_statement: FOR identifier IN identifier COLON statement_list END_FOR . SEMICOLON
 
     SEMICOLON  shift, and go to state 281
 
 
 state 274
+
+   88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE . SEMICOLON
+
+    SEMICOLON  shift, and go to state 282
+
+
+state 275
 
    84 case_clasule: CASE OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
 
@@ -3372,9 +3381,9 @@ state 274
     DECREMENT_OP  shift, and go to state 72
     NEG_OP        shift, and go to state 73
 
-    $default  reduce using rule 126 (expo)
+    $default  reduce using rule 127 (expo)
 
-    expression            go to state 282
+    expression            go to state 283
     term_or               go to state 75
     term_and              go to state 76
     term_bool_comparison  go to state 77
@@ -3384,63 +3393,63 @@ state 274
     expo                  go to state 81
 
 
-state 275
+state 276
 
    86 other_clasule: OTHER . COLON statement_list
 
-    COLON  shift, and go to state 283
-
-
-state 276
-
-   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON case_clasule other_clasule . END_SWITCH SEMICOLON
-
-    END_SWITCH  shift, and go to state 284
+    COLON  shift, and go to state 284
 
 
 state 277
+
+   83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON case_clasule other_clasule . END_SWITCH SEMICOLON
+
+    END_SWITCH  shift, and go to state 285
+
+
+state 278
 
    41 values_group_list: COMMA OPEN_BRACES values CLOSE_BRACES values_group_list .
 
     $default  reduce using rule 41 (values_group_list)
 
 
-state 278
+state 279
 
    81 else_clausule: ELSE statement_list .
 
     $default  reduce using rule 81 (else_clausule)
 
 
-state 279
+state 280
 
    80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF . SEMICOLON
 
-    SEMICOLON  shift, and go to state 285
+    SEMICOLON  shift, and go to state 286
 
 
-state 280
+state 281
 
    89 for_statement: FOR identifier IN identifier COLON statement_list END_FOR SEMICOLON .
 
     $default  reduce using rule 89 (for_statement)
 
 
-state 281
+state 282
 
    88 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON .
 
     $default  reduce using rule 88 (while_statement)
 
 
-state 282
+state 283
 
    84 case_clasule: CASE OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
 
-    CLOSE_PARENTHESIS  shift, and go to state 286
+    CLOSE_PARENTHESIS  shift, and go to state 287
 
 
-state 283
+state 284
 
    86 other_clasule: OTHER COLON . statement_list
 
@@ -3468,7 +3477,7 @@ state 283
     simple_variable_declaration   go to state 28
     type                          go to state 29
     compost_variable_declaration  go to state 30
-    statement_list                go to state 287
+    statement_list                go to state 288
     statement                     go to state 198
     return_statement              go to state 199
     assignment_statement          go to state 200
@@ -3481,42 +3490,42 @@ state 283
     identifier                    go to state 207
 
 
-state 284
+state 285
 
    83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH . SEMICOLON
 
-    SEMICOLON  shift, and go to state 288
+    SEMICOLON  shift, and go to state 289
 
 
-state 285
+state 286
 
    80 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON .
 
     $default  reduce using rule 80 (if_statement)
 
 
-state 286
+state 287
 
    84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list BREAK SEMICOLON case_clasule
 
-    COLON  shift, and go to state 289
+    COLON  shift, and go to state 290
 
 
-state 287
+state 288
 
    86 other_clasule: OTHER COLON statement_list .
 
     $default  reduce using rule 86 (other_clasule)
 
 
-state 288
+state 289
 
    83 switch_statement: SWITCH OPEN_PARENTHESIS identifier CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON .
 
     $default  reduce using rule 83 (switch_statement)
 
 
-state 289
+state 290
 
    84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list BREAK SEMICOLON case_clasule
 
@@ -3544,7 +3553,7 @@ state 289
     simple_variable_declaration   go to state 28
     type                          go to state 29
     compost_variable_declaration  go to state 30
-    statement_list                go to state 290
+    statement_list                go to state 291
     statement                     go to state 198
     return_statement              go to state 199
     assignment_statement          go to state 200
@@ -3557,32 +3566,32 @@ state 289
     identifier                    go to state 207
 
 
-state 290
+state 291
 
    84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . BREAK SEMICOLON case_clasule
 
-    BREAK  shift, and go to state 291
-
-
-state 291
-
-   84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK . SEMICOLON case_clasule
-
-    SEMICOLON  shift, and go to state 292
+    BREAK  shift, and go to state 292
 
 
 state 292
 
-   84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON . case_clasule
+   84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK . SEMICOLON case_clasule
 
-    CASE  shift, and go to state 267
-
-    $default  reduce using rule 85 (case_clasule)
-
-    case_clasule  go to state 293
+    SEMICOLON  shift, and go to state 293
 
 
 state 293
+
+   84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON . case_clasule
+
+    CASE  shift, and go to state 268
+
+    $default  reduce using rule 85 (case_clasule)
+
+    case_clasule  go to state 294
+
+
+state 294
 
    84 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule .
 
