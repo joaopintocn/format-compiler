@@ -10,7 +10,7 @@
  * "Lex & Yacc" de John R. Levine, Tony Mason e Doug Brown.
  */
 
-#include "global.h"
+#include "y.tab.h"
 
 %}
 
@@ -20,11 +20,11 @@ EOF				-1
 LETRA			[a-zA-Z]
 DIGITO			[0-9]
 EXPOENTE 		(e|E)[+-]?{DIGITO}+
-NUM_INT			{DIGITO}+
-NUM_PONTO 		{NUM_INT}"."{DIGITO}+
-NUM_COM	 		({NUM_PONTO}|{NUM_INT})(i|I)
-NUM_REAL 		{NUM_PONTO}|{NUM_PONTO}{EXPOENTE}
-NUMERO 			{NUM_REAL}|{NUM_COM}|{NUM_INT}
+INT_NUMBER		{DIGITO}+
+NUM_PONTO 		{INT_NUMBER}"."{DIGITO}+
+COMPLEX_NUMBER	({NUM_PONTO}|{INT_NUMBER})(i|I)
+REAL_NUMBER 	{NUM_PONTO}|{NUM_PONTO}{EXPOENTE}
+NUMBER 			{REAL_NUMBER}|{COMPLEX_NUMBER}|{INT_NUMBER}
 
 ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
@@ -34,7 +34,7 @@ ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
 %%
 
-\%%.*	{ emit(COMMENT, yytext); }
+\%%.*				{ /* emit(COMMENT, yytext); */ }
 
 import				{return IMPORT; }
 variables			{return VARIABLES_SECTION; }
@@ -96,7 +96,7 @@ end_switch 			{return END_SWITCH; }
 
 "&&" 				{return AND_OP; }
 "||" 				{return OR_OP; }
-"!" 				{return NOT_OP;}			
+"!" 				{return NEG_OP;}			
 
 "<=" 				{return LEQ_OP;}
 ">=" 				{return BEQ_OP;}
@@ -115,9 +115,9 @@ end_switch 			{return END_SWITCH; }
 \"(\\.|[^\\"])*\" 	{return STRING; } 
 
 {ID}				{ return ID;}
-{NUM_INT}			{ return INT_NUMBER; }
-{NUM_COM}			{ return COMPLEX_NUMBER; }
-{NUM_REAL} 			{ return REAL_NUMBER; }
+{INT_NUMBER}		{ return INT_NUMBER; }
+{COMPLEX_NUMBER}	{ return COMPLEX_NUMBER; }
+{REAL_NUMBER} 		{ return REAL_NUMBER; }
 
 {EOF}				{ return EOF; }
 

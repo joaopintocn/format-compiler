@@ -17,8 +17,8 @@
 
 %start program
 
-%token <sValue> NAME		/* nome de alguma coisa */
-%token <iVlaue> NUMBER
+%token <sValue> NAME ID		/* nome de alguma coisa */
+%token <iValue> NUMBER COMPLEX_NUMBER REAL_NUMBER INT_NUMBER
 %token					
 
 IMPORT				/* import*/
@@ -97,6 +97,8 @@ BT_OP				/* > */
 EXPO_OP				/* ^ */ 
 DOT_OP 				/*.*/
 
+COMMENT
+
 %%
 
 program :
@@ -123,7 +125,6 @@ variable_section :
 
 variable_declarations :
 	variable_declaration SEMICOLON variable_declarations_tail
-	|
 	;
 
 variable_declarations_tail :
@@ -179,8 +180,13 @@ compost_variable_declaration :
 	;
 
 matrix_assignment : 
-	ASSIGN_OP OPEN_BRACES values CLOSE_BRACES values_group_list
+	matrix_assignment_aux
 	|
+	;
+
+
+matrix_assignment_aux : 
+	ASSIGN_OP OPEN_BRACES values CLOSE_BRACES values_group_list
 	;
 
 set_assignment :
