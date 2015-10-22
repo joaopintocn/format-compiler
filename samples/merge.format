@@ -6,7 +6,7 @@ procedure merge(int vecSize, matrix_of int [0..vecSize] vec)
 
 	tmp = (int ref) alloc(vecSize * sizeof(int));
 
-	if (tmp <> null)
+	if (tmp ! null)
 		return 1;
 	end_if;
 
@@ -24,7 +24,7 @@ procedure merge(int vecSize, matrix_of int [0..vecSize] vec)
  		++k;
 	end_while;
 
-	if (i <> mid)
+	if (i ! mid)
 		while (j < vecSize)
 			tmp[k++] = vec[j++];
 		end_while;
