@@ -1,5 +1,7 @@
 %% Segundo exemplo de código usado no primeiro relatório 
 
+variables: int x = factorial(4);
+
 subprograms:
 
 	function int factorial ( int n ): 
@@ -9,5 +11,3 @@ subprograms:
 	   aux = factorial( n - 1 );
 	   return n * aux;
 	end_function;
-
-	int x = factorial(4);
