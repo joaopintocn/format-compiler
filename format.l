@@ -42,6 +42,7 @@ real  				{return REAL; }
 complex  			{return COMPLEX; }
 double 				{return DOUBLE; }
 string 				{return STRING;}
+boolean 			{return BOOLEAN;}	
 enum 				{return ENUM; }
 struct 				{return STRUCT; }
 set_of 				{return SET_OF; }
@@ -62,15 +63,12 @@ end_if 				{return END_IF;}
 end_for 			{return END_FOR; }
 end_while 			{return END_WHILE; }
 end_switch 			{return END_SWITCH; }
+in 					{return IN;}
 end_procedure 		{return END_PROCEDURE;}
 end_function		{return END_FUNCTION; }
-end_module			{return END_MODULE; }
-false 				{return FALSE; }
-true 				{return TRUE; }
 procedure 			{return PROCEDURE;}
 function 			{return FUNCTION; }
 import				{return IMPORT; }
-module 				{return MODULE; }
 return				{return RETURN;	}
 variables			{return VARIABLES_SECTION; }
 subprograms			{return SUBPROGRAMS_SECTION; }
@@ -82,6 +80,8 @@ subprograms			{return SUBPROGRAMS_SECTION; }
 ")"	 				{return CLOSE_PARENTHESIS; }
 "["  				{return OPEN_BRACKETS; }
 "]"  				{return CLOSE_BRACKETS; }
+"{"  				{return OPEN_BRACES; }
+"}"  				{return CLOSE_BRACES; }
 ".."				{return RANGE; }
 
 "+=" 				{return ADD_ASSIGN_OP;}				
@@ -92,12 +92,13 @@ subprograms			{return SUBPROGRAMS_SECTION; }
 "++" 				{return INCREMENT_OP; }	
 "--" 				{return DECREMENT_OP; }
 "&&" 				{return AND_OP; }
-"||" 				{return OR_OP; }			
+"||" 				{return OR_OP; }
+"!" 				{return NOT_OP;}			
 "=" 				{return ASSIGN_OP; }	
 "<=" 				{return LEQ_OP;}
 ">=" 				{return BEQ_OP;}
 "==" 				{return EQ_OP; }
-"<>" 				{return NEQ_OP;}
+"!=" 				{return NEQ_OP;}
 "-"  				{return SUB_OP; }
 "+"  				{return ADD_OP; }
 "*"  				{return MULT_OP;}	
