@@ -79,8 +79,8 @@
 #define MULT_OP 322				//
 #define DIV_OP 323				//
 #define MOD_OP 324				//
-#define LT_OP 325				//
-#define BT_OP 326				//	
+#define LT_OP 325				// <
+#define BT_OP 326				// >
 #define EXPO_OP 327				//
 #define DOT_OP 328   			//
 #define ID 329 					//
@@ -91,6 +91,8 @@
 #define VARIABLES_SECTION 333
 #define SUBPROGRAMS_SECTION 334
 #define COMMENT 335
+#define BOOLEAN 336
+#define NOT_OP 335
 
 extern int yylineno;
 extern char *yytext;

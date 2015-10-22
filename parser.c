@@ -19,6 +19,7 @@ void subprogram_call(), destination(), argument_list();
 void return_statement(), case_clasule(), argument_list(), destination(); 
 void term_or(), term_or_tail(), term_and(), term_and_tail(), term_comparison(), term_and_tail(), term_comparison_tail();
 void incr_decr(), incr_decr_tail(), term_and(), term_and_tail(), term_comparison(), term_and_tail(), term_comparison_tail();
+void argument_list_tail();
 
 
 void parse(char *src)  /*  parses and translates expression list  */
@@ -466,11 +467,16 @@ void statement ()
         return_statement(); return;
     }
 
-    if (lookahead == PROCEDURE || lookahead == FUNCTION) {
+    // TODO: Comment this later!
+    // Same code is in incr_decr
+    if (lookahead == ID) {
+      eat(ID); 
+      if (lookahead == OPEN_PARENTHESIS) {     
         subprogram_call(); return;
+      }
+      if (lookahead == ASSIGN_OP) 
+        assignment_statement();
     }
-
-    assignment_statement();
 
 } 
 
@@ -493,8 +499,9 @@ void assignment_statement ()
  * <assignment_statement> ::=    
  *      <destination> '=' <expression>
  */
-  
-    destination(); eat(ASSIGN_OP); expression();
+    // Tratado no statement
+    // destination(); 
+    eat(ASSIGN_OP); expression(); eat(SEMICOLON);
 
 }
 
@@ -596,6 +603,27 @@ void for_statement ()
 }
 
 void argument_list() {
+/*
+ * <argument_list> ::=    
+ *    <expression> <argument_list_tail> | λ
+ */
+
+  if (lookahead != CLOSE_PARENTHESIS) {
+    expression(); argument_list_tail();
+  }
+  
+
+}
+
+void argument_list_tail() {
+/*
+ * <argument_list_tail> ::=    
+ *    ‘,’ <argument_list> | λ
+ */
+
+  if (lookahead == COMMA) {
+    eat(COMMA); argument_list();
+  }
 
 }
 
@@ -605,8 +633,9 @@ void subprogram_call ()
  * <subprogram_call> ::=    
  *      <identifier> '(' [ <argument_list> ] ')'
 */
-  
-  identifier(); eat(OPEN_PARENTHESIS); 
+  // Eaten on statement
+  //identifier();
+  eat(OPEN_PARENTHESIS); 
 
   if (lookahead != CLOSE_PARENTHESIS)
   {
@@ -771,10 +800,10 @@ void term_tail()
  */
 
   if (lookahead == ADD_OP) {
-    eat(ADD_OP); term(); emit(ADD_OP, yytext); term_tail();
+    eat(ADD_OP); term(); term_tail();
   }
   else if (lookahead == SUB_OP) {
-    eat(SUB_OP); term(); emit(SUB_OP, yytext); term_tail();
+    eat(SUB_OP); term(); term_tail();
   }
   else {
     /* Empty */
@@ -801,13 +830,13 @@ void factor_tail ()
  */
 
   if (lookahead == MULT_OP) {
-    eat(MULT_OP); factor(); emit(MULT_OP, yytext); factor_tail();
+    eat(MULT_OP); factor(); factor_tail();
   }
   else if (lookahead == DIV_OP) {
-    eat(DIV_OP); factor(); emit(DIV_OP, yytext); factor_tail();
+    eat(DIV_OP); factor(); factor_tail();
   }
   else if (lookahead == MOD_OP) {
-    eat(MOD_OP); factor(); emit(MOD_OP, yytext); factor_tail();
+    eat(MOD_OP); factor(); factor_tail();
   }
   else {
     /* Empty */
@@ -877,7 +906,7 @@ void incr_decr()
 {
 /*
  * <incr_decr>    ::=    
- *       <id> | <lit> | (<expr>)
+ *       <id> | <lit> | <function_call> | (<expr>)
  */
 
     if (lookahead == OPEN_PARENTHESIS) {
@@ -886,6 +915,11 @@ void incr_decr()
     else if (lookahead == ID ) {
         char* id_lexeme = yytext;
         eat(ID);
+        if (lookahead == OPEN_PARENTHESIS) {
+          subprogram_call(); return;
+        }
+        if (lookahead == ASSIGN_OP)
+          assignment_statement();
     }
     else if (lookahead == INT_NUMBER) {
         char* INT_NUMBER_value = yytext;

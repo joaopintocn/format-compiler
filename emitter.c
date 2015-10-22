@@ -8,7 +8,7 @@ void emit (int t, char* tval)  /*  generates output  */
     case COMMENT:
       printf("%s\n", tval); break; 
     case STRING:
-      printf("\"%s\"", tval); break; 
+      printf("%s", tval); break; 
     case INT:
       printf("int "); break; 
     case REAL:
@@ -66,19 +66,17 @@ void emit (int t, char* tval)  /*  generates output  */
     case TRUE:
       printf("TRUE"); break;
     case PROCEDURE:
-      printf("PROCEDURE\n"); break;
+      printf("\nPROCEDURE\n"); break;
     case FUNCTION:
-      printf("function "); break;
+      printf("\nfunction "); break;
     case IMPORT:
-      printf("MOD\n"); break;
-    case MODULE:
-      printf("MOD\n"); break;
+      printf("\nimport "); break;
     case RETURN:
       printf("return "); break;
     case VARIABLES_SECTION:
-      printf("MOD\n"); break;
+      printf("\n\nvariables"); break;
     case SUBPROGRAMS_SECTION:
-      printf("subprograms"); break;
+      printf("\n\nsubprograms"); break;
     case SEMICOLON:
       printf(";\n"); break;      
     case COMMA:
@@ -114,9 +112,29 @@ void emit (int t, char* tval)  /*  generates output  */
     case  EQ_OP:
       printf("== "); break;
     case  NEQ_OP:
-      printf("<> "); break;
+      printf("!= "); break;
+
+    case ASSIGN_OP:
+      printf("= "); break;  
 
 
+
+    case SUB_OP:
+      printf("- "); break;
+    case ADD_OP:
+      printf("+ "); break;
+    case MULT_OP:
+      printf("* "); break;
+    case DIV_OP:
+     printf("/ "); break;
+    case MOD_OP:
+      printf("%% "); break;
+    case LT_OP:
+      printf("< "); break;
+    case BT_OP:
+      printf("> "); break;
+    case EXPO_OP:
+      printf("ˆ "); break;
 
     default:     
       printf("\ntoken %d, tokenval %s\n", t, tval);
@@ -142,20 +160,5 @@ void emit (int t, char* tval)  /*  generates output  */
      printf("MOD\n"); break;
 "||" case  OR_OP:
      printf("MOD\n"); break;      
-"=" case ASSIGN_OP:
-     printf("MOD\n"); break;  
-"-" case SUB_OP:
-     printf("MOD\n"); break;
-"+" case ADD_OP:
-     printf("MOD\n"); break;
-"*" case MULT_OP;} 
-"/" case DIV_OP:
-     printf("MOD\n"); break;
-"%" case MOD_OP:
-     printf("MOD\n"); break;
-"<" case LT_OP:
-     printf("MOD\n"); break;
-">" case BT_OP;}
-"^"   case EXPO_OP;}
-"." case DOT_OP;}
+
 */
