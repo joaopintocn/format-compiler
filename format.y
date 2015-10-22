@@ -191,7 +191,7 @@ matrix_assignment_aux :
 
 
 matrix_assignment_aux_aux : 
-	OPEN_BRACES values CLOSE_BRACES values_group_list
+	OPEN_BRACES expression CLOSE_BRACES values_group_list
 	;
 
 values_group_list :
@@ -200,16 +200,21 @@ values_group_list :
 	;
 
 set_assignment :
-	ASSIGN_OP OPEN_BRACES values values_list CLOSE_BRACES
+	set_assignment_aux
 	|
 	;
 
-values :
+set_assignment_aux :
+	ASSIGN_OP OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
+	;
+
+
+set_assignment_aux_aux :
 	expression values_list
 	;
 
 values_list :
-	COMMA values
+	COMMA set_assignment_aux_aux
 	|
 	;
 
@@ -391,8 +396,8 @@ term_and :
 	;
 
 term_bool_comparison_tail :
-	EQ_OP term_comparison term_comparison_tail /* EQ_OP ‘==’ */
-	| NEQ_OP term_comparison term_comparison_tail /* NEQ_OP ‘!=’ */
+	EQ_OP term_bool_comparison term_bool_comparison_tail /* EQ_OP ‘==’ */
+	| NEQ_OP term_bool_comparison term_bool_comparison_tail /* NEQ_OP ‘!=’ */
 	|
 	;
 
@@ -401,10 +406,10 @@ term_bool_comparison :
 	;
 
 term_arit_comparison_tail :
-	LEQ_OP term_comparison term_comparison_tail /* LEQ_OP = <= */
-	| BEQ_OP term_comparison term_comparison_tail /* BEQ_OP = >= */
-	| LT_OP term_comparison term_comparison_tail /* LT_OP = < */
-	| BT_OP term_comparison term_comparison_tail /* LT_OP = > */
+	LEQ_OP term_arit_comparison term_arit_comparison_tail /* LEQ_OP = <= */
+	| BEQ_OP term_arit_comparison term_arit_comparison_tail /* BEQ_OP = >= */
+	| LT_OP term_arit_comparison term_arit_comparison_tail /* LT_OP = < */
+	| BT_OP term_arit_comparison term_arit_comparison_tail /* LT_OP = > */
 	| 
 	;
 
@@ -434,18 +439,20 @@ factor :
 	;	
 
 expo_tail :
-	EXPO_OP incr_decr incr_decr_tail /* ^ */
+	EXPO_OP expo expo_tail /* ^ */
 	|
 	;			
 
 expo :
-	INCREMENT_OP incr_decr /* ++ */
-	| DECREMENT_OP incr_decr /* -- */
-	| NEG_OP incr_decr /* ! */
+	negation negation_tail
+
+
+negation_tail:
+	NEG_OP negation negation_tail /* ! */
 	|
 	;	
 	
-incr_decr :
+negation :
 	identifier
 	| NUMBER /* no lugar de <literal> */
 	| function_call /* no lugar de function call */
@@ -463,15 +470,6 @@ function_call :
 	- term_comparison_P
 
 */
-
-incr_decr_tail : STRING NUMBER /* não declarada */
-	;
-
-term_comparison : NUMBER STRING /* não declarada */
-	;
-
-term_comparison_tail : COMMA STRING /* não declarada */
-	;
 
 identifier : STRING ;/* CORRIGIR
 	[a-zA-z]{[a-zA-Z0-9_]} só pra figurar mesmo, mas tem que ajeitar*/
