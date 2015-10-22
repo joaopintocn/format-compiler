@@ -1,5 +1,8 @@
 %% Segundo exemplo de código usado no primeiro relatório 
 
+#import "qwer.f"
+#import "math.f"
+
 subprograms:
 
 	function int factorial ( int n ): 

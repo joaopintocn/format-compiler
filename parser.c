@@ -60,13 +60,12 @@ void program_header()
 {
 /*
  * <program_header> ::=
- *      { <import> }
- * 
+ *    <import> <program_header> | λ
  */ 
 
     if (lookahead != VARIABLES_SECTION && lookahead != SUBPROGRAMS_SECTION) {
-        import();
-    }
+        import(); program_header();
+    } // else EMPTY
 }
 
 
