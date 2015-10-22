@@ -36,7 +36,15 @@ ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
 \%%.*	{ emit(COMMENT, yytext); }
 
-\"(\\.|[^\\"])*\" 	{return STRING; } 
+import				{return IMPORT; }
+variables			{return VARIABLES_SECTION; }
+subprograms			{return SUBPROGRAMS_SECTION; }
+procedure 			{return PROCEDURE;}
+function 			{return FUNCTION; }
+end_procedure 		{return END_PROCEDURE;}
+end_function		{return END_FUNCTION; }
+return				{return RETURN;	}
+
 int 				{return INT; }
 real  				{return REAL; }
 complex  			{return COMPLEX; }
@@ -51,9 +59,11 @@ end_struct 			{return END_STRUCT; }
 end_enum 			{return END_ENUM; }
 const 				{return CONST; }
 ref 				{return REF; }
+
 if 					{return IF; }
 else 				{return ELSE;}
 for  				{return FOR; }
+in 					{return IN;}
 while  				{return WHILE; }
 switch 				{return SWITCH; }
 case 				{return CASE; }
@@ -63,15 +73,6 @@ end_if 				{return END_IF;}
 end_for 			{return END_FOR; }
 end_while 			{return END_WHILE; }
 end_switch 			{return END_SWITCH; }
-in 					{return IN;}
-end_procedure 		{return END_PROCEDURE;}
-end_function		{return END_FUNCTION; }
-procedure 			{return PROCEDURE;}
-function 			{return FUNCTION; }
-import				{return IMPORT; }
-return				{return RETURN;	}
-variables			{return VARIABLES_SECTION; }
-subprograms			{return SUBPROGRAMS_SECTION; }
 
 ";"	 				{return SEMICOLON; }			
 ","	 				{return COMMA; }
@@ -84,6 +85,7 @@ subprograms			{return SUBPROGRAMS_SECTION; }
 "}"  				{return CLOSE_BRACES; }
 ".."				{return RANGE; }
 
+"=" 				{return ASSIGN_OP; }	
 "+=" 				{return ADD_ASSIGN_OP;}				
 "-=" 				{return SUB_ASSIGN_OP;}	
 "*=" 				{return MULT_ASSIGN_OP; }	
@@ -91,10 +93,11 @@ subprograms			{return SUBPROGRAMS_SECTION; }
 "%=" 				{return MOD_ASSIGN_OP; }	
 "++" 				{return INCREMENT_OP; }	
 "--" 				{return DECREMENT_OP; }
+
 "&&" 				{return AND_OP; }
 "||" 				{return OR_OP; }
 "!" 				{return NOT_OP;}			
-"=" 				{return ASSIGN_OP; }	
+
 "<=" 				{return LEQ_OP;}
 ">=" 				{return BEQ_OP;}
 "==" 				{return EQ_OP; }
@@ -108,6 +111,8 @@ subprograms			{return SUBPROGRAMS_SECTION; }
 ">"  				{return BT_OP;}
 "^"  			    {return EXPO_OP;}
 "."	 				{return DOT_OP;}
+
+\"(\\.|[^\\"])*\" 	{return STRING; } 
 
 {ID}				{ return ID;}
 {NUM_INT}			{ return INT_NUMBER; }

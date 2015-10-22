@@ -21,22 +21,14 @@
 
 NAME					/* nome de alguma coisa */
 
-IMPORT					/* import*/
+IMPORT						/* import*/
 VARIABLES_SECTION			/* variables*/
 SUBPROGRAMS_SECTION			/* subprograms*/
-PROCEDURE				/* procedure*/
-FUNCTION				/* function*/
-
-SEMICOLON 				/* ; */		
-COMMA					/* , */
-COLON					/* : */		
-OPEN_PARENTHESIS        		/* ( */
-CLOSE_PARENTHESIS       		/* ) */
-OPEN_BRACKETS				/* [ */
-CLOSE_BRACKETS				/* ] */
-OPEN_BRACES				/* { */
-CLOSE_BRACES				/* } */
-RANGE					/* .. */
+PROCEDURE					/* procedure*/
+FUNCTION					/* function*/
+END_PROCEDURE
+END_FUNCTION
+RETURN
 
 INT
 REAL
@@ -51,7 +43,7 @@ END_STRUCT
 END_ENUM
 CONST
 REF
-	
+
 IF
 ELSE
 FOR
@@ -61,26 +53,35 @@ SWITCH
 CASE
 BREAK
 OTHER
-RETURN
 END_IF
 END_FOR
 END_WHILE
 END_SWITCH
-END_PROCEDURE
-END_FUNCTION
 
-ASSIGN_OP		/* = */
+SEMICOLON 					/* ; */		
+COMMA						/* , */
+COLON						/* : */		
+OPEN_PARENTHESIS        	/* ( */
+CLOSE_PARENTHESIS       	/* ) */
+OPEN_BRACKETS				/* [ */
+CLOSE_BRACKETS				/* ] */
+OPEN_BRACES					/* { */
+CLOSE_BRACES				/* } */
+RANGE						/* .. */
+
+ASSIGN_OP			/* = */
 ADD_ASSIGN_OP 		/* += */	
 SUB_ASSIGN_OP 		/* -= */
 MULT_ASSIGN_OP		/* *= */
 DIV_ASSIGN_OP		/* /= */	
-MOD_ASSIGN_OP       	/* %= */
+MOD_ASSIGN_OP       /* %= */
 INCREMENT_OP      	/* ++ */
 DECREMENT_OP		/* -- */
 
 NEG_OP				/* ! */
 AND_OP				/* && */
 OR_OP 				/* || */
+
 LEQ_OP				/* <= */
 BEQ_OP 				/* >= */
 EQ_OP				/* == */
