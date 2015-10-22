@@ -1,16 +1,4 @@
 %{
-	#include "y.tab.h"
-	extern int yylval;
-%}
-
-%%
-[0-9]+ {yylval = atoi(yytext); return NUMBER;}
-[ \t] ; /* ignorar expaço em branco */
-\n return 0;
-. return yytext[0];
-
-%%
-%{
 
 /* Arquivo: lex.l
  * Autores: Breno Cardoso
@@ -22,16 +10,12 @@
  * "Lex & Yacc" de John R. Levine, Tony Mason e Doug Brown.
  */
 
-#include "y.tab.h"
-unsigned charCount = 0, wordCount = 0, lineCount = 0;
+#include "global.h"
 
 %}
 
-word [^ \t\n]+
-eol  \n
-
-
-WS			[ \t\r\n]+
+WS				[ \t\r\n]+
+EOF				-1
 
 LETRA			[a-zA-Z]
 DIGITO			[0-9]
@@ -50,122 +34,92 @@ ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
 %%
 
-	/* Foi especificado no primeiro relatório que os comentários seriam definidos através de %% */
-\%%.*	{ printf("(COMMENT %s)\n", yytext);}
+\%%.*	{ emit(COMMENT, yytext); }
 
+\"(\\.|[^\\"])*\" 	{return STRING; } 
+int 				{return INT; }
+real  				{return REAL; }
+complex  			{return COMPLEX; }
+double 				{return DOUBLE; }
+string 				{return STRING;}
+enum 				{return ENUM; }
+struct 				{return STRUCT; }
+set_of 				{return SET_OF; }
+matrix_of 			{return MATRIX_OF; }
+end_struct 			{return END_STRUCT; }
+end_enum 			{return END_ENUM; }
+const 				{return CONST; }
+ref 				{return REF; }
+if 					{return IF; }
+else 				{return ELSE;}
+for  				{return FOR; }
+while  				{return WHILE; }
+switch 				{return SWITCH; }
+case 				{return CASE; }
+break 				{return BREAK; }
+other               {return OTHER; } 
+end_if 				{return END_IF;}
+end_for 			{return END_FOR; }
+end_while 			{return END_WHILE; }
+end_switch 			{return END_SWITCH; }
+end_procedure 		{return END_PROCEDURE;}
+end_function		{return END_FUNCTION; }
+end_module			{return END_MODULE; }
+false 				{return FALSE; }
+true 				{return TRUE; }
+procedure 			{return PROCEDURE;}
+function 			{return FUNCTION; }
+import				{return IMPORT; }
+module 				{return MODULE; }
+return				{return RETURN;	}
+variables			{return VARIABLES_SECTION; }
+subprograms			{return SUBPROGRAMS_SECTION; }
 
-\"(\\.|[^\\"])*\" 	{ printf("(STRING %s)\n", yytext); } 
-int 				{printf ("KEYWORD INT\n",yytext); }
-real  				{printf ("KEYWORD REAL\n",yytext); }
-complex  			{printf ("KEYWORD COMPLEX\n",yytext); }
-single_real 		{printf ("KEYWORD SINGLE_REAL\n",yytext); }
-double_real 		{printf ("KEYWORD DOUBLE_REAL\n",yytext); }
-string 				{printf ("KEYWORD STRING\n",yytext);}
-enum 				{printf ("KEYWORD ENUM\n",yytext); }
-struct 				{printf ("KEYWORD STRUCT\n",yytext); }
-SET_OF 				{printf ("KEYWORD SET_OF\n",yytext); }
-matrix_of 			{printf ("KEYWORD MATRIX_OF\n",yytext); }
-end_struct 			{printf ("KEYWORD END_STRUCT \n",yytext); }
-const 				{printf ("KEYWORD CONST\n",yytext); }
-ref 				{printf ("KEYWORD REF\n",yytext); }
-if 					{printf ("KEYWORD IF\n",yytext); }
-else 				{printf ("KEYWORD ELSE\n",yytext);}
-for  				{printf ("KEYWORD FOR\n",yytext); }
-while  				{printf ("KEYWORD WHILE\n",yytext); }
-switch 				{printf ("KEYWORD SWITCH\n",yytext); }
-case 				{printf ("KEYWORD CASE\n",yytext); }
-break 				{printf ("KEYWORD BREAK\n",yytext); }
-other               {printf ("KEYWORD OTHER\n",yytext); } 
-end_if 				{printf ("KEYWORD END_IF\n",yytext);}
-end_for 			{printf ("KEYWORD END_FOR\n",yytext); }
-end_while 			{printf ("KEYWORD END_WHILE\n",yytext); }
-end_switch 			{printf ("KEYWORD END_SWITCH\n",yytext); }
-end_procedure 		{printf ("KEYWORD END_PROCEDURE\n",yytext);}
-end_function		{printf ("KEYWORD END_FUNCTION\n",yytext); }
-end_module			{printf ("KEYWORD END_MODULE\n",yytext); }
-false 				{printf ("KEYWORD FALSE\n",yytext); }
-true 				{printf ("KEYWORD TRUE\n",yytext); }
-procedure 			{printf ("KEYWORD PROCEDURE\n",yytext);}
-function 			{printf ("KEYWORD FUNCTION\n",yytext); }
-import				{printf ("KEYWORD IMPORT\n",yytext); }
-module 				{printf ("KEYWORD MODULE\n",yytext); }
-return				{printf("KEYWORD RETURN \n", yytext);}
-alloc				{printf("KEYWORD ALLOC \n", yytext);}
-free				{printf("KEYWORD FREE \n", yytext);}
-null                {printf("KEYWORD NULL \n", yytext);}
+";"	 				{return SEMICOLON; }			
+","	 				{return COMMA; }
+":"	 				{return COLON; }				
+"("	 				{return OPEN_PARENTHESIS; }
+")"	 				{return CLOSE_PARENTHESIS; }
+"["  				{return OPEN_BRACKETS; }
+"]"  				{return CLOSE_BRACKETS; }
+".."				{return RANGE; }
 
-";"	 				{printf("SEMICOLON\n", yytext); }			
-","	 				{printf("DELIMITER COMMA \n", yytext); }
-":"	 				{printf("DELIMITER COLON \n", yytext); }				
-"("	 				{printf("DELIMITER OPEN_PARENTHESIS\n", yytext); }
-")"	 				{printf("DELIMITER CLOSE_PARENTHESIS\n", yytext); }
-"["  				{printf("DELIMITER OPEN_BRACKETS\n", yytext); }
-"]"  				{printf("DELIMITER CLOSE_BRACKETS\n", yytext); }
-".."				{printf("RANGE\n", yytext); }
+"+=" 				{return ADD_ASSIGN_OP;}				
+"-=" 				{return SUB_ASSIGN_OP;}	
+"*=" 				{return MULT_ASSIGN_OP; }	
+"/=" 				{return DIV_ASSIGN_OP; }	
+"%=" 				{return MOD_ASSIGN_OP; }	
+"++" 				{return INCREMENT_OP; }	
+"--" 				{return DECREMENT_OP; }
+"&&" 				{return AND_OP; }
+"||" 				{return OR_OP; }			
+"=" 				{return ASSIGN_OP; }	
+"<=" 				{return LEQ_OP;}
+">=" 				{return BEQ_OP;}
+"==" 				{return EQ_OP; }
+"<>" 				{return NEQ_OP;}
+"-"  				{return SUB_OP; }
+"+"  				{return ADD_OP; }
+"*"  				{return MULT_OP;}	
+"/"  				{return DIV_OP; }
+"%"  				{return MOD_OP; }
+"<"  				{return LT_OP; }
+">"  				{return BT_OP;}
+"^"  			    {return EXPO_OP;}
+"."	 				{return DOT_OP;}
 
-"+=" 				{printf("OPERATOR ADD_ASSIGN\n", yytext);}				
-"-=" 				{printf("OPERATOR SUB_ASSIGN\n", yytext);}	
-"*=" 				{printf("OPERATOR MULT_ASSIGN\n", yytext); }	
-"/=" 				{printf("OPERATOR DIV_ASSIGN\n", yytext); }	
-"%=" 				{printf("OPERATOR MOD_ASSIGN\n", yytext); }	
-"++" 				{printf("OPERATOR INCREMENT\n", yytext); }	
-"--" 				{printf("OPERATOR DECREMENT\n", yytext); }
-"&&" 				{printf("OPERATOR AND\n", yytext); }
-"||" 				{printf("OPERATOR OR\n", yytext); }	
-"!"					{printf("OPERATOR NOT\n", yytext); }	
-"=" 				{printf("OPERATOR ASSIGN\n", yytext); }	
-"<=" 				{printf("OPERATOR LESS OR EQUAL\n", yytext);}
-">=" 				{printf("OPERATOR BIGGER OR EQUAL\n", yytext);}
-"==" 				{printf("OPERATOR  EQUAL\n", yytext); }
-"<>" 				{printf("OPERATOR NOT EQUAL\n", yytext);}
-"-"  				{printf("SUB OPERATOR \n", yytext); }
-"+"  				{printf("ADD OPERATOR \n", yytext); }
-"*"  				{printf("MULT OPERATOR \n", yytext);}	
-"/"  				{printf("DIV OPERATOR \n", yytext); }
-"%"  				{printf("MOD OPERATOR \n", yytext); }
-"<"  				{printf("LESS THAN OPERATOR \n", yytext); }
-">"  				{printf("BIGGER THAN OPERATOR \n", yytext);}
-"^"  			    {printf("EXPONENTIATION OPERATOR \n", yytext);}
-"."	 				{printf("DOT OPERATOR \n", yytext);}
+{ID}				{ return ID;}
+{NUM_INT}			{ return INT_NUMBER; }
+{NUM_COM}			{ return COMPLEX_NUMBER; }
+{NUM_REAL} 			{ return REAL_NUMBER; }
 
-{ID}		{ printf("ID \n", yytext);}
-{NUM_INT}	{ printf("INTEGER NUMBER \n", yytext); }
-{NUM_COM}	{ printf("COMPLEX NUMBER \n", yytext); }
-{NUM_REAL} 	{ printf("REAL NUMBER \n", yytext); }
-
-
-
-	/*
-{word}	{ wordCount++; charCount += yyleng; }
-{eol}	{ charCount++; lineCount++; }
-	*/
+{EOF}				{ return EOF; }
 
 {WS}	{ /* whitespace separates tokens */ }
-.		{ charCount++; printf("(OTHER %s)\n", yytext); /* discard bad characters */ }
+.		{ /* discard bad characters */ }
 
 
 %%
-
-
-int main(argc,argv)
-int argc;
-char **argv;
-{
-
-	if (argc > 1) {
-		FILE *file;
-
-		file = fopen(argv[1], "r");
-		if (!file) {
-			fprintf(stderr,"could not open %s\n",argv[1]);
-			exit(1);
-		}
-		yyin = file;
-	}
-
-	yylex();
-	return 0;
-}
 
 int yywrap()
 {
