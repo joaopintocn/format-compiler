@@ -40,160 +40,162 @@
       know about them.  */
    enum yytokentype {
      NAME = 258,
-     ID = 259,
-     NUMBER = 260,
-     COMPLEX_NUMBER = 261,
-     REAL_NUMBER = 262,
-     INT_NUMBER = 263,
-     IMPORT = 264,
-     VARIABLES_SECTION = 265,
-     SUBPROGRAMS_SECTION = 266,
-     PROCEDURE = 267,
-     FUNCTION = 268,
-     END_PROCEDURE = 269,
-     END_FUNCTION = 270,
-     RETURN = 271,
-     INT = 272,
-     REAL = 273,
-     COMPLEX = 274,
-     STRING = 275,
-     DOUBLE = 276,
-     BOOLEAN = 277,
-     ENUM = 278,
-     STRUCT = 279,
-     SET_OF = 280,
-     MATRIX_OF = 281,
-     END_STRUCT = 282,
-     END_ENUM = 283,
-     CONST = 284,
-     REF = 285,
-     IF = 286,
-     ELSE = 287,
-     FOR = 288,
-     IN = 289,
-     WHILE = 290,
-     SWITCH = 291,
-     CASE = 292,
-     BREAK = 293,
-     OTHER = 294,
-     END_IF = 295,
-     END_FOR = 296,
-     END_WHILE = 297,
-     END_SWITCH = 298,
-     SEMICOLON = 299,
-     COMMA = 300,
-     COLON = 301,
-     OPEN_PARENTHESIS = 302,
-     CLOSE_PARENTHESIS = 303,
-     OPEN_BRACKETS = 304,
-     CLOSE_BRACKETS = 305,
-     OPEN_BRACES = 306,
-     CLOSE_BRACES = 307,
-     RANGE = 308,
-     ASSIGN_OP = 309,
-     ADD_ASSIGN_OP = 310,
-     SUB_ASSIGN_OP = 311,
-     MULT_ASSIGN_OP = 312,
-     DIV_ASSIGN_OP = 313,
-     MOD_ASSIGN_OP = 314,
-     INCREMENT_OP = 315,
-     DECREMENT_OP = 316,
-     NEG_OP = 317,
-     AND_OP = 318,
-     OR_OP = 319,
-     LEQ_OP = 320,
-     BEQ_OP = 321,
-     EQ_OP = 322,
-     NEQ_OP = 323,
-     SUB_OP = 324,
-     ADD_OP = 325,
-     MULT_OP = 326,
-     DIV_OP = 327,
-     MOD_OP = 328,
-     LT_OP = 329,
-     BT_OP = 330,
-     EXPO_OP = 331,
-     DOT_OP = 332,
-     COMMENT = 333
+     IDENTIFIER = 259,
+     STRING = 260,
+     NUMBER = 261,
+     COMPLEX_NUMBER = 262,
+     REAL_NUMBER = 263,
+     INT_NUMBER = 264,
+     IMPORT = 265,
+     VARIABLES_SECTION = 266,
+     SUBPROGRAMS_SECTION = 267,
+     PROCEDURE = 268,
+     FUNCTION = 269,
+     END_PROCEDURE = 270,
+     END_FUNCTION = 271,
+     RETURN = 272,
+     INT = 273,
+     REAL = 274,
+     COMPLEX = 275,
+     STRING_TYPE = 276,
+     DOUBLE = 277,
+     BOOLEAN = 278,
+     ENUM = 279,
+     STRUCT = 280,
+     SET_OF = 281,
+     MATRIX_OF = 282,
+     END_STRUCT = 283,
+     END_ENUM = 284,
+     CONST = 285,
+     REF = 286,
+     IF = 287,
+     ELSE = 288,
+     FOR = 289,
+     IN = 290,
+     WHILE = 291,
+     SWITCH = 292,
+     CASE = 293,
+     BREAK = 294,
+     OTHER = 295,
+     END_IF = 296,
+     END_FOR = 297,
+     END_WHILE = 298,
+     END_SWITCH = 299,
+     SEMICOLON = 300,
+     COMMA = 301,
+     COLON = 302,
+     OPEN_PARENTHESIS = 303,
+     CLOSE_PARENTHESIS = 304,
+     OPEN_BRACKETS = 305,
+     CLOSE_BRACKETS = 306,
+     OPEN_BRACES = 307,
+     CLOSE_BRACES = 308,
+     RANGE = 309,
+     ASSIGN_OP = 310,
+     ADD_ASSIGN_OP = 311,
+     SUB_ASSIGN_OP = 312,
+     MULT_ASSIGN_OP = 313,
+     DIV_ASSIGN_OP = 314,
+     MOD_ASSIGN_OP = 315,
+     INCREMENT_OP = 316,
+     DECREMENT_OP = 317,
+     NEG_OP = 318,
+     AND_OP = 319,
+     OR_OP = 320,
+     LEQ_OP = 321,
+     BEQ_OP = 322,
+     EQ_OP = 323,
+     NEQ_OP = 324,
+     SUB_OP = 325,
+     ADD_OP = 326,
+     MULT_OP = 327,
+     DIV_OP = 328,
+     MOD_OP = 329,
+     LT_OP = 330,
+     BT_OP = 331,
+     EXPO_OP = 332,
+     DOT_OP = 333,
+     COMMENT = 334
    };
 #endif
 /* Tokens.  */
 #define NAME 258
-#define ID 259
-#define NUMBER 260
-#define COMPLEX_NUMBER 261
-#define REAL_NUMBER 262
-#define INT_NUMBER 263
-#define IMPORT 264
-#define VARIABLES_SECTION 265
-#define SUBPROGRAMS_SECTION 266
-#define PROCEDURE 267
-#define FUNCTION 268
-#define END_PROCEDURE 269
-#define END_FUNCTION 270
-#define RETURN 271
-#define INT 272
-#define REAL 273
-#define COMPLEX 274
-#define STRING 275
-#define DOUBLE 276
-#define BOOLEAN 277
-#define ENUM 278
-#define STRUCT 279
-#define SET_OF 280
-#define MATRIX_OF 281
-#define END_STRUCT 282
-#define END_ENUM 283
-#define CONST 284
-#define REF 285
-#define IF 286
-#define ELSE 287
-#define FOR 288
-#define IN 289
-#define WHILE 290
-#define SWITCH 291
-#define CASE 292
-#define BREAK 293
-#define OTHER 294
-#define END_IF 295
-#define END_FOR 296
-#define END_WHILE 297
-#define END_SWITCH 298
-#define SEMICOLON 299
-#define COMMA 300
-#define COLON 301
-#define OPEN_PARENTHESIS 302
-#define CLOSE_PARENTHESIS 303
-#define OPEN_BRACKETS 304
-#define CLOSE_BRACKETS 305
-#define OPEN_BRACES 306
-#define CLOSE_BRACES 307
-#define RANGE 308
-#define ASSIGN_OP 309
-#define ADD_ASSIGN_OP 310
-#define SUB_ASSIGN_OP 311
-#define MULT_ASSIGN_OP 312
-#define DIV_ASSIGN_OP 313
-#define MOD_ASSIGN_OP 314
-#define INCREMENT_OP 315
-#define DECREMENT_OP 316
-#define NEG_OP 317
-#define AND_OP 318
-#define OR_OP 319
-#define LEQ_OP 320
-#define BEQ_OP 321
-#define EQ_OP 322
-#define NEQ_OP 323
-#define SUB_OP 324
-#define ADD_OP 325
-#define MULT_OP 326
-#define DIV_OP 327
-#define MOD_OP 328
-#define LT_OP 329
-#define BT_OP 330
-#define EXPO_OP 331
-#define DOT_OP 332
-#define COMMENT 333
+#define IDENTIFIER 259
+#define STRING 260
+#define NUMBER 261
+#define COMPLEX_NUMBER 262
+#define REAL_NUMBER 263
+#define INT_NUMBER 264
+#define IMPORT 265
+#define VARIABLES_SECTION 266
+#define SUBPROGRAMS_SECTION 267
+#define PROCEDURE 268
+#define FUNCTION 269
+#define END_PROCEDURE 270
+#define END_FUNCTION 271
+#define RETURN 272
+#define INT 273
+#define REAL 274
+#define COMPLEX 275
+#define STRING_TYPE 276
+#define DOUBLE 277
+#define BOOLEAN 278
+#define ENUM 279
+#define STRUCT 280
+#define SET_OF 281
+#define MATRIX_OF 282
+#define END_STRUCT 283
+#define END_ENUM 284
+#define CONST 285
+#define REF 286
+#define IF 287
+#define ELSE 288
+#define FOR 289
+#define IN 290
+#define WHILE 291
+#define SWITCH 292
+#define CASE 293
+#define BREAK 294
+#define OTHER 295
+#define END_IF 296
+#define END_FOR 297
+#define END_WHILE 298
+#define END_SWITCH 299
+#define SEMICOLON 300
+#define COMMA 301
+#define COLON 302
+#define OPEN_PARENTHESIS 303
+#define CLOSE_PARENTHESIS 304
+#define OPEN_BRACKETS 305
+#define CLOSE_BRACKETS 306
+#define OPEN_BRACES 307
+#define CLOSE_BRACES 308
+#define RANGE 309
+#define ASSIGN_OP 310
+#define ADD_ASSIGN_OP 311
+#define SUB_ASSIGN_OP 312
+#define MULT_ASSIGN_OP 313
+#define DIV_ASSIGN_OP 314
+#define MOD_ASSIGN_OP 315
+#define INCREMENT_OP 316
+#define DECREMENT_OP 317
+#define NEG_OP 318
+#define AND_OP 319
+#define OR_OP 320
+#define LEQ_OP 321
+#define BEQ_OP 322
+#define EQ_OP 323
+#define NEQ_OP 324
+#define SUB_OP 325
+#define ADD_OP 326
+#define MULT_OP 327
+#define DIV_OP 328
+#define MOD_OP 329
+#define LT_OP 330
+#define BT_OP 331
+#define EXPO_OP 332
+#define DOT_OP 333
+#define COMMENT 334
 
 
 
@@ -207,7 +209,7 @@ typedef union YYSTYPE
 	char * 	sValue;		//
 }
 /* Line 1529 of yacc.c.  */
-#line 211 "y.tab.h"
+#line 213 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

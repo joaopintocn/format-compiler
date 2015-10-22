@@ -26,7 +26,7 @@ COMPLEX_NUMBER	({NUM_PONTO}|{INT_NUMBER})(i|I)
 REAL_NUMBER 	{NUM_PONTO}|{NUM_PONTO}{EXPOENTE}
 NUMBER 			{REAL_NUMBER}|{COMPLEX_NUMBER}|{INT_NUMBER}
 
-ID 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
+IDENTIFIER 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
 
 
@@ -114,7 +114,7 @@ end_switch 			{return END_SWITCH; }
 
 \"(\\.|[^\\"])*\" 	{return STRING; } 
 
-{ID}				{ return ID;}
+{IDENTIFIER}				{ return IDENTIFIER;}
 {INT_NUMBER}		{ return INT_NUMBER; }
 {COMPLEX_NUMBER}	{ return COMPLEX_NUMBER; }
 {REAL_NUMBER} 		{ return REAL_NUMBER; }

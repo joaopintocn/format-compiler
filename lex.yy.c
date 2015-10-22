@@ -1239,7 +1239,7 @@ YY_RULE_SETUP
 case 72:
 YY_RULE_SETUP
 #line 117 "format.l"
-{ return ID;}
+{ return IDENTIFIER;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP

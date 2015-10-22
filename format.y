@@ -17,7 +17,7 @@
 
 %start program
 
-%token <sValue> NAME IDENTIFIER		/* nome de alguma coisa */
+%token <sValue> NAME IDENTIFIER	STRING	/* nome de alguma coisa */
 %token <iValue> NUMBER COMPLEX_NUMBER REAL_NUMBER INT_NUMBER
 %token					
 
@@ -33,7 +33,7 @@ RETURN
 INT
 REAL
 COMPLEX
-STRING
+STRING_TYPE
 DOUBLE
 BOOLEAN
 ENUM
@@ -111,7 +111,7 @@ program_header :
 	;
 
 import : 
-	IMPORT NAME
+	IMPORT STRING { printf("import %s\n", $2); }
 	;
 
 program_body : 
@@ -119,7 +119,8 @@ program_body :
 	;
 
 variable_section :
-	VARIABLES_SECTION COLON variable_declarations
+	VARIABLES_SECTION { printf("\n\nvariables:\n"); }
+	COLON variable_declarations 
 	|
 	;
 
