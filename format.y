@@ -235,7 +235,8 @@ identifier_list :
 	;
 
 dimensions : 
-	range dimensions_tail
+	range dimensions_tail 
+	|
 	;
 
 range :
@@ -356,19 +357,19 @@ other_clasule :
 	;
 
 while_statement :
-	WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON
+	WHILE OPEN_PARENTHESIS { printf("while (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :" ); }
 		statement_list
-	END_WHILE SEMICOLON
+	END_WHILE SEMICOLON { printf("end_while;" ); }
 	;
 
 for_statement :
-	FOR IDENTIFIER IN IDENTIFIER COLON
+	FOR { printf("for " ); } IDENTIFIER { printf("ID" ); } IN { printf(" in " ); } IDENTIFIER { printf("ID" ); } COLON { printf(":\n" ); }
 		statement_list
-	END_FOR SEMICOLON
+	END_FOR SEMICOLON { printf("end_for;" ); }
 	;
 
 subprogram_call : 
-	IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
+	IDENTIFIER { printf("ID" ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); }
 	;
 
 argument_list :
@@ -381,7 +382,7 @@ argument_list_aux :
 	;
 
 argument_list_tail :
-	COMMA argument_list_aux
+	COMMA { printf(", " ); } argument_list_aux
 	|
 	;
 
@@ -390,7 +391,7 @@ expression :
 	;
 
 term_or_tail : 
-	OR_OP term_or term_or_tail /* OR_OP = '||'  */
+	OR_OP { printf(" || " ); } term_or term_or_tail /* OR_OP = '||'  */
 	|
 	;
 
@@ -399,7 +400,7 @@ term_or :
 	;
 
 term_and_tail :
-	AND_OP term_and term_and_tail /* AND_OP = ‘&&’ */
+	AND_OP { printf(" && " ); } term_and term_and_tail /* AND_OP = ‘&&’ */
 	|
 	;
 

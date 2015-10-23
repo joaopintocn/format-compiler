@@ -1,53 +1,55 @@
-procedure merge(int vecSize, matrix_of int [0..vecSize] vec)
+subprograms:
 
-	int mid;
-	int i, j, k;
-	int ref tmp;
+	procedure merge(int vecSize, matrix_of int [] vec) :
 
-	tmp = (int ref) alloc(vecSize * sizeof(int));
+		int mid;
+		int i, j, k;
+		int ref tmp;
 
-	if (tmp ! null)
-		return 1;
-	end_if;
+		tmp = (int ref) alloc(vecSize * sizeof(int));
 
-	mid = vecSize / 2;
-	i,k =0;
-	j = mid;
-	
-
-	while (i < mid && j < vecSize)
-		if (vec[i] <= vec[j])
-			tmp[k] = vec[i++];
-		else
-			tmp[k] = vec[j++];
+		if (tmp ! null)
+			return 1;
 		end_if;
- 		++k;
-	end_while;
 
-	if (i ! mid)
-		while (j < vecSize)
-			tmp[k++] = vec[j++];
-		end_while;
-	else
-		while (i < mid)
-			tmp[k++] = vec[i++];
-		end_while;
-	end_if;
-
-	for (i = 0; i < vecSize; ++i)
-		vec[i] = tmp[i];
-	end_for;
-
-	free(tmp);
-end_procedure;
-
-procedure mergeSort(int vecSize, matrix_of int [0..vecSize] vec)
-	int mid;
-
-	if (vecSize > 1)
 		mid = vecSize / 2;
-		mergeSort(vec, mid);
-		mergeSort(vec + mid, vecSize - mid);
-		merge(vec, vecSize);
-	end_if;
-end_procedure;
+		i,k =0;
+		j = mid;
+		
+
+		while (i < mid && j < vecSize)
+			if (vec[i] <= vec[j])
+				tmp[k] = vec[i++];
+			else
+				tmp[k] = vec[j++];
+			end_if;
+	 		++k;
+		end_while;
+
+		if (i ! mid)
+			while (j < vecSize)
+				tmp[k++] = vec[j++];
+			end_while;
+		else
+			while (i < mid)
+				tmp[k++] = vec[i++];
+			end_while;
+		end_if;
+
+		for (i = 0; i < vecSize; ++i)
+			vec[i] = tmp[i];
+		end_for;
+
+		free(tmp);
+	end_procedure;
+
+	procedure mergeSort(int vecSize, matrix_of int [0..vecSize] vec)
+		int mid;
+
+		if (vecSize > 1)
+			mid = vecSize / 2;
+			mergeSort(vec, mid);
+			mergeSort(vec + mid, vecSize - mid);
+			merge(vec, vecSize);
+		end_if;
+	end_procedure;

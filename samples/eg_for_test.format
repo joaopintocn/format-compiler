@@ -2,7 +2,7 @@ import "mod.f"
 
 subprograms :
 	procedure main() :
-		matrix_of int x[1];
+		matrix_of int [1] x;
 		x[0] = 2;
 		x[1] = 3;
 
