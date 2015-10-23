@@ -125,7 +125,7 @@ variable_section :
 	;
 
 variable_declarations :
-	variable_declaration SEMICOLON variable_declarations_tail
+	variable_declaration SEMICOLON { printf("\n\variable declaration:\n"); } variable_declarations_tail
 	;
 
 variable_declarations_tail :
@@ -134,12 +134,12 @@ variable_declarations_tail :
 	;
 
 subprogram_section :
-	SUBPROGRAMS_SECTION COLON subprogram_declarations 
+	SUBPROGRAMS_SECTION { printf("\n\subprograms:\n"); } COLON subprogram_declarations 
 	|
 	;
 
 subprogram_declarations :
-	subprogram_declaration subprogram_declarations_tail
+	subprogram_declaration  subprogram_declarations_tail
 	;
 
 subprogram_declarations_tail :
@@ -148,13 +148,13 @@ subprogram_declarations_tail :
 	;
 
 variable_declaration :
-	simple_variable_declaration 
-	| compost_variable_declaration
+	simple_variable_declaration  
+	| compost_variable_declaration 
 	;
 
 
 simple_variable_declaration : 
-	type IDENTIFIER simple_variable_declaration_value
+	type IDENTIFIER  simple_variable_declaration_value
 	| CONST type IDENTIFIER ASSIGN_OP expression 
 	| REF type IDENTIFIER simple_variable_declaration_value
 	;
@@ -254,15 +254,16 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON 
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin procedure %s:\n" , $2); }
 		statement_list
-	END_PROCEDURE SEMICOLON
+	END_PROCEDURE SEMICOLON { printf("\n\end procedure \n" ,); } 
 	;
 
 function_declaration :
-	FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON
+	FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin function %s:\n" , $3); }
 		statement_list
-	END_FUNCTION SEMICOLON
+	END_FUNCTION SEMICOLON { printf("\n\end function \n" ,); } 
+	;
 	;
 
 parameter_list :
@@ -292,11 +293,11 @@ statement :
 	;
 
 return_statement :    
-	RETURN expression SEMICOLON
+	RETURN expression SEMICOLON { printf("\n\return \n" ); }
 	;
 
 assignment_statement :
-	destination assignment_statement_tail SEMICOLON
+	destination assignment_statement_tail SEMICOLON { printf("\n\assignment \n" ); }
 	;
 
 assignment_statement_tail :
