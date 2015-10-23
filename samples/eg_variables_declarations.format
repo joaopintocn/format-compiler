@@ -27,6 +27,17 @@ variables:
 
 	set_of int sampleDistribution = {345, 356, 12, 56, 90, 69};
 
-	set_of string activeOperator = {"sobel", "butterworth", "laplacian"}
+	set_of string activeOperators = {"sobel", "butterworth", "laplacian"}
 
-	
+	set_of double real frequencies; 
+
+	enum rgbColor: {RED, GREEN, BLUE} end_enum;
+
+	struct DegResProcess:
+		real noise = 0.34,
+		real density = 1.67,
+		double real gamma = 0.12784,
+		const int times,
+		set_of string usedOperators
+	end_struct;
+
