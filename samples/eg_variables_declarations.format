@@ -21,23 +21,23 @@ variables:
 									 		{2, 1, 1, 1, 2}, 
 									 		{2, 2, 2, 2, 2};
 
-	matrix_of int [3,3] laplacianMask = { 0,-1, 0}, 
-									 	{-1, 5,-1}, 
-									 	{ 0,-1, 0};
+	matrix_of int [3,3] laplacianMask = { 0, 1, 0}, 
+									 	{ 1, 5, 1}, 
+									 	{ 0, 1, 0};
 
 	set_of int sampleDistribution = {345, 356, 12, 56, 90, 69};
 
-	set_of string activeOperators = {"sobel", "butterworth", "laplacian"}
+	set_of string activeOperators = {"sobel", "butterworth", "laplacian"};
 
 	set_of double real frequencies; 
 
-	enum rgbColor: {RED, GREEN, BLUE} end_enum;
+	enum rgbColor: RED, GREEN, BLUE end_enum;
 
 	struct DegResProcess:
-		real noise = 0.34,
-		real density = 1.67,
-		double real gamma = 0.12784,
-		const int times,
-		set_of string usedOperators
+		real noise = 0.34;
+		real density = 1.67;
+		double real gamma = 0.12784;
+		const int times = 100;
+		set_of string usedOperators;
 	end_struct;
 

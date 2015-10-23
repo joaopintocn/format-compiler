@@ -120,14 +120,14 @@ program_body :
 	;
 
 variable_section :
-	VARIABLES_SECTION COLON { printf("\n\nvariables:\n"); }
+	VARIABLES_SECTION COLON { printf("\n\nvariables:\n\t"); }
 		variable_declarations 
 	|
 	;
 
 
 variable_declarations :
-	variable_declaration SEMICOLON { printf(";\n"); }variable_declarations_tail
+	variable_declaration SEMICOLON { printf(";\n\n\t"); } variable_declarations_tail
 	;
 
 variable_declaration :
@@ -159,7 +159,7 @@ subprogram_declarations_tail :
 
 simple_variable_declaration : 
 	type IDENTIFIER  { printf("%s", $2); }  simple_variable_declaration_value
-	| CONST { printf("const "); } type IDENTIFIER ASSIGN_OP { printf(" = "); } expression 
+	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
 	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
 	;
 
@@ -178,10 +178,10 @@ type :
 	;
 
 compost_variable_declaration :
-	MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
-	| SET_OF type IDENTIFIER set_assignment
-	| ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM
-	| STRUCT IDENTIFIER COLON variable_declarations END_STRUCT
+	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("%s", $9); } matrix_assignment
+	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4); } set_assignment
+	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7); } identifier_list END_ENUM { printf(" end_enum"); }
+	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
 	;
 
 matrix_assignment : 
@@ -196,7 +196,7 @@ matrix_assignment_aux :
 
 
 matrix_assignment_aux_aux : 
-	OPEN_BRACES expression CLOSE_BRACES values_group_list
+	OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES { printf(" }"); } values_group_list
 	;
 
 values_group_list :
@@ -206,7 +206,7 @@ values_group_list :
 
 
 values_group_list_aux :
-	COMMA matrix_assignment_aux_aux
+	COMMA { printf(",\n"); } matrix_assignment_aux_aux
 	;
 
 
@@ -216,7 +216,7 @@ set_assignment :
 	;
 
 set_assignment_aux :
-	ASSIGN_OP { printf(" = "); } OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
+	ASSIGN_OP { printf(" = "); } OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES   { printf(" }"); } 
 	;
 
 
@@ -225,12 +225,12 @@ set_assignment_aux_aux :
 	;
 
 values_list :
-	COMMA set_assignment_aux_aux
+	COMMA { printf(", "); } set_assignment_aux_aux
 	|
 	;
 
 identifier_list :
-	COMMA IDENTIFIER identifier_list
+	COMMA { printf(", "); } IDENTIFIER { printf("%s", $3); } identifier_list
 	|
 	;
 
@@ -239,16 +239,16 @@ dimensions :
 	;
 
 range :
-	NUMBER range_tail /* NUMBER = <num_int> */
+	INT_NUMBER {printf("%i", $1);} range_tail
 	;
 
-range_tail : /* NUMBER = <num_int> */
-	RANGE NUMBER
+range_tail :
+	RANGE {printf("..");} INT_NUMBER {printf("%i", $3);}
 	|
 	;
 
 dimensions_tail :
-	COMMA range dimensions_tail
+	COMMA {printf(", ");} range dimensions_tail
 	|
 	;
 
@@ -260,13 +260,13 @@ subprogram_declaration :
 procedure_declaration :
 	PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin procedure %s:\n" , $2); }
 		statement_list
-	END_PROCEDURE SEMICOLON { printf("\nend procedure\n"); } 
+	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
 	;
 
 function_declaration :
 	FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin function %s:\n" , $3); }
 		statement_list
-	END_FUNCTION SEMICOLON { printf("\nend function;\n"); } 
+	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
 	;
 
@@ -386,7 +386,7 @@ argument_list_tail :
 	;
 
 expression :
- 	term_or  term_or_tail
+ 	term_or term_or_tail
 	;
 
 term_or_tail : 
@@ -451,7 +451,7 @@ factor :
 	;	
 
 expo_tail :
-	EXPO_OP expo expo_tail /* ^ */
+	EXPO_OP { printf("^"); } expo expo_tail /* ^ */
 	|
 	;			
 
@@ -460,14 +460,16 @@ expo :
 
 
 negation_tail:
-	NEG_OP negation negation_tail /* ! */
+	NEG_OP { printf("!"); }  negation negation_tail /* ! */
 	|
 	;	
 	
 negation :
-	REAL_NUMBER { printf("%f", $1); } 
+	INT_NUMBER { printf("%i", $1); } 
+	| REAL_NUMBER { printf("%f", $1); } 
 	| COMPLEX_NUMBER { printf("%d", $1); } 
 	| STRING { printf("%s", $1); } 
+	| IDENTIFIER { printf("%s", $1); } 
 	;
 
 function_call :
