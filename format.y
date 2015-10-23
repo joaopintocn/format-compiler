@@ -314,12 +314,12 @@ assignment_statement_tail :
 	;
 
 destination :
-	IDENTIFIER identifier_tail
+	IDENTIFIER { printf("ID" ); } identifier_tail
 	;
 
 /* permite atribuição de valor a um elemento de matriz*/
 identifier_tail :
-	OPEN_BRACKETS dimensions CLOSE_BRACKETS
+	OPEN_BRACKETS { printf(" [" ); } dimensions CLOSE_BRACKETS { printf("] " ); }
 	|
 	;
 
@@ -331,7 +331,7 @@ if_statement :
 	;
 
 else_clausule :
-	ELSE { printf("else \n" ); } statement_list
+	ELSE COLON { printf("else: \n" ); } statement_list
 	|
 	;
 
