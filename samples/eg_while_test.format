@@ -1,0 +1,17 @@
+import "mod.f"
+
+variables :
+		int x = 1;
+		int i = 0;
+		int aux;
+
+subprograms :
+	procedure main() :
+
+		while (i < 9):
+			aux = x*2;
+			x = aux;
+			i += 1;
+		end_while;
+	end_procedure ;
+

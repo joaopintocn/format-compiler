@@ -1,0 +1,13 @@
+import "mod.f"
+
+subprograms :
+	procedure main() :
+		matrix_of int x[1];
+		x[0] = 2;
+		x[1] = 3;
+
+		for y in x:
+			y += 2;
+		end_for;
+	end_procedure ;
+
