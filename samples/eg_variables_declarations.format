@@ -3,11 +3,30 @@
 variables:
 
 	%% Variáveis simples
-	int x = 3;
-	real pi = 3.145;
+	int x;
+	int y;
+	real e = 2.876;
 	double real pi = 3.141516;
 	const complex aber = 6.5 + 1i;
 	string msg = "Olá Mundo";
 	ref string msg;
 
 	%% Variáveis compostas
+
+	matrix_of int [3,3] sobelOperator;
+
+	matrix_of int [5,5] distanceOfEight = 	{2, 2, 2, 2, 2}, 
+									 		{2, 1, 1, 1, 2}, 
+									 		{2, 1, 0, 1, 2}, 
+									 		{2, 1, 1, 1, 2}, 
+									 		{2, 2, 2, 2, 2};
+
+	matrix_of int [3,3] laplacianMask = { 0,-1, 0}, 
+									 	{-1, 5,-1}, 
+									 	{ 0,-1, 0};
+
+	set_of int sampleDistribution = {345, 356, 12, 56, 90, 69};
+
+	set_of string activeOperator = {"sobel", "butterworth", "laplacian"}
+
+	

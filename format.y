@@ -10,22 +10,23 @@
 
 
 %union {
-	int 	iValue; 	//
-	char 	cValue;		//
+	int 	iValue;
+	double 	dValue; 	//
 	char * 	sValue;		//
 };
 
 %start program
 
-%token <sValue> NAME IDENTIFIER	STRING	/* nome de alguma coisa */
-%token <iValue> NUMBER COMPLEX_NUMBER REAL_NUMBER INT_NUMBER
+%token <sValue> NAME IDENTIFIER	STRING 
+%token <iValue> NUMBER COMPLEX_NUMBER INT_NUMBER
+%token <dValue> REAL_NUMBER 
 %token					
 
-IMPORT				/* import*/
-VARIABLES_SECTION		/* variables*/
-SUBPROGRAMS_SECTION		/* subprograms*/
-PROCEDURE			/* procedure*/
-FUNCTION			/* function*/
+IMPORT				
+VARIABLES_SECTION
+SUBPROGRAMS_SECTION
+PROCEDURE			
+FUNCTION			
 END_PROCEDURE
 END_FUNCTION
 RETURN
@@ -119,22 +120,29 @@ program_body :
 	;
 
 variable_section :
-	VARIABLES_SECTION { printf("\n\nvariables:\n"); }
-	COLON variable_declarations 
+	VARIABLES_SECTION COLON { printf("\n\nvariables:\n"); }
+		variable_declarations 
 	|
 	;
 
+
 variable_declarations :
-	variable_declaration SEMICOLON { printf("\n\variable declaration:\n"); } variable_declarations_tail
+	variable_declaration SEMICOLON { printf(";\n"); }variable_declarations_tail
+	;
+
+variable_declaration :
+	simple_variable_declaration  
+	| compost_variable_declaration 
 	;
 
 variable_declarations_tail :
-	variable_declarations
+	variable_declarations 
 	|
 	;
 
+
 subprogram_section :
-	SUBPROGRAMS_SECTION { printf("\n\subprograms:\n"); } COLON subprogram_declarations 
+	SUBPROGRAMS_SECTION { printf("\nsubprograms:\n"); } COLON subprogram_declarations 
 	|
 	;
 
@@ -147,30 +155,26 @@ subprogram_declarations_tail :
 	|
 	;
 
-variable_declaration :
-	simple_variable_declaration  
-	| compost_variable_declaration 
-	;
 
 
 simple_variable_declaration : 
-	type IDENTIFIER  simple_variable_declaration_value
-	| CONST type IDENTIFIER ASSIGN_OP expression 
-	| REF type IDENTIFIER simple_variable_declaration_value
+	type IDENTIFIER  { printf("%s", $2); }  simple_variable_declaration_value
+	| CONST { printf("const "); } type IDENTIFIER ASSIGN_OP { printf(" = "); } expression 
+	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
 	;
 
 simple_variable_declaration_value :
-	ASSIGN_OP expression
+	ASSIGN_OP  { printf(" = "); }  expression 
 	|
 	;
 
 type : 
-	INT
-	| DOUBLE REAL
-	| REAL
-	| COMPLEX
-	| BOOLEAN
-	| STRING
+	INT 				{ printf("int "); }
+	| DOUBLE REAL 		{ printf("double real "); }
+	| REAL 				{ printf("real "); }
+	| COMPLEX 			{ printf("complex "); }
+	| BOOLEAN 			{ printf("boolean "); }
+	| STRING 			{ printf("string "); }
 	;
 
 compost_variable_declaration :
@@ -187,7 +191,7 @@ matrix_assignment :
 
 
 matrix_assignment_aux : 
-	ASSIGN_OP matrix_assignment_aux_aux
+	ASSIGN_OP { printf(" = "); } matrix_assignment_aux_aux
 	;
 
 
@@ -212,7 +216,7 @@ set_assignment :
 	;
 
 set_assignment_aux :
-	ASSIGN_OP OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
+	ASSIGN_OP { printf(" = "); } OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
 	;
 
 
@@ -256,13 +260,13 @@ subprogram_declaration :
 procedure_declaration :
 	PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin procedure %s:\n" , $2); }
 		statement_list
-	END_PROCEDURE SEMICOLON { printf("\n\end procedure \n" ,); } 
+	END_PROCEDURE SEMICOLON { printf("\nend procedure\n"); } 
 	;
 
 function_declaration :
 	FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin function %s:\n" , $3); }
 		statement_list
-	END_FUNCTION SEMICOLON { printf("\n\end function \n" ,); } 
+	END_FUNCTION SEMICOLON { printf("\nend function;\n"); } 
 	;
 	;
 
@@ -301,12 +305,12 @@ assignment_statement :
 	;
 
 assignment_statement_tail :
-	ASSIGN_OP expression /* = */
-	| ADD_ASSIGN_OP expression /* += */
-	| SUB_ASSIGN_OP expression /* -= */
-	| MULT_ASSIGN_OP expression /* *=’ */
-	| DIV_ASSIGN_OP expression /* /= */
-	| MOD_ASSIGN_OP expression /* %= */
+	ASSIGN_OP 			{ printf(" = "); } 		expression /* = */
+	| ADD_ASSIGN_OP 	{ printf(" += "); } 	expression /* += */
+	| SUB_ASSIGN_OP 	{ printf(" -= "); } 	expression /* -= */
+	| MULT_ASSIGN_OP 	{ printf(" *= "); } 	expression /* *=’ */
+	| DIV_ASSIGN_OP 	{ printf(" /= "); } 	expression /* /= */
+	| MOD_ASSIGN_OP 	{ printf(" %%= "); } 	expression /* %= */
 	;
 
 destination :
@@ -382,7 +386,7 @@ argument_list_tail :
 	;
 
 expression :
- 	term_or term_or_tail
+ 	term_or  term_or_tail
 	;
 
 term_or_tail : 
@@ -461,10 +465,9 @@ negation_tail:
 	;	
 	
 negation :
-	IDENTIFIER
-	| NUMBER /* no lugar de <literal> */
-	| function_call /* no lugar de function call */
-	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
+	REAL_NUMBER { printf("%f", $1); } 
+	| COMPLEX_NUMBER { printf("%d", $1); } 
+	| STRING { printf("%s", $1); } 
 	;
 
 function_call :

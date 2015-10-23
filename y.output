@@ -1,15 +1,17 @@
 Terminals which are not used
 
+   NAME
    COMPLEX_NUMBER
    REAL_NUMBER
    INT_NUMBER
+   STRING_TYPE
    INCREMENT_OP
    DECREMENT_OP
    DOT_OP
    COMMENT
 
 
-State 220 conflicts: 1 shift/reduce
+State 167 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -21,433 +23,490 @@ Grammar
     2 program_header: import program_header
     3               | /* empty */
 
-    4 import: IMPORT NAME
+    4 import: IMPORT STRING
 
     5 program_body: variable_section subprogram_section
 
-    6 variable_section: VARIABLES_SECTION COLON variable_declarations
-    7                 | /* empty */
+    6 @1: /* empty */
 
-    8 variable_declarations: variable_declaration SEMICOLON variable_declarations_tail
+    7 variable_section: VARIABLES_SECTION COLON @1 variable_declarations
+    8                 | /* empty */
 
-    9 variable_declarations_tail: variable_declarations
-   10                           | /* empty */
+    9 variable_declarations: variable_declaration SEMICOLON variable_declarations_tail
 
-   11 subprogram_section: SUBPROGRAMS_SECTION COLON subprogram_declarations
-   12                   | /* empty */
+   10 variable_declaration: simple_variable_declaration
+   11                     | compost_variable_declaration
 
-   13 subprogram_declarations: subprogram_declaration subprogram_declarations_tail
+   12 variable_declarations_tail: variable_declarations
+   13                           | /* empty */
 
-   14 subprogram_declarations_tail: subprogram_declarations
-   15                             | /* empty */
+   14 @2: /* empty */
 
-   16 variable_declaration: simple_variable_declaration
-   17                     | compost_variable_declaration
+   15 subprogram_section: SUBPROGRAMS_SECTION @2 COLON subprogram_declarations
+   16                   | /* empty */
 
-   18 simple_variable_declaration: type IDENTIFIER simple_variable_declaration_value
-   19                            | CONST type IDENTIFIER ASSIGN_OP expression
-   20                            | REF type IDENTIFIER simple_variable_declaration_value
+   17 subprogram_declarations: subprogram_declaration subprogram_declarations_tail
 
-   21 simple_variable_declaration_value: ASSIGN_OP expression
-   22                                  | /* empty */
+   18 subprogram_declarations_tail: subprogram_declarations
+   19                             | /* empty */
 
-   23 type: INT
-   24     | DOUBLE REAL
-   25     | REAL
-   26     | COMPLEX
-   27     | BOOLEAN
-   28     | STRING
+   20 @3: /* empty */
 
-   29 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
-   30                             | SET_OF type IDENTIFIER set_assignment
-   31                             | ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM
-   32                             | STRUCT IDENTIFIER COLON variable_declarations END_STRUCT
+   21 simple_variable_declaration: type IDENTIFIER @3 simple_variable_declaration_value
+   22                            | CONST type IDENTIFIER ASSIGN_OP expression
+   23                            | REF type IDENTIFIER simple_variable_declaration_value
 
-   33 matrix_assignment: matrix_assignment_aux
-   34                  | /* empty */
+   24 @4: /* empty */
 
-   35 matrix_assignment_aux: ASSIGN_OP matrix_assignment_aux_aux
+   25 simple_variable_declaration_value: ASSIGN_OP @4 expression
+   26                                  | /* empty */
 
-   36 matrix_assignment_aux_aux: OPEN_BRACES expression CLOSE_BRACES values_group_list
+   27 type: INT
+   28     | DOUBLE REAL
+   29     | REAL
+   30     | COMPLEX
+   31     | BOOLEAN
+   32     | STRING
 
-   37 values_group_list: values_group_list_aux
+   33 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
+   34                             | SET_OF type IDENTIFIER set_assignment
+   35                             | ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM
+   36                             | STRUCT IDENTIFIER COLON variable_declarations END_STRUCT
+
+   37 matrix_assignment: matrix_assignment_aux
    38                  | /* empty */
 
-   39 values_group_list_aux: COMMA matrix_assignment_aux_aux
+   39 matrix_assignment_aux: ASSIGN_OP matrix_assignment_aux_aux
 
-   40 set_assignment: set_assignment_aux
-   41               | /* empty */
+   40 matrix_assignment_aux_aux: OPEN_BRACES expression CLOSE_BRACES values_group_list
 
-   42 set_assignment_aux: ASSIGN_OP OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
+   41 values_group_list: values_group_list_aux
+   42                  | /* empty */
 
-   43 set_assignment_aux_aux: expression values_list
+   43 values_group_list_aux: COMMA matrix_assignment_aux_aux
 
-   44 values_list: COMMA set_assignment_aux_aux
-   45            | /* empty */
+   44 set_assignment: set_assignment_aux
+   45               | /* empty */
 
-   46 identifier_list: COMMA IDENTIFIER identifier_list
-   47                | /* empty */
+   46 set_assignment_aux: ASSIGN_OP OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
 
-   48 dimensions: range dimensions_tail
+   47 set_assignment_aux_aux: expression values_list
 
-   49 range: NUMBER range_tail
+   48 values_list: COMMA set_assignment_aux_aux
+   49            | /* empty */
 
-   50 range_tail: RANGE NUMBER
-   51           | /* empty */
+   50 identifier_list: COMMA IDENTIFIER identifier_list
+   51                | /* empty */
 
-   52 dimensions_tail: COMMA range dimensions_tail
-   53                | /* empty */
+   52 dimensions: range dimensions_tail
 
-   54 subprogram_declaration: procedure_declaration
-   55                       | function_declaration
+   53 range: NUMBER range_tail
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE SEMICOLON
+   54 range_tail: RANGE NUMBER
+   55           | /* empty */
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON
+   56 dimensions_tail: COMMA range dimensions_tail
+   57                | /* empty */
 
-   58 parameter_list: variable_declaration parameter_list_tail
-   59               | /* empty */
+   58 subprogram_declaration: procedure_declaration
+   59                       | function_declaration
 
-   60 parameter_list_tail: COMMA variable_declaration parameter_list_tail
-   61                    | /* empty */
+   60 @5: /* empty */
 
-   62 statement_list: statement statement_list
-   63               | /* empty */
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE SEMICOLON
 
-   64 statement: assignment_statement
-   65          | if_statement
-   66          | switch_statement
-   67          | while_statement
-   68          | for_statement
-   69          | subprogram_call
-   70          | return_statement
-   71          | variable_declaration
+   62 @6: /* empty */
 
-   72 return_statement: RETURN expression SEMICOLON
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON
 
-   73 assignment_statement: destination assignment_statement_tail SEMICOLON
+   64 parameter_list: variable_declaration parameter_list_tail
+   65               | /* empty */
 
-   74 assignment_statement_tail: ASSIGN_OP expression
-   75                          | ADD_ASSIGN_OP expression
-   76                          | SUB_ASSIGN_OP expression
-   77                          | MULT_ASSIGN_OP expression
-   78                          | DIV_ASSIGN_OP expression
-   79                          | MOD_ASSIGN_OP expression
+   66 parameter_list_tail: COMMA variable_declaration parameter_list_tail
+   67                    | /* empty */
 
-   80 destination: IDENTIFIER identifier_tail
+   68 statement_list: statement statement_list
+   69               | /* empty */
 
-   81 identifier_tail: OPEN_BRACKETS dimensions CLOSE_BRACKETS
-   82                | /* empty */
+   70 statement: assignment_statement
+   71          | if_statement
+   72          | switch_statement
+   73          | while_statement
+   74          | for_statement
+   75          | subprogram_call
+   76          | return_statement
+   77          | variable_declaration
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
+   78 return_statement: RETURN expression SEMICOLON
 
-   84 else_clausule: ELSE statement_list
-   85              | /* empty */
+   79 assignment_statement: destination assignment_statement_tail SEMICOLON
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
+   80 assignment_statement_tail: ASSIGN_OP expression
+   81                          | ADD_ASSIGN_OP expression
+   82                          | SUB_ASSIGN_OP expression
+   83                          | MULT_ASSIGN_OP expression
+   84                          | DIV_ASSIGN_OP expression
+   85                          | MOD_ASSIGN_OP expression
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
-   88             | /* empty */
+   86 destination: IDENTIFIER identifier_tail
 
-   89 other_clasule: OTHER COLON statement_list
-   90              | /* empty */
+   87 identifier_tail: OPEN_BRACKETS dimensions CLOSE_BRACKETS
+   88                | /* empty */
 
-   91 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
 
-   92 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR SEMICOLON
+   90 else_clausule: ELSE statement_list
+   91              | /* empty */
 
-   93 subprogram_call: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
 
-   94 argument_list: argument_list_aux
-   95              | /* empty */
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
+   94             | /* empty */
 
-   96 argument_list_aux: expression argument_list_tail
+   95 other_clasule: OTHER COLON statement_list
+   96              | /* empty */
 
-   97 argument_list_tail: COMMA argument_list_aux
-   98                   | /* empty */
+   97 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
 
-   99 expression: term_or term_or_tail
+   98 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR SEMICOLON
 
-  100 term_or_tail: OR_OP term_or term_or_tail
-  101             | /* empty */
+   99 subprogram_call: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
 
-  102 term_or: term_and term_and_tail
+  100 argument_list: argument_list_aux
+  101              | /* empty */
 
-  103 term_and_tail: AND_OP term_and term_and_tail
-  104              | /* empty */
+  102 argument_list_aux: expression argument_list_tail
 
-  105 term_and: term_bool_comparison term_bool_comparison_tail
+  103 argument_list_tail: COMMA argument_list_aux
+  104                   | /* empty */
 
-  106 term_bool_comparison_tail: EQ_OP term_bool_comparison term_bool_comparison_tail
-  107                          | NEQ_OP term_bool_comparison term_bool_comparison_tail
-  108                          | /* empty */
+  105 @7: /* empty */
 
-  109 term_bool_comparison: term_arit_comparison term_arit_comparison_tail
+  106 expression: term_or @7 term_or_tail
 
-  110 term_arit_comparison_tail: LEQ_OP term_arit_comparison term_arit_comparison_tail
-  111                          | BEQ_OP term_arit_comparison term_arit_comparison_tail
-  112                          | LT_OP term_arit_comparison term_arit_comparison_tail
-  113                          | BT_OP term_arit_comparison term_arit_comparison_tail
-  114                          | /* empty */
+  107 term_or_tail: OR_OP term_or term_or_tail
+  108             | /* empty */
 
-  115 term_arit_comparison: term term_tail
+  109 @8: /* empty */
 
-  116 term_tail: ADD_OP term term_tail
-  117          | SUB_OP term term_tail
-  118          | /* empty */
+  110 term_or: @8 term_and term_and_tail
 
-  119 term: factor factor_tail
+  111 term_and_tail: AND_OP term_and term_and_tail
+  112              | /* empty */
 
-  120 factor_tail: MULT_OP factor factor_tail
-  121            | DIV_OP factor factor_tail
-  122            | MOD_OP factor factor_tail
-  123            | /* empty */
+  113 @9: /* empty */
 
-  124 factor: expo expo_tail
+  114 term_and: @9 term_bool_comparison term_bool_comparison_tail
 
-  125 expo_tail: EXPO_OP expo expo_tail
-  126          | /* empty */
+  115 term_bool_comparison_tail: EQ_OP term_bool_comparison term_bool_comparison_tail
+  116                          | NEQ_OP term_bool_comparison term_bool_comparison_tail
+  117                          | /* empty */
 
-  127 expo: negation negation_tail
+  118 @10: /* empty */
 
-  128 negation_tail: NEG_OP negation negation_tail
-  129              | /* empty */
+  119 term_bool_comparison: @10 term_arit_comparison term_arit_comparison_tail
 
-  130 negation: IDENTIFIER
-  131         | NUMBER
-  132         | function_call
-  133         | OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
+  120 term_arit_comparison_tail: LEQ_OP term_arit_comparison term_arit_comparison_tail
+  121                          | BEQ_OP term_arit_comparison term_arit_comparison_tail
+  122                          | LT_OP term_arit_comparison term_arit_comparison_tail
+  123                          | BT_OP term_arit_comparison term_arit_comparison_tail
+  124                          | /* empty */
 
-  134 function_call: IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
+  125 @11: /* empty */
+
+  126 term_arit_comparison: @11 term term_tail
+
+  127 term_tail: ADD_OP term term_tail
+  128          | SUB_OP term term_tail
+  129          | /* empty */
+
+  130 @12: /* empty */
+
+  131 term: @12 factor factor_tail
+
+  132 factor_tail: MULT_OP factor factor_tail
+  133            | DIV_OP factor factor_tail
+  134            | MOD_OP factor factor_tail
+  135            | /* empty */
+
+  136 @13: /* empty */
+
+  137 factor: @13 expo expo_tail
+
+  138 expo_tail: EXPO_OP expo expo_tail
+  139          | /* empty */
+
+  140 @14: /* empty */
+
+  141 expo: @14 negation negation_tail
+
+  142 negation_tail: NEG_OP negation negation_tail
+  143              | /* empty */
+
+  144 negation: function_call
+  145         | IDENTIFIER
+  146         | NUMBER
+  147         | OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
+
+  148 function_call: IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-NAME (258) 4
-IDENTIFIER (259) 18 19 20 29 30 31 32 46 56 57 80 86 92 93 130 134
-NUMBER (260) 49 50 131
-COMPLEX_NUMBER (261)
-REAL_NUMBER (262)
-INT_NUMBER (263)
-IMPORT (264) 4
-VARIABLES_SECTION (265) 6
-SUBPROGRAMS_SECTION (266) 11
-PROCEDURE (267) 56
-FUNCTION (268) 57
-END_PROCEDURE (269) 56
-END_FUNCTION (270) 57
-RETURN (271) 72
-INT (272) 23
-REAL (273) 24 25
-COMPLEX (274) 26
-STRING (275) 28
-DOUBLE (276) 24
-BOOLEAN (277) 27
-ENUM (278) 31
-STRUCT (279) 32
-SET_OF (280) 30
-MATRIX_OF (281) 29
-END_STRUCT (282) 32
-END_ENUM (283) 31
-CONST (284) 19
-REF (285) 20
-IF (286) 83
-ELSE (287) 84
-FOR (288) 92
-IN (289) 92
-WHILE (290) 91
-SWITCH (291) 86
-CASE (292) 87
-BREAK (293) 87
-OTHER (294) 89
-END_IF (295) 83
-END_FOR (296) 92
-END_WHILE (297) 91
-END_SWITCH (298) 86
-SEMICOLON (299) 8 56 57 72 73 83 86 87 91 92
-COMMA (300) 39 44 46 52 60 97
-COLON (301) 6 11 31 32 56 57 83 86 87 89 91 92
-OPEN_PARENTHESIS (302) 56 57 83 86 87 91 93 133 134
-CLOSE_PARENTHESIS (303) 56 57 83 86 87 91 93 133 134
-OPEN_BRACKETS (304) 29 81
-CLOSE_BRACKETS (305) 29 81
-OPEN_BRACES (306) 36 42
-CLOSE_BRACES (307) 36 42
-RANGE (308) 50
-ASSIGN_OP (309) 19 21 35 42 74
-ADD_ASSIGN_OP (310) 75
-SUB_ASSIGN_OP (311) 76
-MULT_ASSIGN_OP (312) 77
-DIV_ASSIGN_OP (313) 78
-MOD_ASSIGN_OP (314) 79
-INCREMENT_OP (315)
-DECREMENT_OP (316)
-NEG_OP (317) 128
-AND_OP (318) 103
-OR_OP (319) 100
-LEQ_OP (320) 110
-BEQ_OP (321) 111
-EQ_OP (322) 106
-NEQ_OP (323) 107
-SUB_OP (324) 117
-ADD_OP (325) 116
-MULT_OP (326) 120
-DIV_OP (327) 121
-MOD_OP (328) 122
-LT_OP (329) 112
-BT_OP (330) 113
-EXPO_OP (331) 125
-DOT_OP (332)
-COMMENT (333)
+NAME (258)
+IDENTIFIER (259) 21 22 23 33 34 35 36 50 61 63 86 92 98 99 145 148
+STRING (260) 4 32
+NUMBER (261) 53 54 146
+COMPLEX_NUMBER (262)
+REAL_NUMBER (263)
+INT_NUMBER (264)
+IMPORT (265) 4
+VARIABLES_SECTION (266) 7
+SUBPROGRAMS_SECTION (267) 15
+PROCEDURE (268) 61
+FUNCTION (269) 63
+END_PROCEDURE (270) 61
+END_FUNCTION (271) 63
+RETURN (272) 78
+INT (273) 27
+REAL (274) 28 29
+COMPLEX (275) 30
+STRING_TYPE (276)
+DOUBLE (277) 28
+BOOLEAN (278) 31
+ENUM (279) 35
+STRUCT (280) 36
+SET_OF (281) 34
+MATRIX_OF (282) 33
+END_STRUCT (283) 36
+END_ENUM (284) 35
+CONST (285) 22
+REF (286) 23
+IF (287) 89
+ELSE (288) 90
+FOR (289) 98
+IN (290) 98
+WHILE (291) 97
+SWITCH (292) 92
+CASE (293) 93
+BREAK (294) 93
+OTHER (295) 95
+END_IF (296) 89
+END_FOR (297) 98
+END_WHILE (298) 97
+END_SWITCH (299) 92
+SEMICOLON (300) 9 61 63 78 79 89 92 93 97 98
+COMMA (301) 43 48 50 56 66 103
+COLON (302) 7 15 35 36 61 63 89 92 93 95 97 98
+OPEN_PARENTHESIS (303) 61 63 89 92 93 97 99 147 148
+CLOSE_PARENTHESIS (304) 61 63 89 92 93 97 99 147 148
+OPEN_BRACKETS (305) 33 87
+CLOSE_BRACKETS (306) 33 87
+OPEN_BRACES (307) 40 46
+CLOSE_BRACES (308) 40 46
+RANGE (309) 54
+ASSIGN_OP (310) 22 25 39 46 80
+ADD_ASSIGN_OP (311) 81
+SUB_ASSIGN_OP (312) 82
+MULT_ASSIGN_OP (313) 83
+DIV_ASSIGN_OP (314) 84
+MOD_ASSIGN_OP (315) 85
+INCREMENT_OP (316)
+DECREMENT_OP (317)
+NEG_OP (318) 142
+AND_OP (319) 111
+OR_OP (320) 107
+LEQ_OP (321) 120
+BEQ_OP (322) 121
+EQ_OP (323) 115
+NEQ_OP (324) 116
+SUB_OP (325) 128
+ADD_OP (326) 127
+MULT_OP (327) 132
+DIV_OP (328) 133
+MOD_OP (329) 134
+LT_OP (330) 122
+BT_OP (331) 123
+EXPO_OP (332) 138
+DOT_OP (333)
+COMMENT (334)
 
 
 Nonterminals, with rules where they appear
 
-$accept (79)
+$accept (80)
     on left: 0
-program (80)
+program (81)
     on left: 1, on right: 0
-program_header (81)
+program_header (82)
     on left: 2 3, on right: 1 2
-import (82)
+import (83)
     on left: 4, on right: 2
-program_body (83)
+program_body (84)
     on left: 5, on right: 1
-variable_section (84)
-    on left: 6 7, on right: 5
-variable_declarations (85)
-    on left: 8, on right: 6 9 32
-variable_declarations_tail (86)
-    on left: 9 10, on right: 8
-subprogram_section (87)
-    on left: 11 12, on right: 5
-subprogram_declarations (88)
-    on left: 13, on right: 11 14
-subprogram_declarations_tail (89)
-    on left: 14 15, on right: 13
-variable_declaration (90)
-    on left: 16 17, on right: 8 58 60 71
-simple_variable_declaration (91)
-    on left: 18 19 20, on right: 16
-simple_variable_declaration_value (92)
-    on left: 21 22, on right: 18 20
-type (93)
-    on left: 23 24 25 26 27 28, on right: 18 19 20 29 30 57
-compost_variable_declaration (94)
-    on left: 29 30 31 32, on right: 17
-matrix_assignment (95)
-    on left: 33 34, on right: 29
-matrix_assignment_aux (96)
-    on left: 35, on right: 33
-matrix_assignment_aux_aux (97)
-    on left: 36, on right: 35 39
-values_group_list (98)
-    on left: 37 38, on right: 36
-values_group_list_aux (99)
+variable_section (85)
+    on left: 7 8, on right: 5
+@1 (86)
+    on left: 6, on right: 7
+variable_declarations (87)
+    on left: 9, on right: 7 12 36
+variable_declaration (88)
+    on left: 10 11, on right: 9 64 66 77
+variable_declarations_tail (89)
+    on left: 12 13, on right: 9
+subprogram_section (90)
+    on left: 15 16, on right: 5
+@2 (91)
+    on left: 14, on right: 15
+subprogram_declarations (92)
+    on left: 17, on right: 15 18
+subprogram_declarations_tail (93)
+    on left: 18 19, on right: 17
+simple_variable_declaration (94)
+    on left: 21 22 23, on right: 10
+@3 (95)
+    on left: 20, on right: 21
+simple_variable_declaration_value (96)
+    on left: 25 26, on right: 21 23
+@4 (97)
+    on left: 24, on right: 25
+type (98)
+    on left: 27 28 29 30 31 32, on right: 21 22 23 33 34 63
+compost_variable_declaration (99)
+    on left: 33 34 35 36, on right: 11
+matrix_assignment (100)
+    on left: 37 38, on right: 33
+matrix_assignment_aux (101)
     on left: 39, on right: 37
-set_assignment (100)
-    on left: 40 41, on right: 30
-set_assignment_aux (101)
-    on left: 42, on right: 40
-set_assignment_aux_aux (102)
-    on left: 43, on right: 42 44
-values_list (103)
-    on left: 44 45, on right: 43
-identifier_list (104)
-    on left: 46 47, on right: 31 46
-dimensions (105)
-    on left: 48, on right: 29 81
-range (106)
-    on left: 49, on right: 48 52
-range_tail (107)
-    on left: 50 51, on right: 49
-dimensions_tail (108)
-    on left: 52 53, on right: 48 52
-subprogram_declaration (109)
-    on left: 54 55, on right: 13
-procedure_declaration (110)
-    on left: 56, on right: 54
-function_declaration (111)
-    on left: 57, on right: 55
-parameter_list (112)
-    on left: 58 59, on right: 56 57 134
-parameter_list_tail (113)
-    on left: 60 61, on right: 58 60
-statement_list (114)
-    on left: 62 63, on right: 56 57 62 83 84 87 89 91 92
-statement (115)
-    on left: 64 65 66 67 68 69 70 71, on right: 62
-return_statement (116)
-    on left: 72, on right: 70
-assignment_statement (117)
-    on left: 73, on right: 64
-assignment_statement_tail (118)
-    on left: 74 75 76 77 78 79, on right: 73
-destination (119)
-    on left: 80, on right: 73
-identifier_tail (120)
-    on left: 81 82, on right: 80
-if_statement (121)
-    on left: 83, on right: 65
-else_clausule (122)
-    on left: 84 85, on right: 83
-switch_statement (123)
-    on left: 86, on right: 66
-case_clasule (124)
-    on left: 87 88, on right: 86 87
-other_clasule (125)
-    on left: 89 90, on right: 86
-while_statement (126)
-    on left: 91, on right: 67
-for_statement (127)
-    on left: 92, on right: 68
-subprogram_call (128)
-    on left: 93, on right: 69
-argument_list (129)
-    on left: 94 95, on right: 93
-argument_list_aux (130)
-    on left: 96, on right: 94 97
-argument_list_tail (131)
-    on left: 97 98, on right: 96
-expression (132)
-    on left: 99, on right: 19 21 36 43 72 74 75 76 77 78 79 83 87 91
-    96 133
-term_or_tail (133)
-    on left: 100 101, on right: 99 100
-term_or (134)
-    on left: 102, on right: 99 100
-term_and_tail (135)
-    on left: 103 104, on right: 102 103
-term_and (136)
-    on left: 105, on right: 102 103
-term_bool_comparison_tail (137)
-    on left: 106 107 108, on right: 105 106 107
-term_bool_comparison (138)
-    on left: 109, on right: 105 106 107
-term_arit_comparison_tail (139)
-    on left: 110 111 112 113 114, on right: 109 110 111 112 113
-term_arit_comparison (140)
-    on left: 115, on right: 109 110 111 112 113
-term_tail (141)
-    on left: 116 117 118, on right: 115 116 117
-term (142)
-    on left: 119, on right: 115 116 117
-factor_tail (143)
-    on left: 120 121 122 123, on right: 119 120 121 122
-factor (144)
-    on left: 124, on right: 119 120 121 122
-expo_tail (145)
-    on left: 125 126, on right: 124 125
-expo (146)
-    on left: 127, on right: 124 125
-negation_tail (147)
-    on left: 128 129, on right: 127 128
-negation (148)
-    on left: 130 131 132 133, on right: 127 128
-function_call (149)
-    on left: 134, on right: 132
+matrix_assignment_aux_aux (102)
+    on left: 40, on right: 39 43
+values_group_list (103)
+    on left: 41 42, on right: 40
+values_group_list_aux (104)
+    on left: 43, on right: 41
+set_assignment (105)
+    on left: 44 45, on right: 34
+set_assignment_aux (106)
+    on left: 46, on right: 44
+set_assignment_aux_aux (107)
+    on left: 47, on right: 46 48
+values_list (108)
+    on left: 48 49, on right: 47
+identifier_list (109)
+    on left: 50 51, on right: 35 50
+dimensions (110)
+    on left: 52, on right: 33 87
+range (111)
+    on left: 53, on right: 52 56
+range_tail (112)
+    on left: 54 55, on right: 53
+dimensions_tail (113)
+    on left: 56 57, on right: 52 56
+subprogram_declaration (114)
+    on left: 58 59, on right: 17
+procedure_declaration (115)
+    on left: 61, on right: 58
+@5 (116)
+    on left: 60, on right: 61
+function_declaration (117)
+    on left: 63, on right: 59
+@6 (118)
+    on left: 62, on right: 63
+parameter_list (119)
+    on left: 64 65, on right: 61 63 148
+parameter_list_tail (120)
+    on left: 66 67, on right: 64 66
+statement_list (121)
+    on left: 68 69, on right: 61 63 68 89 90 93 95 97 98
+statement (122)
+    on left: 70 71 72 73 74 75 76 77, on right: 68
+return_statement (123)
+    on left: 78, on right: 76
+assignment_statement (124)
+    on left: 79, on right: 70
+assignment_statement_tail (125)
+    on left: 80 81 82 83 84 85, on right: 79
+destination (126)
+    on left: 86, on right: 79
+identifier_tail (127)
+    on left: 87 88, on right: 86
+if_statement (128)
+    on left: 89, on right: 71
+else_clausule (129)
+    on left: 90 91, on right: 89
+switch_statement (130)
+    on left: 92, on right: 72
+case_clasule (131)
+    on left: 93 94, on right: 92 93
+other_clasule (132)
+    on left: 95 96, on right: 92
+while_statement (133)
+    on left: 97, on right: 73
+for_statement (134)
+    on left: 98, on right: 74
+subprogram_call (135)
+    on left: 99, on right: 75
+argument_list (136)
+    on left: 100 101, on right: 99
+argument_list_aux (137)
+    on left: 102, on right: 100 103
+argument_list_tail (138)
+    on left: 103 104, on right: 102
+expression (139)
+    on left: 106, on right: 22 25 40 47 78 80 81 82 83 84 85 89 93
+    97 102 147
+@7 (140)
+    on left: 105, on right: 106
+term_or_tail (141)
+    on left: 107 108, on right: 106 107
+term_or (142)
+    on left: 110, on right: 106 107
+@8 (143)
+    on left: 109, on right: 110
+term_and_tail (144)
+    on left: 111 112, on right: 110 111
+term_and (145)
+    on left: 114, on right: 110 111
+@9 (146)
+    on left: 113, on right: 114
+term_bool_comparison_tail (147)
+    on left: 115 116 117, on right: 114 115 116
+term_bool_comparison (148)
+    on left: 119, on right: 114 115 116
+@10 (149)
+    on left: 118, on right: 119
+term_arit_comparison_tail (150)
+    on left: 120 121 122 123 124, on right: 119 120 121 122 123
+term_arit_comparison (151)
+    on left: 126, on right: 119 120 121 122 123
+@11 (152)
+    on left: 125, on right: 126
+term_tail (153)
+    on left: 127 128 129, on right: 126 127 128
+term (154)
+    on left: 131, on right: 126 127 128
+@12 (155)
+    on left: 130, on right: 131
+factor_tail (156)
+    on left: 132 133 134 135, on right: 131 132 133 134
+factor (157)
+    on left: 137, on right: 131 132 133 134
+@13 (158)
+    on left: 136, on right: 137
+expo_tail (159)
+    on left: 138 139, on right: 137 138
+expo (160)
+    on left: 141, on right: 137 138
+@14 (161)
+    on left: 140, on right: 141
+negation_tail (162)
+    on left: 142 143, on right: 141 142
+negation (163)
+    on left: 144 145 146 147, on right: 141 142
+function_call (164)
+    on left: 148, on right: 144
 
 
 state 0
@@ -465,9 +524,9 @@ state 0
 
 state 1
 
-    4 import: IMPORT . NAME
+    4 import: IMPORT . STRING
 
-    NAME  shift, and go to state 5
+    STRING  shift, and go to state 5
 
 
 state 2
@@ -483,7 +542,7 @@ state 3
 
     VARIABLES_SECTION  shift, and go to state 7
 
-    $default  reduce using rule 7 (variable_section)
+    $default  reduce using rule 8 (variable_section)
 
     program_body      go to state 8
     variable_section  go to state 9
@@ -503,7 +562,7 @@ state 4
 
 state 5
 
-    4 import: IMPORT NAME .
+    4 import: IMPORT STRING .
 
     $default  reduce using rule 4 (import)
 
@@ -517,7 +576,7 @@ state 6
 
 state 7
 
-    6 variable_section: VARIABLES_SECTION . COLON variable_declarations
+    7 variable_section: VARIABLES_SECTION . COLON @1 variable_declarations
 
     COLON  shift, and go to state 11
 
@@ -535,7 +594,7 @@ state 9
 
     SUBPROGRAMS_SECTION  shift, and go to state 12
 
-    $default  reduce using rule 12 (subprogram_section)
+    $default  reduce using rule 16 (subprogram_section)
 
     subprogram_section  go to state 13
 
@@ -549,33 +608,20 @@ state 10
 
 state 11
 
-    6 variable_section: VARIABLES_SECTION COLON . variable_declarations
+    7 variable_section: VARIABLES_SECTION COLON . @1 variable_declarations
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
+    $default  reduce using rule 6 (@1)
 
-    variable_declarations         go to state 26
-    variable_declaration          go to state 27
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
+    @1  go to state 14
 
 
 state 12
 
-   11 subprogram_section: SUBPROGRAMS_SECTION . COLON subprogram_declarations
+   15 subprogram_section: SUBPROGRAMS_SECTION . @2 COLON subprogram_declarations
 
-    COLON  shift, and go to state 31
+    $default  reduce using rule 14 (@2)
+
+    @2  go to state 15
 
 
 state 13
@@ -587,2955 +633,2860 @@ state 13
 
 state 14
 
-   23 type: INT .
+    7 variable_section: VARIABLES_SECTION COLON @1 . variable_declarations
 
-    $default  reduce using rule 23 (type)
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
+
+    variable_declarations         go to state 28
+    variable_declaration          go to state 29
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
 
 
 state 15
 
-   25 type: REAL .
+   15 subprogram_section: SUBPROGRAMS_SECTION @2 . COLON subprogram_declarations
 
-    $default  reduce using rule 25 (type)
+    COLON  shift, and go to state 33
 
 
 state 16
 
-   26 type: COMPLEX .
+   32 type: STRING .
 
-    $default  reduce using rule 26 (type)
+    $default  reduce using rule 32 (type)
 
 
 state 17
 
-   28 type: STRING .
-
-    $default  reduce using rule 28 (type)
-
-
-state 18
-
-   24 type: DOUBLE . REAL
-
-    REAL  shift, and go to state 32
-
-
-state 19
-
-   27 type: BOOLEAN .
+   27 type: INT .
 
     $default  reduce using rule 27 (type)
 
 
+state 18
+
+   29 type: REAL .
+
+    $default  reduce using rule 29 (type)
+
+
+state 19
+
+   30 type: COMPLEX .
+
+    $default  reduce using rule 30 (type)
+
+
 state 20
 
-   31 compost_variable_declaration: ENUM . IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM
+   28 type: DOUBLE . REAL
 
-    IDENTIFIER  shift, and go to state 33
+    REAL  shift, and go to state 34
 
 
 state 21
 
-   32 compost_variable_declaration: STRUCT . IDENTIFIER COLON variable_declarations END_STRUCT
+   31 type: BOOLEAN .
 
-    IDENTIFIER  shift, and go to state 34
+    $default  reduce using rule 31 (type)
 
 
 state 22
 
-   30 compost_variable_declaration: SET_OF . type IDENTIFIER set_assignment
+   35 compost_variable_declaration: ENUM . IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM
 
-    INT      shift, and go to state 14
-    REAL     shift, and go to state 15
-    COMPLEX  shift, and go to state 16
-    STRING   shift, and go to state 17
-    DOUBLE   shift, and go to state 18
-    BOOLEAN  shift, and go to state 19
-
-    type  go to state 35
+    IDENTIFIER  shift, and go to state 35
 
 
 state 23
 
-   29 compost_variable_declaration: MATRIX_OF . type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
+   36 compost_variable_declaration: STRUCT . IDENTIFIER COLON variable_declarations END_STRUCT
 
-    INT      shift, and go to state 14
-    REAL     shift, and go to state 15
-    COMPLEX  shift, and go to state 16
-    STRING   shift, and go to state 17
-    DOUBLE   shift, and go to state 18
-    BOOLEAN  shift, and go to state 19
-
-    type  go to state 36
+    IDENTIFIER  shift, and go to state 36
 
 
 state 24
 
-   19 simple_variable_declaration: CONST . type IDENTIFIER ASSIGN_OP expression
+   34 compost_variable_declaration: SET_OF . type IDENTIFIER set_assignment
 
-    INT      shift, and go to state 14
-    REAL     shift, and go to state 15
-    COMPLEX  shift, and go to state 16
-    STRING   shift, and go to state 17
-    DOUBLE   shift, and go to state 18
-    BOOLEAN  shift, and go to state 19
+    STRING   shift, and go to state 16
+    INT      shift, and go to state 17
+    REAL     shift, and go to state 18
+    COMPLEX  shift, and go to state 19
+    DOUBLE   shift, and go to state 20
+    BOOLEAN  shift, and go to state 21
 
     type  go to state 37
 
 
 state 25
 
-   20 simple_variable_declaration: REF . type IDENTIFIER simple_variable_declaration_value
+   33 compost_variable_declaration: MATRIX_OF . type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
 
-    INT      shift, and go to state 14
-    REAL     shift, and go to state 15
-    COMPLEX  shift, and go to state 16
-    STRING   shift, and go to state 17
-    DOUBLE   shift, and go to state 18
-    BOOLEAN  shift, and go to state 19
+    STRING   shift, and go to state 16
+    INT      shift, and go to state 17
+    REAL     shift, and go to state 18
+    COMPLEX  shift, and go to state 19
+    DOUBLE   shift, and go to state 20
+    BOOLEAN  shift, and go to state 21
 
     type  go to state 38
 
 
 state 26
 
-    6 variable_section: VARIABLES_SECTION COLON variable_declarations .
+   22 simple_variable_declaration: CONST . type IDENTIFIER ASSIGN_OP expression
 
-    $default  reduce using rule 6 (variable_section)
+    STRING   shift, and go to state 16
+    INT      shift, and go to state 17
+    REAL     shift, and go to state 18
+    COMPLEX  shift, and go to state 19
+    DOUBLE   shift, and go to state 20
+    BOOLEAN  shift, and go to state 21
+
+    type  go to state 39
 
 
 state 27
 
-    8 variable_declarations: variable_declaration . SEMICOLON variable_declarations_tail
+   23 simple_variable_declaration: REF . type IDENTIFIER simple_variable_declaration_value
 
-    SEMICOLON  shift, and go to state 39
+    STRING   shift, and go to state 16
+    INT      shift, and go to state 17
+    REAL     shift, and go to state 18
+    COMPLEX  shift, and go to state 19
+    DOUBLE   shift, and go to state 20
+    BOOLEAN  shift, and go to state 21
+
+    type  go to state 40
 
 
 state 28
 
-   16 variable_declaration: simple_variable_declaration .
+    7 variable_section: VARIABLES_SECTION COLON @1 variable_declarations .
 
-    $default  reduce using rule 16 (variable_declaration)
+    $default  reduce using rule 7 (variable_section)
 
 
 state 29
 
-   18 simple_variable_declaration: type . IDENTIFIER simple_variable_declaration_value
+    9 variable_declarations: variable_declaration . SEMICOLON variable_declarations_tail
 
-    IDENTIFIER  shift, and go to state 40
+    SEMICOLON  shift, and go to state 41
 
 
 state 30
 
-   17 variable_declaration: compost_variable_declaration .
+   10 variable_declaration: simple_variable_declaration .
 
-    $default  reduce using rule 17 (variable_declaration)
+    $default  reduce using rule 10 (variable_declaration)
 
 
 state 31
 
-   11 subprogram_section: SUBPROGRAMS_SECTION COLON . subprogram_declarations
+   21 simple_variable_declaration: type . IDENTIFIER @3 simple_variable_declaration_value
 
-    PROCEDURE  shift, and go to state 41
-    FUNCTION   shift, and go to state 42
-
-    subprogram_declarations  go to state 43
-    subprogram_declaration   go to state 44
-    procedure_declaration    go to state 45
-    function_declaration     go to state 46
+    IDENTIFIER  shift, and go to state 42
 
 
 state 32
 
-   24 type: DOUBLE REAL .
+   11 variable_declaration: compost_variable_declaration .
 
-    $default  reduce using rule 24 (type)
+    $default  reduce using rule 11 (variable_declaration)
 
 
 state 33
 
-   31 compost_variable_declaration: ENUM IDENTIFIER . COLON IDENTIFIER identifier_list END_ENUM
+   15 subprogram_section: SUBPROGRAMS_SECTION @2 COLON . subprogram_declarations
 
-    COLON  shift, and go to state 47
+    PROCEDURE  shift, and go to state 43
+    FUNCTION   shift, and go to state 44
+
+    subprogram_declarations  go to state 45
+    subprogram_declaration   go to state 46
+    procedure_declaration    go to state 47
+    function_declaration     go to state 48
 
 
 state 34
 
-   32 compost_variable_declaration: STRUCT IDENTIFIER . COLON variable_declarations END_STRUCT
+   28 type: DOUBLE REAL .
 
-    COLON  shift, and go to state 48
+    $default  reduce using rule 28 (type)
 
 
 state 35
 
-   30 compost_variable_declaration: SET_OF type . IDENTIFIER set_assignment
+   35 compost_variable_declaration: ENUM IDENTIFIER . COLON IDENTIFIER identifier_list END_ENUM
 
-    IDENTIFIER  shift, and go to state 49
+    COLON  shift, and go to state 49
 
 
 state 36
 
-   29 compost_variable_declaration: MATRIX_OF type . OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
+   36 compost_variable_declaration: STRUCT IDENTIFIER . COLON variable_declarations END_STRUCT
 
-    OPEN_BRACKETS  shift, and go to state 50
+    COLON  shift, and go to state 50
 
 
 state 37
 
-   19 simple_variable_declaration: CONST type . IDENTIFIER ASSIGN_OP expression
+   34 compost_variable_declaration: SET_OF type . IDENTIFIER set_assignment
 
     IDENTIFIER  shift, and go to state 51
 
 
 state 38
 
-   20 simple_variable_declaration: REF type . IDENTIFIER simple_variable_declaration_value
+   33 compost_variable_declaration: MATRIX_OF type . OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
 
-    IDENTIFIER  shift, and go to state 52
+    OPEN_BRACKETS  shift, and go to state 52
 
 
 state 39
 
-    8 variable_declarations: variable_declaration SEMICOLON . variable_declarations_tail
+   22 simple_variable_declaration: CONST type . IDENTIFIER ASSIGN_OP expression
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
-
-    $default  reduce using rule 10 (variable_declarations_tail)
-
-    variable_declarations         go to state 53
-    variable_declarations_tail    go to state 54
-    variable_declaration          go to state 27
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
+    IDENTIFIER  shift, and go to state 53
 
 
 state 40
 
-   18 simple_variable_declaration: type IDENTIFIER . simple_variable_declaration_value
+   23 simple_variable_declaration: REF type . IDENTIFIER simple_variable_declaration_value
 
-    ASSIGN_OP  shift, and go to state 55
-
-    $default  reduce using rule 22 (simple_variable_declaration_value)
-
-    simple_variable_declaration_value  go to state 56
+    IDENTIFIER  shift, and go to state 54
 
 
 state 41
 
-   56 procedure_declaration: PROCEDURE . IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE SEMICOLON
+    9 variable_declarations: variable_declaration SEMICOLON . variable_declarations_tail
 
-    IDENTIFIER  shift, and go to state 57
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
+
+    $default  reduce using rule 13 (variable_declarations_tail)
+
+    variable_declarations         go to state 55
+    variable_declaration          go to state 29
+    variable_declarations_tail    go to state 56
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
 
 
 state 42
 
-   57 function_declaration: FUNCTION . type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON
+   21 simple_variable_declaration: type IDENTIFIER . @3 simple_variable_declaration_value
 
-    INT      shift, and go to state 14
-    REAL     shift, and go to state 15
-    COMPLEX  shift, and go to state 16
-    STRING   shift, and go to state 17
-    DOUBLE   shift, and go to state 18
-    BOOLEAN  shift, and go to state 19
+    $default  reduce using rule 20 (@3)
 
-    type  go to state 58
+    @3  go to state 57
 
 
 state 43
 
-   11 subprogram_section: SUBPROGRAMS_SECTION COLON subprogram_declarations .
+   61 procedure_declaration: PROCEDURE . IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE SEMICOLON
 
-    $default  reduce using rule 11 (subprogram_section)
+    IDENTIFIER  shift, and go to state 58
 
 
 state 44
 
-   13 subprogram_declarations: subprogram_declaration . subprogram_declarations_tail
+   63 function_declaration: FUNCTION . type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON
 
-    PROCEDURE  shift, and go to state 41
-    FUNCTION   shift, and go to state 42
+    STRING   shift, and go to state 16
+    INT      shift, and go to state 17
+    REAL     shift, and go to state 18
+    COMPLEX  shift, and go to state 19
+    DOUBLE   shift, and go to state 20
+    BOOLEAN  shift, and go to state 21
 
-    $default  reduce using rule 15 (subprogram_declarations_tail)
-
-    subprogram_declarations       go to state 59
-    subprogram_declarations_tail  go to state 60
-    subprogram_declaration        go to state 44
-    procedure_declaration         go to state 45
-    function_declaration          go to state 46
+    type  go to state 59
 
 
 state 45
 
-   54 subprogram_declaration: procedure_declaration .
+   15 subprogram_section: SUBPROGRAMS_SECTION @2 COLON subprogram_declarations .
 
-    $default  reduce using rule 54 (subprogram_declaration)
+    $default  reduce using rule 15 (subprogram_section)
 
 
 state 46
 
-   55 subprogram_declaration: function_declaration .
+   17 subprogram_declarations: subprogram_declaration . subprogram_declarations_tail
 
-    $default  reduce using rule 55 (subprogram_declaration)
+    PROCEDURE  shift, and go to state 43
+    FUNCTION   shift, and go to state 44
+
+    $default  reduce using rule 19 (subprogram_declarations_tail)
+
+    subprogram_declarations       go to state 60
+    subprogram_declarations_tail  go to state 61
+    subprogram_declaration        go to state 46
+    procedure_declaration         go to state 47
+    function_declaration          go to state 48
 
 
 state 47
 
-   31 compost_variable_declaration: ENUM IDENTIFIER COLON . IDENTIFIER identifier_list END_ENUM
+   58 subprogram_declaration: procedure_declaration .
 
-    IDENTIFIER  shift, and go to state 61
+    $default  reduce using rule 58 (subprogram_declaration)
 
 
 state 48
 
-   32 compost_variable_declaration: STRUCT IDENTIFIER COLON . variable_declarations END_STRUCT
+   59 subprogram_declaration: function_declaration .
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
-
-    variable_declarations         go to state 62
-    variable_declaration          go to state 27
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
+    $default  reduce using rule 59 (subprogram_declaration)
 
 
 state 49
 
-   30 compost_variable_declaration: SET_OF type IDENTIFIER . set_assignment
+   35 compost_variable_declaration: ENUM IDENTIFIER COLON . IDENTIFIER identifier_list END_ENUM
 
-    ASSIGN_OP  shift, and go to state 63
-
-    $default  reduce using rule 41 (set_assignment)
-
-    set_assignment      go to state 64
-    set_assignment_aux  go to state 65
+    IDENTIFIER  shift, and go to state 62
 
 
 state 50
 
-   29 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS . dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
+   36 compost_variable_declaration: STRUCT IDENTIFIER COLON . variable_declarations END_STRUCT
 
-    NUMBER  shift, and go to state 66
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
 
-    dimensions  go to state 67
-    range       go to state 68
+    variable_declarations         go to state 63
+    variable_declaration          go to state 29
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
 
 
 state 51
 
-   19 simple_variable_declaration: CONST type IDENTIFIER . ASSIGN_OP expression
+   34 compost_variable_declaration: SET_OF type IDENTIFIER . set_assignment
 
-    ASSIGN_OP  shift, and go to state 69
+    ASSIGN_OP  shift, and go to state 64
+
+    $default  reduce using rule 45 (set_assignment)
+
+    set_assignment      go to state 65
+    set_assignment_aux  go to state 66
 
 
 state 52
 
-   20 simple_variable_declaration: REF type IDENTIFIER . simple_variable_declaration_value
+   33 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS . dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment
 
-    ASSIGN_OP  shift, and go to state 55
+    NUMBER  shift, and go to state 67
 
-    $default  reduce using rule 22 (simple_variable_declaration_value)
-
-    simple_variable_declaration_value  go to state 70
+    dimensions  go to state 68
+    range       go to state 69
 
 
 state 53
 
-    9 variable_declarations_tail: variable_declarations .
+   22 simple_variable_declaration: CONST type IDENTIFIER . ASSIGN_OP expression
 
-    $default  reduce using rule 9 (variable_declarations_tail)
+    ASSIGN_OP  shift, and go to state 70
 
 
 state 54
 
-    8 variable_declarations: variable_declaration SEMICOLON variable_declarations_tail .
+   23 simple_variable_declaration: REF type IDENTIFIER . simple_variable_declaration_value
 
-    $default  reduce using rule 8 (variable_declarations)
+    ASSIGN_OP  shift, and go to state 71
+
+    $default  reduce using rule 26 (simple_variable_declaration_value)
+
+    simple_variable_declaration_value  go to state 72
 
 
 state 55
 
-   21 simple_variable_declaration_value: ASSIGN_OP . expression
+   12 variable_declarations_tail: variable_declarations .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 74
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 12 (variable_declarations_tail)
 
 
 state 56
 
-   18 simple_variable_declaration: type IDENTIFIER simple_variable_declaration_value .
+    9 variable_declarations: variable_declaration SEMICOLON variable_declarations_tail .
 
-    $default  reduce using rule 18 (simple_variable_declaration)
+    $default  reduce using rule 9 (variable_declarations)
 
 
 state 57
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE SEMICOLON
+   21 simple_variable_declaration: type IDENTIFIER @3 . simple_variable_declaration_value
 
-    OPEN_PARENTHESIS  shift, and go to state 84
+    ASSIGN_OP  shift, and go to state 71
+
+    $default  reduce using rule 26 (simple_variable_declaration_value)
+
+    simple_variable_declaration_value  go to state 73
 
 
 state 58
 
-   57 function_declaration: FUNCTION type . IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON
+   61 procedure_declaration: PROCEDURE IDENTIFIER . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE SEMICOLON
 
-    IDENTIFIER  shift, and go to state 85
+    OPEN_PARENTHESIS  shift, and go to state 74
 
 
 state 59
 
-   14 subprogram_declarations_tail: subprogram_declarations .
+   63 function_declaration: FUNCTION type . IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON
 
-    $default  reduce using rule 14 (subprogram_declarations_tail)
+    IDENTIFIER  shift, and go to state 75
 
 
 state 60
 
-   13 subprogram_declarations: subprogram_declaration subprogram_declarations_tail .
+   18 subprogram_declarations_tail: subprogram_declarations .
 
-    $default  reduce using rule 13 (subprogram_declarations)
+    $default  reduce using rule 18 (subprogram_declarations_tail)
 
 
 state 61
 
-   31 compost_variable_declaration: ENUM IDENTIFIER COLON IDENTIFIER . identifier_list END_ENUM
+   17 subprogram_declarations: subprogram_declaration subprogram_declarations_tail .
 
-    COMMA  shift, and go to state 86
-
-    $default  reduce using rule 47 (identifier_list)
-
-    identifier_list  go to state 87
+    $default  reduce using rule 17 (subprogram_declarations)
 
 
 state 62
 
-   32 compost_variable_declaration: STRUCT IDENTIFIER COLON variable_declarations . END_STRUCT
+   35 compost_variable_declaration: ENUM IDENTIFIER COLON IDENTIFIER . identifier_list END_ENUM
 
-    END_STRUCT  shift, and go to state 88
+    COMMA  shift, and go to state 76
+
+    $default  reduce using rule 51 (identifier_list)
+
+    identifier_list  go to state 77
 
 
 state 63
 
-   42 set_assignment_aux: ASSIGN_OP . OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
+   36 compost_variable_declaration: STRUCT IDENTIFIER COLON variable_declarations . END_STRUCT
 
-    OPEN_BRACES  shift, and go to state 89
+    END_STRUCT  shift, and go to state 78
 
 
 state 64
 
-   30 compost_variable_declaration: SET_OF type IDENTIFIER set_assignment .
+   46 set_assignment_aux: ASSIGN_OP . OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES
 
-    $default  reduce using rule 30 (compost_variable_declaration)
+    OPEN_BRACES  shift, and go to state 79
 
 
 state 65
 
-   40 set_assignment: set_assignment_aux .
+   34 compost_variable_declaration: SET_OF type IDENTIFIER set_assignment .
 
-    $default  reduce using rule 40 (set_assignment)
+    $default  reduce using rule 34 (compost_variable_declaration)
 
 
 state 66
 
-   49 range: NUMBER . range_tail
+   44 set_assignment: set_assignment_aux .
 
-    RANGE  shift, and go to state 90
-
-    $default  reduce using rule 51 (range_tail)
-
-    range_tail  go to state 91
+    $default  reduce using rule 44 (set_assignment)
 
 
 state 67
 
-   29 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions . CLOSE_BRACKETS IDENTIFIER matrix_assignment
+   53 range: NUMBER . range_tail
 
-    CLOSE_BRACKETS  shift, and go to state 92
+    RANGE  shift, and go to state 80
+
+    $default  reduce using rule 55 (range_tail)
+
+    range_tail  go to state 81
 
 
 state 68
 
-   48 dimensions: range . dimensions_tail
+   33 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions . CLOSE_BRACKETS IDENTIFIER matrix_assignment
 
-    COMMA  shift, and go to state 93
-
-    $default  reduce using rule 53 (dimensions_tail)
-
-    dimensions_tail  go to state 94
+    CLOSE_BRACKETS  shift, and go to state 82
 
 
 state 69
 
-   19 simple_variable_declaration: CONST type IDENTIFIER ASSIGN_OP . expression
+   52 dimensions: range . dimensions_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    COMMA  shift, and go to state 83
 
-    expression            go to state 95
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 57 (dimensions_tail)
+
+    dimensions_tail  go to state 84
 
 
 state 70
 
-   20 simple_variable_declaration: REF type IDENTIFIER simple_variable_declaration_value .
+   22 simple_variable_declaration: CONST type IDENTIFIER ASSIGN_OP . expression
 
-    $default  reduce using rule 20 (simple_variable_declaration)
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 85
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 71
 
-  130 negation: IDENTIFIER .
-  134 function_call: IDENTIFIER . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
+   25 simple_variable_declaration_value: ASSIGN_OP . @4 expression
 
-    OPEN_PARENTHESIS  shift, and go to state 96
+    $default  reduce using rule 24 (@4)
 
-    $default  reduce using rule 130 (negation)
+    @4  go to state 88
 
 
 state 72
 
-  131 negation: NUMBER .
+   23 simple_variable_declaration: REF type IDENTIFIER simple_variable_declaration_value .
 
-    $default  reduce using rule 131 (negation)
+    $default  reduce using rule 23 (simple_variable_declaration)
 
 
 state 73
 
-  133 negation: OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS
+   21 simple_variable_declaration: type IDENTIFIER @3 simple_variable_declaration_value .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 97
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 21 (simple_variable_declaration)
 
 
 state 74
 
-   21 simple_variable_declaration_value: ASSIGN_OP expression .
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE SEMICOLON
 
-    $default  reduce using rule 21 (simple_variable_declaration_value)
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
+
+    $default  reduce using rule 65 (parameter_list)
+
+    variable_declaration          go to state 89
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    parameter_list                go to state 90
 
 
 state 75
 
-   99 expression: term_or . term_or_tail
+   63 function_declaration: FUNCTION type IDENTIFIER . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON
 
-    OR_OP  shift, and go to state 98
-
-    $default  reduce using rule 101 (term_or_tail)
-
-    term_or_tail  go to state 99
+    OPEN_PARENTHESIS  shift, and go to state 91
 
 
 state 76
 
-  102 term_or: term_and . term_and_tail
+   50 identifier_list: COMMA . IDENTIFIER identifier_list
 
-    AND_OP  shift, and go to state 100
-
-    $default  reduce using rule 104 (term_and_tail)
-
-    term_and_tail  go to state 101
+    IDENTIFIER  shift, and go to state 92
 
 
 state 77
 
-  105 term_and: term_bool_comparison . term_bool_comparison_tail
+   35 compost_variable_declaration: ENUM IDENTIFIER COLON IDENTIFIER identifier_list . END_ENUM
 
-    EQ_OP   shift, and go to state 102
-    NEQ_OP  shift, and go to state 103
-
-    $default  reduce using rule 108 (term_bool_comparison_tail)
-
-    term_bool_comparison_tail  go to state 104
+    END_ENUM  shift, and go to state 93
 
 
 state 78
 
-  109 term_bool_comparison: term_arit_comparison . term_arit_comparison_tail
+   36 compost_variable_declaration: STRUCT IDENTIFIER COLON variable_declarations END_STRUCT .
 
-    LEQ_OP  shift, and go to state 105
-    BEQ_OP  shift, and go to state 106
-    LT_OP   shift, and go to state 107
-    BT_OP   shift, and go to state 108
-
-    $default  reduce using rule 114 (term_arit_comparison_tail)
-
-    term_arit_comparison_tail  go to state 109
+    $default  reduce using rule 36 (compost_variable_declaration)
 
 
 state 79
 
-  115 term_arit_comparison: term . term_tail
+   46 set_assignment_aux: ASSIGN_OP OPEN_BRACES . set_assignment_aux_aux CLOSE_BRACES
 
-    SUB_OP  shift, and go to state 110
-    ADD_OP  shift, and go to state 111
+    $default  reduce using rule 109 (@8)
 
-    $default  reduce using rule 118 (term_tail)
-
-    term_tail  go to state 112
+    set_assignment_aux_aux  go to state 94
+    expression              go to state 95
+    term_or                 go to state 86
+    @8                      go to state 87
 
 
 state 80
 
-  119 term: factor . factor_tail
+   54 range_tail: RANGE . NUMBER
 
-    MULT_OP  shift, and go to state 113
-    DIV_OP   shift, and go to state 114
-    MOD_OP   shift, and go to state 115
-
-    $default  reduce using rule 123 (factor_tail)
-
-    factor_tail  go to state 116
+    NUMBER  shift, and go to state 96
 
 
 state 81
 
-  124 factor: expo . expo_tail
+   53 range: NUMBER range_tail .
 
-    EXPO_OP  shift, and go to state 117
-
-    $default  reduce using rule 126 (expo_tail)
-
-    expo_tail  go to state 118
+    $default  reduce using rule 53 (range)
 
 
 state 82
 
-  127 expo: negation . negation_tail
+   33 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS . IDENTIFIER matrix_assignment
 
-    NEG_OP  shift, and go to state 119
-
-    $default  reduce using rule 129 (negation_tail)
-
-    negation_tail  go to state 120
+    IDENTIFIER  shift, and go to state 97
 
 
 state 83
 
-  132 negation: function_call .
+   56 dimensions_tail: COMMA . range dimensions_tail
 
-    $default  reduce using rule 132 (negation)
+    NUMBER  shift, and go to state 67
+
+    range  go to state 98
 
 
 state 84
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE SEMICOLON
+   52 dimensions: range dimensions_tail .
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
-
-    $default  reduce using rule 59 (parameter_list)
-
-    variable_declaration          go to state 121
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    parameter_list                go to state 122
+    $default  reduce using rule 52 (dimensions)
 
 
 state 85
 
-   57 function_declaration: FUNCTION type IDENTIFIER . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON
+   22 simple_variable_declaration: CONST type IDENTIFIER ASSIGN_OP expression .
 
-    OPEN_PARENTHESIS  shift, and go to state 123
+    $default  reduce using rule 22 (simple_variable_declaration)
 
 
 state 86
 
-   46 identifier_list: COMMA . IDENTIFIER identifier_list
+  106 expression: term_or . @7 term_or_tail
 
-    IDENTIFIER  shift, and go to state 124
+    $default  reduce using rule 105 (@7)
+
+    @7  go to state 99
 
 
 state 87
 
-   31 compost_variable_declaration: ENUM IDENTIFIER COLON IDENTIFIER identifier_list . END_ENUM
+  110 term_or: @8 . term_and term_and_tail
 
-    END_ENUM  shift, and go to state 125
+    $default  reduce using rule 113 (@9)
+
+    term_and  go to state 100
+    @9        go to state 101
 
 
 state 88
 
-   32 compost_variable_declaration: STRUCT IDENTIFIER COLON variable_declarations END_STRUCT .
+   25 simple_variable_declaration_value: ASSIGN_OP @4 . expression
 
-    $default  reduce using rule 32 (compost_variable_declaration)
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 102
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 89
 
-   42 set_assignment_aux: ASSIGN_OP OPEN_BRACES . set_assignment_aux_aux CLOSE_BRACES
+   64 parameter_list: variable_declaration . parameter_list_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    COMMA  shift, and go to state 103
 
-    set_assignment_aux_aux  go to state 126
-    expression              go to state 127
-    term_or                 go to state 75
-    term_and                go to state 76
-    term_bool_comparison    go to state 77
-    term_arit_comparison    go to state 78
-    term                    go to state 79
-    factor                  go to state 80
-    expo                    go to state 81
-    negation                go to state 82
-    function_call           go to state 83
+    $default  reduce using rule 67 (parameter_list_tail)
+
+    parameter_list_tail  go to state 104
 
 
 state 90
 
-   50 range_tail: RANGE . NUMBER
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE SEMICOLON
 
-    NUMBER  shift, and go to state 128
+    CLOSE_PARENTHESIS  shift, and go to state 105
 
 
 state 91
 
-   49 range: NUMBER range_tail .
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON
 
-    $default  reduce using rule 49 (range)
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
+
+    $default  reduce using rule 65 (parameter_list)
+
+    variable_declaration          go to state 89
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    parameter_list                go to state 106
 
 
 state 92
 
-   29 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS . IDENTIFIER matrix_assignment
+   50 identifier_list: COMMA IDENTIFIER . identifier_list
 
-    IDENTIFIER  shift, and go to state 129
+    COMMA  shift, and go to state 76
+
+    $default  reduce using rule 51 (identifier_list)
+
+    identifier_list  go to state 107
 
 
 state 93
 
-   52 dimensions_tail: COMMA . range dimensions_tail
+   35 compost_variable_declaration: ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM .
 
-    NUMBER  shift, and go to state 66
-
-    range  go to state 130
+    $default  reduce using rule 35 (compost_variable_declaration)
 
 
 state 94
 
-   48 dimensions: range dimensions_tail .
+   46 set_assignment_aux: ASSIGN_OP OPEN_BRACES set_assignment_aux_aux . CLOSE_BRACES
 
-    $default  reduce using rule 48 (dimensions)
+    CLOSE_BRACES  shift, and go to state 108
 
 
 state 95
 
-   19 simple_variable_declaration: CONST type IDENTIFIER ASSIGN_OP expression .
+   47 set_assignment_aux_aux: expression . values_list
 
-    $default  reduce using rule 19 (simple_variable_declaration)
+    COMMA  shift, and go to state 109
+
+    $default  reduce using rule 49 (values_list)
+
+    values_list  go to state 110
 
 
 state 96
 
-  134 function_call: IDENTIFIER OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS
+   54 range_tail: RANGE NUMBER .
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
-
-    $default  reduce using rule 59 (parameter_list)
-
-    variable_declaration          go to state 121
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    parameter_list                go to state 131
+    $default  reduce using rule 54 (range_tail)
 
 
 state 97
 
-  133 negation: OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS
+   33 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER . matrix_assignment
 
-    CLOSE_PARENTHESIS  shift, and go to state 132
+    ASSIGN_OP  shift, and go to state 111
+
+    $default  reduce using rule 38 (matrix_assignment)
+
+    matrix_assignment      go to state 112
+    matrix_assignment_aux  go to state 113
 
 
 state 98
 
-  100 term_or_tail: OR_OP . term_or term_or_tail
+   56 dimensions_tail: COMMA range . dimensions_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    COMMA  shift, and go to state 83
 
-    term_or               go to state 133
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 57 (dimensions_tail)
+
+    dimensions_tail  go to state 114
 
 
 state 99
 
-   99 expression: term_or term_or_tail .
+  106 expression: term_or @7 . term_or_tail
 
-    $default  reduce using rule 99 (expression)
+    OR_OP  shift, and go to state 115
+
+    $default  reduce using rule 108 (term_or_tail)
+
+    term_or_tail  go to state 116
 
 
 state 100
 
-  103 term_and_tail: AND_OP . term_and term_and_tail
+  110 term_or: @8 term_and . term_and_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    AND_OP  shift, and go to state 117
 
-    term_and              go to state 134
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 112 (term_and_tail)
+
+    term_and_tail  go to state 118
 
 
 state 101
 
-  102 term_or: term_and term_and_tail .
+  114 term_and: @9 . term_bool_comparison term_bool_comparison_tail
 
-    $default  reduce using rule 102 (term_or)
+    $default  reduce using rule 118 (@10)
+
+    term_bool_comparison  go to state 119
+    @10                   go to state 120
 
 
 state 102
 
-  106 term_bool_comparison_tail: EQ_OP . term_bool_comparison term_bool_comparison_tail
+   25 simple_variable_declaration_value: ASSIGN_OP @4 expression .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    term_bool_comparison  go to state 135
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 25 (simple_variable_declaration_value)
 
 
 state 103
 
-  107 term_bool_comparison_tail: NEQ_OP . term_bool_comparison term_bool_comparison_tail
+   66 parameter_list_tail: COMMA . variable_declaration parameter_list_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
 
-    term_bool_comparison  go to state 136
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    variable_declaration          go to state 121
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
 
 
 state 104
 
-  105 term_and: term_bool_comparison term_bool_comparison_tail .
+   64 parameter_list: variable_declaration parameter_list_tail .
 
-    $default  reduce using rule 105 (term_and)
+    $default  reduce using rule 64 (parameter_list)
 
 
 state 105
 
-  110 term_arit_comparison_tail: LEQ_OP . term_arit_comparison term_arit_comparison_tail
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS . COLON @5 statement_list END_PROCEDURE SEMICOLON
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    term_arit_comparison  go to state 137
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    COLON  shift, and go to state 122
 
 
 state 106
 
-  111 term_arit_comparison_tail: BEQ_OP . term_arit_comparison term_arit_comparison_tail
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    term_arit_comparison  go to state 138
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    CLOSE_PARENTHESIS  shift, and go to state 123
 
 
 state 107
 
-  112 term_arit_comparison_tail: LT_OP . term_arit_comparison term_arit_comparison_tail
+   50 identifier_list: COMMA IDENTIFIER identifier_list .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    term_arit_comparison  go to state 139
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 50 (identifier_list)
 
 
 state 108
 
-  113 term_arit_comparison_tail: BT_OP . term_arit_comparison term_arit_comparison_tail
+   46 set_assignment_aux: ASSIGN_OP OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    term_arit_comparison  go to state 140
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 46 (set_assignment_aux)
 
 
 state 109
 
-  109 term_bool_comparison: term_arit_comparison term_arit_comparison_tail .
+   48 values_list: COMMA . set_assignment_aux_aux
 
-    $default  reduce using rule 109 (term_bool_comparison)
+    $default  reduce using rule 109 (@8)
+
+    set_assignment_aux_aux  go to state 124
+    expression              go to state 95
+    term_or                 go to state 86
+    @8                      go to state 87
 
 
 state 110
 
-  117 term_tail: SUB_OP . term term_tail
+   47 set_assignment_aux_aux: expression values_list .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    term           go to state 141
-    factor         go to state 80
-    expo           go to state 81
-    negation       go to state 82
-    function_call  go to state 83
+    $default  reduce using rule 47 (set_assignment_aux_aux)
 
 
 state 111
 
-  116 term_tail: ADD_OP . term term_tail
+   39 matrix_assignment_aux: ASSIGN_OP . matrix_assignment_aux_aux
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    OPEN_BRACES  shift, and go to state 125
 
-    term           go to state 142
-    factor         go to state 80
-    expo           go to state 81
-    negation       go to state 82
-    function_call  go to state 83
+    matrix_assignment_aux_aux  go to state 126
 
 
 state 112
 
-  115 term_arit_comparison: term term_tail .
+   33 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment .
 
-    $default  reduce using rule 115 (term_arit_comparison)
+    $default  reduce using rule 33 (compost_variable_declaration)
 
 
 state 113
 
-  120 factor_tail: MULT_OP . factor factor_tail
+   37 matrix_assignment: matrix_assignment_aux .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    factor         go to state 143
-    expo           go to state 81
-    negation       go to state 82
-    function_call  go to state 83
+    $default  reduce using rule 37 (matrix_assignment)
 
 
 state 114
 
-  121 factor_tail: DIV_OP . factor factor_tail
+   56 dimensions_tail: COMMA range dimensions_tail .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    factor         go to state 144
-    expo           go to state 81
-    negation       go to state 82
-    function_call  go to state 83
+    $default  reduce using rule 56 (dimensions_tail)
 
 
 state 115
 
-  122 factor_tail: MOD_OP . factor factor_tail
+  107 term_or_tail: OR_OP . term_or term_or_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    $default  reduce using rule 109 (@8)
 
-    factor         go to state 145
-    expo           go to state 81
-    negation       go to state 82
-    function_call  go to state 83
+    term_or  go to state 127
+    @8       go to state 87
 
 
 state 116
 
-  119 term: factor factor_tail .
+  106 expression: term_or @7 term_or_tail .
 
-    $default  reduce using rule 119 (term)
+    $default  reduce using rule 106 (expression)
 
 
 state 117
 
-  125 expo_tail: EXPO_OP . expo expo_tail
+  111 term_and_tail: AND_OP . term_and term_and_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    $default  reduce using rule 113 (@9)
 
-    expo           go to state 146
-    negation       go to state 82
-    function_call  go to state 83
+    term_and  go to state 128
+    @9        go to state 101
 
 
 state 118
 
-  124 factor: expo expo_tail .
+  110 term_or: @8 term_and term_and_tail .
 
-    $default  reduce using rule 124 (factor)
+    $default  reduce using rule 110 (term_or)
 
 
 state 119
 
-  128 negation_tail: NEG_OP . negation negation_tail
+  114 term_and: @9 term_bool_comparison . term_bool_comparison_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    EQ_OP   shift, and go to state 129
+    NEQ_OP  shift, and go to state 130
 
-    negation       go to state 147
-    function_call  go to state 83
+    $default  reduce using rule 117 (term_bool_comparison_tail)
+
+    term_bool_comparison_tail  go to state 131
 
 
 state 120
 
-  127 expo: negation negation_tail .
+  119 term_bool_comparison: @10 . term_arit_comparison term_arit_comparison_tail
 
-    $default  reduce using rule 127 (expo)
+    $default  reduce using rule 125 (@11)
+
+    term_arit_comparison  go to state 132
+    @11                   go to state 133
 
 
 state 121
 
-   58 parameter_list: variable_declaration . parameter_list_tail
+   66 parameter_list_tail: COMMA variable_declaration . parameter_list_tail
 
-    COMMA  shift, and go to state 148
+    COMMA  shift, and go to state 103
 
-    $default  reduce using rule 61 (parameter_list_tail)
+    $default  reduce using rule 67 (parameter_list_tail)
 
-    parameter_list_tail  go to state 149
+    parameter_list_tail  go to state 134
 
 
 state 122
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE SEMICOLON
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON . @5 statement_list END_PROCEDURE SEMICOLON
 
-    CLOSE_PARENTHESIS  shift, and go to state 150
+    $default  reduce using rule 60 (@5)
+
+    @5  go to state 135
 
 
 state 123
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS . COLON @6 statement_list END_FUNCTION SEMICOLON
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
-
-    $default  reduce using rule 59 (parameter_list)
-
-    variable_declaration          go to state 121
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    parameter_list                go to state 151
+    COLON  shift, and go to state 136
 
 
 state 124
 
-   46 identifier_list: COMMA IDENTIFIER . identifier_list
+   48 values_list: COMMA set_assignment_aux_aux .
 
-    COMMA  shift, and go to state 86
-
-    $default  reduce using rule 47 (identifier_list)
-
-    identifier_list  go to state 152
+    $default  reduce using rule 48 (values_list)
 
 
 state 125
 
-   31 compost_variable_declaration: ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM .
+   40 matrix_assignment_aux_aux: OPEN_BRACES . expression CLOSE_BRACES values_group_list
 
-    $default  reduce using rule 31 (compost_variable_declaration)
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 137
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 126
 
-   42 set_assignment_aux: ASSIGN_OP OPEN_BRACES set_assignment_aux_aux . CLOSE_BRACES
+   39 matrix_assignment_aux: ASSIGN_OP matrix_assignment_aux_aux .
 
-    CLOSE_BRACES  shift, and go to state 153
+    $default  reduce using rule 39 (matrix_assignment_aux)
 
 
 state 127
 
-   43 set_assignment_aux_aux: expression . values_list
+  107 term_or_tail: OR_OP term_or . term_or_tail
 
-    COMMA  shift, and go to state 154
+    OR_OP  shift, and go to state 115
 
-    $default  reduce using rule 45 (values_list)
+    $default  reduce using rule 108 (term_or_tail)
 
-    values_list  go to state 155
+    term_or_tail  go to state 138
 
 
 state 128
 
-   50 range_tail: RANGE NUMBER .
+  111 term_and_tail: AND_OP term_and . term_and_tail
 
-    $default  reduce using rule 50 (range_tail)
+    AND_OP  shift, and go to state 117
+
+    $default  reduce using rule 112 (term_and_tail)
+
+    term_and_tail  go to state 139
 
 
 state 129
 
-   29 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER . matrix_assignment
+  115 term_bool_comparison_tail: EQ_OP . term_bool_comparison term_bool_comparison_tail
 
-    ASSIGN_OP  shift, and go to state 156
+    $default  reduce using rule 118 (@10)
 
-    $default  reduce using rule 34 (matrix_assignment)
-
-    matrix_assignment      go to state 157
-    matrix_assignment_aux  go to state 158
+    term_bool_comparison  go to state 140
+    @10                   go to state 120
 
 
 state 130
 
-   52 dimensions_tail: COMMA range . dimensions_tail
+  116 term_bool_comparison_tail: NEQ_OP . term_bool_comparison term_bool_comparison_tail
 
-    COMMA  shift, and go to state 93
+    $default  reduce using rule 118 (@10)
 
-    $default  reduce using rule 53 (dimensions_tail)
-
-    dimensions_tail  go to state 159
+    term_bool_comparison  go to state 141
+    @10                   go to state 120
 
 
 state 131
 
-  134 function_call: IDENTIFIER OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS
+  114 term_and: @9 term_bool_comparison term_bool_comparison_tail .
 
-    CLOSE_PARENTHESIS  shift, and go to state 160
+    $default  reduce using rule 114 (term_and)
 
 
 state 132
 
-  133 negation: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS .
+  119 term_bool_comparison: @10 term_arit_comparison . term_arit_comparison_tail
 
-    $default  reduce using rule 133 (negation)
+    LEQ_OP  shift, and go to state 142
+    BEQ_OP  shift, and go to state 143
+    LT_OP   shift, and go to state 144
+    BT_OP   shift, and go to state 145
+
+    $default  reduce using rule 124 (term_arit_comparison_tail)
+
+    term_arit_comparison_tail  go to state 146
 
 
 state 133
 
-  100 term_or_tail: OR_OP term_or . term_or_tail
+  126 term_arit_comparison: @11 . term term_tail
 
-    OR_OP  shift, and go to state 98
+    $default  reduce using rule 130 (@12)
 
-    $default  reduce using rule 101 (term_or_tail)
-
-    term_or_tail  go to state 161
+    term  go to state 147
+    @12   go to state 148
 
 
 state 134
 
-  103 term_and_tail: AND_OP term_and . term_and_tail
+   66 parameter_list_tail: COMMA variable_declaration parameter_list_tail .
 
-    AND_OP  shift, and go to state 100
-
-    $default  reduce using rule 104 (term_and_tail)
-
-    term_and_tail  go to state 162
+    $default  reduce using rule 66 (parameter_list_tail)
 
 
 state 135
 
-  106 term_bool_comparison_tail: EQ_OP term_bool_comparison . term_bool_comparison_tail
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 . statement_list END_PROCEDURE SEMICOLON
 
-    EQ_OP   shift, and go to state 102
-    NEQ_OP  shift, and go to state 103
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
 
-    $default  reduce using rule 108 (term_bool_comparison_tail)
+    $default  reduce using rule 69 (statement_list)
 
-    term_bool_comparison_tail  go to state 163
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 156
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
 
 
 state 136
 
-  107 term_bool_comparison_tail: NEQ_OP term_bool_comparison . term_bool_comparison_tail
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON . @6 statement_list END_FUNCTION SEMICOLON
 
-    EQ_OP   shift, and go to state 102
-    NEQ_OP  shift, and go to state 103
+    $default  reduce using rule 62 (@6)
 
-    $default  reduce using rule 108 (term_bool_comparison_tail)
-
-    term_bool_comparison_tail  go to state 164
+    @6  go to state 166
 
 
 state 137
 
-  110 term_arit_comparison_tail: LEQ_OP term_arit_comparison . term_arit_comparison_tail
+   40 matrix_assignment_aux_aux: OPEN_BRACES expression . CLOSE_BRACES values_group_list
 
-    LEQ_OP  shift, and go to state 105
-    BEQ_OP  shift, and go to state 106
-    LT_OP   shift, and go to state 107
-    BT_OP   shift, and go to state 108
-
-    $default  reduce using rule 114 (term_arit_comparison_tail)
-
-    term_arit_comparison_tail  go to state 165
+    CLOSE_BRACES  shift, and go to state 167
 
 
 state 138
 
-  111 term_arit_comparison_tail: BEQ_OP term_arit_comparison . term_arit_comparison_tail
+  107 term_or_tail: OR_OP term_or term_or_tail .
 
-    LEQ_OP  shift, and go to state 105
-    BEQ_OP  shift, and go to state 106
-    LT_OP   shift, and go to state 107
-    BT_OP   shift, and go to state 108
-
-    $default  reduce using rule 114 (term_arit_comparison_tail)
-
-    term_arit_comparison_tail  go to state 166
+    $default  reduce using rule 107 (term_or_tail)
 
 
 state 139
 
-  112 term_arit_comparison_tail: LT_OP term_arit_comparison . term_arit_comparison_tail
+  111 term_and_tail: AND_OP term_and term_and_tail .
 
-    LEQ_OP  shift, and go to state 105
-    BEQ_OP  shift, and go to state 106
-    LT_OP   shift, and go to state 107
-    BT_OP   shift, and go to state 108
-
-    $default  reduce using rule 114 (term_arit_comparison_tail)
-
-    term_arit_comparison_tail  go to state 167
+    $default  reduce using rule 111 (term_and_tail)
 
 
 state 140
 
-  113 term_arit_comparison_tail: BT_OP term_arit_comparison . term_arit_comparison_tail
+  115 term_bool_comparison_tail: EQ_OP term_bool_comparison . term_bool_comparison_tail
 
-    LEQ_OP  shift, and go to state 105
-    BEQ_OP  shift, and go to state 106
-    LT_OP   shift, and go to state 107
-    BT_OP   shift, and go to state 108
+    EQ_OP   shift, and go to state 129
+    NEQ_OP  shift, and go to state 130
 
-    $default  reduce using rule 114 (term_arit_comparison_tail)
+    $default  reduce using rule 117 (term_bool_comparison_tail)
 
-    term_arit_comparison_tail  go to state 168
+    term_bool_comparison_tail  go to state 168
 
 
 state 141
 
-  117 term_tail: SUB_OP term . term_tail
+  116 term_bool_comparison_tail: NEQ_OP term_bool_comparison . term_bool_comparison_tail
 
-    SUB_OP  shift, and go to state 110
-    ADD_OP  shift, and go to state 111
+    EQ_OP   shift, and go to state 129
+    NEQ_OP  shift, and go to state 130
 
-    $default  reduce using rule 118 (term_tail)
+    $default  reduce using rule 117 (term_bool_comparison_tail)
 
-    term_tail  go to state 169
+    term_bool_comparison_tail  go to state 169
 
 
 state 142
 
-  116 term_tail: ADD_OP term . term_tail
+  120 term_arit_comparison_tail: LEQ_OP . term_arit_comparison term_arit_comparison_tail
 
-    SUB_OP  shift, and go to state 110
-    ADD_OP  shift, and go to state 111
+    $default  reduce using rule 125 (@11)
 
-    $default  reduce using rule 118 (term_tail)
-
-    term_tail  go to state 170
+    term_arit_comparison  go to state 170
+    @11                   go to state 133
 
 
 state 143
 
-  120 factor_tail: MULT_OP factor . factor_tail
+  121 term_arit_comparison_tail: BEQ_OP . term_arit_comparison term_arit_comparison_tail
 
-    MULT_OP  shift, and go to state 113
-    DIV_OP   shift, and go to state 114
-    MOD_OP   shift, and go to state 115
+    $default  reduce using rule 125 (@11)
 
-    $default  reduce using rule 123 (factor_tail)
-
-    factor_tail  go to state 171
+    term_arit_comparison  go to state 171
+    @11                   go to state 133
 
 
 state 144
 
-  121 factor_tail: DIV_OP factor . factor_tail
+  122 term_arit_comparison_tail: LT_OP . term_arit_comparison term_arit_comparison_tail
 
-    MULT_OP  shift, and go to state 113
-    DIV_OP   shift, and go to state 114
-    MOD_OP   shift, and go to state 115
+    $default  reduce using rule 125 (@11)
 
-    $default  reduce using rule 123 (factor_tail)
-
-    factor_tail  go to state 172
+    term_arit_comparison  go to state 172
+    @11                   go to state 133
 
 
 state 145
 
-  122 factor_tail: MOD_OP factor . factor_tail
+  123 term_arit_comparison_tail: BT_OP . term_arit_comparison term_arit_comparison_tail
 
-    MULT_OP  shift, and go to state 113
-    DIV_OP   shift, and go to state 114
-    MOD_OP   shift, and go to state 115
+    $default  reduce using rule 125 (@11)
 
-    $default  reduce using rule 123 (factor_tail)
-
-    factor_tail  go to state 173
+    term_arit_comparison  go to state 173
+    @11                   go to state 133
 
 
 state 146
 
-  125 expo_tail: EXPO_OP expo . expo_tail
+  119 term_bool_comparison: @10 term_arit_comparison term_arit_comparison_tail .
 
-    EXPO_OP  shift, and go to state 117
-
-    $default  reduce using rule 126 (expo_tail)
-
-    expo_tail  go to state 174
+    $default  reduce using rule 119 (term_bool_comparison)
 
 
 state 147
 
-  128 negation_tail: NEG_OP negation . negation_tail
+  126 term_arit_comparison: @11 term . term_tail
 
-    NEG_OP  shift, and go to state 119
+    SUB_OP  shift, and go to state 174
+    ADD_OP  shift, and go to state 175
 
-    $default  reduce using rule 129 (negation_tail)
+    $default  reduce using rule 129 (term_tail)
 
-    negation_tail  go to state 175
+    term_tail  go to state 176
 
 
 state 148
 
-   60 parameter_list_tail: COMMA . variable_declaration parameter_list_tail
+  131 term: @12 . factor factor_tail
 
-    INT        shift, and go to state 14
-    REAL       shift, and go to state 15
-    COMPLEX    shift, and go to state 16
-    STRING     shift, and go to state 17
-    DOUBLE     shift, and go to state 18
-    BOOLEAN    shift, and go to state 19
-    ENUM       shift, and go to state 20
-    STRUCT     shift, and go to state 21
-    SET_OF     shift, and go to state 22
-    MATRIX_OF  shift, and go to state 23
-    CONST      shift, and go to state 24
-    REF        shift, and go to state 25
+    $default  reduce using rule 136 (@13)
 
-    variable_declaration          go to state 176
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
+    factor  go to state 177
+    @13     go to state 178
 
 
 state 149
 
-   58 parameter_list: variable_declaration parameter_list_tail .
+   86 destination: IDENTIFIER . identifier_tail
+   99 subprogram_call: IDENTIFIER . OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
 
-    $default  reduce using rule 58 (parameter_list)
+    OPEN_PARENTHESIS  shift, and go to state 179
+    OPEN_BRACKETS     shift, and go to state 180
+
+    $default  reduce using rule 88 (identifier_tail)
+
+    identifier_tail  go to state 181
 
 
 state 150
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS . COLON statement_list END_PROCEDURE SEMICOLON
+   78 return_statement: RETURN . expression SEMICOLON
 
-    COLON  shift, and go to state 177
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 182
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 151
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON
+   89 if_statement: IF . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
 
-    CLOSE_PARENTHESIS  shift, and go to state 178
+    OPEN_PARENTHESIS  shift, and go to state 183
 
 
 state 152
 
-   46 identifier_list: COMMA IDENTIFIER identifier_list .
+   98 for_statement: FOR . IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR SEMICOLON
 
-    $default  reduce using rule 46 (identifier_list)
+    IDENTIFIER  shift, and go to state 184
 
 
 state 153
 
-   42 set_assignment_aux: ASSIGN_OP OPEN_BRACES set_assignment_aux_aux CLOSE_BRACES .
+   97 while_statement: WHILE . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
 
-    $default  reduce using rule 42 (set_assignment_aux)
+    OPEN_PARENTHESIS  shift, and go to state 185
 
 
 state 154
 
-   44 values_list: COMMA . set_assignment_aux_aux
+   92 switch_statement: SWITCH . OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    set_assignment_aux_aux  go to state 179
-    expression              go to state 127
-    term_or                 go to state 75
-    term_and                go to state 76
-    term_bool_comparison    go to state 77
-    term_arit_comparison    go to state 78
-    term                    go to state 79
-    factor                  go to state 80
-    expo                    go to state 81
-    negation                go to state 82
-    function_call           go to state 83
+    OPEN_PARENTHESIS  shift, and go to state 186
 
 
 state 155
 
-   43 set_assignment_aux_aux: expression values_list .
+   77 statement: variable_declaration .
 
-    $default  reduce using rule 43 (set_assignment_aux_aux)
+    $default  reduce using rule 77 (statement)
 
 
 state 156
 
-   35 matrix_assignment_aux: ASSIGN_OP . matrix_assignment_aux_aux
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 statement_list . END_PROCEDURE SEMICOLON
 
-    OPEN_BRACES  shift, and go to state 180
-
-    matrix_assignment_aux_aux  go to state 181
+    END_PROCEDURE  shift, and go to state 187
 
 
 state 157
 
-   29 compost_variable_declaration: MATRIX_OF type OPEN_BRACKETS dimensions CLOSE_BRACKETS IDENTIFIER matrix_assignment .
+   68 statement_list: statement . statement_list
 
-    $default  reduce using rule 29 (compost_variable_declaration)
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
+
+    $default  reduce using rule 69 (statement_list)
+
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 188
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
 
 
 state 158
 
-   33 matrix_assignment: matrix_assignment_aux .
+   76 statement: return_statement .
 
-    $default  reduce using rule 33 (matrix_assignment)
+    $default  reduce using rule 76 (statement)
 
 
 state 159
 
-   52 dimensions_tail: COMMA range dimensions_tail .
-
-    $default  reduce using rule 52 (dimensions_tail)
-
-
-state 160
-
-  134 function_call: IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS .
-
-    $default  reduce using rule 134 (function_call)
-
-
-state 161
-
-  100 term_or_tail: OR_OP term_or term_or_tail .
-
-    $default  reduce using rule 100 (term_or_tail)
-
-
-state 162
-
-  103 term_and_tail: AND_OP term_and term_and_tail .
-
-    $default  reduce using rule 103 (term_and_tail)
-
-
-state 163
-
-  106 term_bool_comparison_tail: EQ_OP term_bool_comparison term_bool_comparison_tail .
-
-    $default  reduce using rule 106 (term_bool_comparison_tail)
-
-
-state 164
-
-  107 term_bool_comparison_tail: NEQ_OP term_bool_comparison term_bool_comparison_tail .
-
-    $default  reduce using rule 107 (term_bool_comparison_tail)
-
-
-state 165
-
-  110 term_arit_comparison_tail: LEQ_OP term_arit_comparison term_arit_comparison_tail .
-
-    $default  reduce using rule 110 (term_arit_comparison_tail)
-
-
-state 166
-
-  111 term_arit_comparison_tail: BEQ_OP term_arit_comparison term_arit_comparison_tail .
-
-    $default  reduce using rule 111 (term_arit_comparison_tail)
-
-
-state 167
-
-  112 term_arit_comparison_tail: LT_OP term_arit_comparison term_arit_comparison_tail .
-
-    $default  reduce using rule 112 (term_arit_comparison_tail)
-
-
-state 168
-
-  113 term_arit_comparison_tail: BT_OP term_arit_comparison term_arit_comparison_tail .
-
-    $default  reduce using rule 113 (term_arit_comparison_tail)
-
-
-state 169
-
-  117 term_tail: SUB_OP term term_tail .
-
-    $default  reduce using rule 117 (term_tail)
-
-
-state 170
-
-  116 term_tail: ADD_OP term term_tail .
-
-    $default  reduce using rule 116 (term_tail)
-
-
-state 171
-
-  120 factor_tail: MULT_OP factor factor_tail .
-
-    $default  reduce using rule 120 (factor_tail)
-
-
-state 172
-
-  121 factor_tail: DIV_OP factor factor_tail .
-
-    $default  reduce using rule 121 (factor_tail)
-
-
-state 173
-
-  122 factor_tail: MOD_OP factor factor_tail .
-
-    $default  reduce using rule 122 (factor_tail)
-
-
-state 174
-
-  125 expo_tail: EXPO_OP expo expo_tail .
-
-    $default  reduce using rule 125 (expo_tail)
-
-
-state 175
-
-  128 negation_tail: NEG_OP negation negation_tail .
-
-    $default  reduce using rule 128 (negation_tail)
-
-
-state 176
-
-   60 parameter_list_tail: COMMA variable_declaration . parameter_list_tail
-
-    COMMA  shift, and go to state 148
-
-    $default  reduce using rule 61 (parameter_list_tail)
-
-    parameter_list_tail  go to state 182
-
-
-state 177
-
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON . statement_list END_PROCEDURE SEMICOLON
-
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
-
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 190
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
-
-
-state 178
-
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS . COLON statement_list END_FUNCTION SEMICOLON
-
-    COLON  shift, and go to state 200
-
-
-state 179
-
-   44 values_list: COMMA set_assignment_aux_aux .
-
-    $default  reduce using rule 44 (values_list)
-
-
-state 180
-
-   36 matrix_assignment_aux_aux: OPEN_BRACES . expression CLOSE_BRACES values_group_list
-
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 201
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
-
-
-state 181
-
-   35 matrix_assignment_aux: ASSIGN_OP matrix_assignment_aux_aux .
-
-    $default  reduce using rule 35 (matrix_assignment_aux)
-
-
-state 182
-
-   60 parameter_list_tail: COMMA variable_declaration parameter_list_tail .
-
-    $default  reduce using rule 60 (parameter_list_tail)
-
-
-state 183
-
-   80 destination: IDENTIFIER . identifier_tail
-   93 subprogram_call: IDENTIFIER . OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS
-
-    OPEN_PARENTHESIS  shift, and go to state 202
-    OPEN_BRACKETS     shift, and go to state 203
-
-    $default  reduce using rule 82 (identifier_tail)
-
-    identifier_tail  go to state 204
-
-
-state 184
-
-   72 return_statement: RETURN . expression SEMICOLON
-
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 205
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
-
-
-state 185
-
-   83 if_statement: IF . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
-
-    OPEN_PARENTHESIS  shift, and go to state 206
-
-
-state 186
-
-   92 for_statement: FOR . IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR SEMICOLON
-
-    IDENTIFIER  shift, and go to state 207
-
-
-state 187
-
-   91 while_statement: WHILE . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
-
-    OPEN_PARENTHESIS  shift, and go to state 208
-
-
-state 188
-
-   86 switch_statement: SWITCH . OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
-
-    OPEN_PARENTHESIS  shift, and go to state 209
-
-
-state 189
-
-   71 statement: variable_declaration .
-
-    $default  reduce using rule 71 (statement)
-
-
-state 190
-
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list . END_PROCEDURE SEMICOLON
-
-    END_PROCEDURE  shift, and go to state 210
-
-
-state 191
-
-   62 statement_list: statement . statement_list
-
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
-
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 211
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
-
-
-state 192
-
-   70 statement: return_statement .
+   70 statement: assignment_statement .
 
     $default  reduce using rule 70 (statement)
 
 
+state 160
+
+   79 assignment_statement: destination . assignment_statement_tail SEMICOLON
+
+    ASSIGN_OP       shift, and go to state 189
+    ADD_ASSIGN_OP   shift, and go to state 190
+    SUB_ASSIGN_OP   shift, and go to state 191
+    MULT_ASSIGN_OP  shift, and go to state 192
+    DIV_ASSIGN_OP   shift, and go to state 193
+    MOD_ASSIGN_OP   shift, and go to state 194
+
+    assignment_statement_tail  go to state 195
+
+
+state 161
+
+   71 statement: if_statement .
+
+    $default  reduce using rule 71 (statement)
+
+
+state 162
+
+   72 statement: switch_statement .
+
+    $default  reduce using rule 72 (statement)
+
+
+state 163
+
+   73 statement: while_statement .
+
+    $default  reduce using rule 73 (statement)
+
+
+state 164
+
+   74 statement: for_statement .
+
+    $default  reduce using rule 74 (statement)
+
+
+state 165
+
+   75 statement: subprogram_call .
+
+    $default  reduce using rule 75 (statement)
+
+
+state 166
+
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 . statement_list END_FUNCTION SEMICOLON
+
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
+
+    $default  reduce using rule 69 (statement_list)
+
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 196
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
+
+
+state 167
+
+   40 matrix_assignment_aux_aux: OPEN_BRACES expression CLOSE_BRACES . values_group_list
+
+    COMMA  shift, and go to state 197
+
+    COMMA     [reduce using rule 42 (values_group_list)]
+    $default  reduce using rule 42 (values_group_list)
+
+    values_group_list      go to state 198
+    values_group_list_aux  go to state 199
+
+
+state 168
+
+  115 term_bool_comparison_tail: EQ_OP term_bool_comparison term_bool_comparison_tail .
+
+    $default  reduce using rule 115 (term_bool_comparison_tail)
+
+
+state 169
+
+  116 term_bool_comparison_tail: NEQ_OP term_bool_comparison term_bool_comparison_tail .
+
+    $default  reduce using rule 116 (term_bool_comparison_tail)
+
+
+state 170
+
+  120 term_arit_comparison_tail: LEQ_OP term_arit_comparison . term_arit_comparison_tail
+
+    LEQ_OP  shift, and go to state 142
+    BEQ_OP  shift, and go to state 143
+    LT_OP   shift, and go to state 144
+    BT_OP   shift, and go to state 145
+
+    $default  reduce using rule 124 (term_arit_comparison_tail)
+
+    term_arit_comparison_tail  go to state 200
+
+
+state 171
+
+  121 term_arit_comparison_tail: BEQ_OP term_arit_comparison . term_arit_comparison_tail
+
+    LEQ_OP  shift, and go to state 142
+    BEQ_OP  shift, and go to state 143
+    LT_OP   shift, and go to state 144
+    BT_OP   shift, and go to state 145
+
+    $default  reduce using rule 124 (term_arit_comparison_tail)
+
+    term_arit_comparison_tail  go to state 201
+
+
+state 172
+
+  122 term_arit_comparison_tail: LT_OP term_arit_comparison . term_arit_comparison_tail
+
+    LEQ_OP  shift, and go to state 142
+    BEQ_OP  shift, and go to state 143
+    LT_OP   shift, and go to state 144
+    BT_OP   shift, and go to state 145
+
+    $default  reduce using rule 124 (term_arit_comparison_tail)
+
+    term_arit_comparison_tail  go to state 202
+
+
+state 173
+
+  123 term_arit_comparison_tail: BT_OP term_arit_comparison . term_arit_comparison_tail
+
+    LEQ_OP  shift, and go to state 142
+    BEQ_OP  shift, and go to state 143
+    LT_OP   shift, and go to state 144
+    BT_OP   shift, and go to state 145
+
+    $default  reduce using rule 124 (term_arit_comparison_tail)
+
+    term_arit_comparison_tail  go to state 203
+
+
+state 174
+
+  128 term_tail: SUB_OP . term term_tail
+
+    $default  reduce using rule 130 (@12)
+
+    term  go to state 204
+    @12   go to state 148
+
+
+state 175
+
+  127 term_tail: ADD_OP . term term_tail
+
+    $default  reduce using rule 130 (@12)
+
+    term  go to state 205
+    @12   go to state 148
+
+
+state 176
+
+  126 term_arit_comparison: @11 term term_tail .
+
+    $default  reduce using rule 126 (term_arit_comparison)
+
+
+state 177
+
+  131 term: @12 factor . factor_tail
+
+    MULT_OP  shift, and go to state 206
+    DIV_OP   shift, and go to state 207
+    MOD_OP   shift, and go to state 208
+
+    $default  reduce using rule 135 (factor_tail)
+
+    factor_tail  go to state 209
+
+
+state 178
+
+  137 factor: @13 . expo expo_tail
+
+    $default  reduce using rule 140 (@14)
+
+    expo  go to state 210
+    @14   go to state 211
+
+
+state 179
+
+   99 subprogram_call: IDENTIFIER OPEN_PARENTHESIS . argument_list CLOSE_PARENTHESIS
+
+    CLOSE_PARENTHESIS  reduce using rule 101 (argument_list)
+    $default           reduce using rule 109 (@8)
+
+    argument_list      go to state 212
+    argument_list_aux  go to state 213
+    expression         go to state 214
+    term_or            go to state 86
+    @8                 go to state 87
+
+
+state 180
+
+   87 identifier_tail: OPEN_BRACKETS . dimensions CLOSE_BRACKETS
+
+    NUMBER  shift, and go to state 67
+
+    dimensions  go to state 215
+    range       go to state 69
+
+
+state 181
+
+   86 destination: IDENTIFIER identifier_tail .
+
+    $default  reduce using rule 86 (destination)
+
+
+state 182
+
+   78 return_statement: RETURN expression . SEMICOLON
+
+    SEMICOLON  shift, and go to state 216
+
+
+state 183
+
+   89 if_statement: IF OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
+
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 217
+    term_or     go to state 86
+    @8          go to state 87
+
+
+state 184
+
+   98 for_statement: FOR IDENTIFIER . IN IDENTIFIER COLON statement_list END_FOR SEMICOLON
+
+    IN  shift, and go to state 218
+
+
+state 185
+
+   97 while_statement: WHILE OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
+
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 219
+    term_or     go to state 86
+    @8          go to state 87
+
+
+state 186
+
+   92 switch_statement: SWITCH OPEN_PARENTHESIS . IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
+
+    IDENTIFIER  shift, and go to state 220
+
+
+state 187
+
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE . SEMICOLON
+
+    SEMICOLON  shift, and go to state 221
+
+
+state 188
+
+   68 statement_list: statement statement_list .
+
+    $default  reduce using rule 68 (statement_list)
+
+
+state 189
+
+   80 assignment_statement_tail: ASSIGN_OP . expression
+
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 222
+    term_or     go to state 86
+    @8          go to state 87
+
+
+state 190
+
+   81 assignment_statement_tail: ADD_ASSIGN_OP . expression
+
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 223
+    term_or     go to state 86
+    @8          go to state 87
+
+
+state 191
+
+   82 assignment_statement_tail: SUB_ASSIGN_OP . expression
+
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 224
+    term_or     go to state 86
+    @8          go to state 87
+
+
+state 192
+
+   83 assignment_statement_tail: MULT_ASSIGN_OP . expression
+
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 225
+    term_or     go to state 86
+    @8          go to state 87
+
+
 state 193
 
-   64 statement: assignment_statement .
+   84 assignment_statement_tail: DIV_ASSIGN_OP . expression
 
-    $default  reduce using rule 64 (statement)
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 226
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 194
 
-   73 assignment_statement: destination . assignment_statement_tail SEMICOLON
+   85 assignment_statement_tail: MOD_ASSIGN_OP . expression
 
-    ASSIGN_OP       shift, and go to state 212
-    ADD_ASSIGN_OP   shift, and go to state 213
-    SUB_ASSIGN_OP   shift, and go to state 214
-    MULT_ASSIGN_OP  shift, and go to state 215
-    DIV_ASSIGN_OP   shift, and go to state 216
-    MOD_ASSIGN_OP   shift, and go to state 217
+    $default  reduce using rule 109 (@8)
 
-    assignment_statement_tail  go to state 218
+    expression  go to state 227
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 195
 
-   65 statement: if_statement .
+   79 assignment_statement: destination assignment_statement_tail . SEMICOLON
 
-    $default  reduce using rule 65 (statement)
+    SEMICOLON  shift, and go to state 228
 
 
 state 196
 
-   66 statement: switch_statement .
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list . END_FUNCTION SEMICOLON
 
-    $default  reduce using rule 66 (statement)
+    END_FUNCTION  shift, and go to state 229
 
 
 state 197
 
-   67 statement: while_statement .
+   43 values_group_list_aux: COMMA . matrix_assignment_aux_aux
 
-    $default  reduce using rule 67 (statement)
+    OPEN_BRACES  shift, and go to state 125
+
+    matrix_assignment_aux_aux  go to state 230
 
 
 state 198
 
-   68 statement: for_statement .
+   40 matrix_assignment_aux_aux: OPEN_BRACES expression CLOSE_BRACES values_group_list .
 
-    $default  reduce using rule 68 (statement)
+    $default  reduce using rule 40 (matrix_assignment_aux_aux)
 
 
 state 199
 
-   69 statement: subprogram_call .
+   41 values_group_list: values_group_list_aux .
 
-    $default  reduce using rule 69 (statement)
+    $default  reduce using rule 41 (values_group_list)
 
 
 state 200
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON . statement_list END_FUNCTION SEMICOLON
+  120 term_arit_comparison_tail: LEQ_OP term_arit_comparison term_arit_comparison_tail .
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
-
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 219
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    $default  reduce using rule 120 (term_arit_comparison_tail)
 
 
 state 201
 
-   36 matrix_assignment_aux_aux: OPEN_BRACES expression . CLOSE_BRACES values_group_list
+  121 term_arit_comparison_tail: BEQ_OP term_arit_comparison term_arit_comparison_tail .
 
-    CLOSE_BRACES  shift, and go to state 220
+    $default  reduce using rule 121 (term_arit_comparison_tail)
 
 
 state 202
 
-   93 subprogram_call: IDENTIFIER OPEN_PARENTHESIS . argument_list CLOSE_PARENTHESIS
+  122 term_arit_comparison_tail: LT_OP term_arit_comparison term_arit_comparison_tail .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    $default  reduce using rule 95 (argument_list)
-
-    argument_list         go to state 221
-    argument_list_aux     go to state 222
-    expression            go to state 223
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 122 (term_arit_comparison_tail)
 
 
 state 203
 
-   81 identifier_tail: OPEN_BRACKETS . dimensions CLOSE_BRACKETS
+  123 term_arit_comparison_tail: BT_OP term_arit_comparison term_arit_comparison_tail .
 
-    NUMBER  shift, and go to state 66
-
-    dimensions  go to state 224
-    range       go to state 68
+    $default  reduce using rule 123 (term_arit_comparison_tail)
 
 
 state 204
 
-   80 destination: IDENTIFIER identifier_tail .
+  128 term_tail: SUB_OP term . term_tail
 
-    $default  reduce using rule 80 (destination)
+    SUB_OP  shift, and go to state 174
+    ADD_OP  shift, and go to state 175
+
+    $default  reduce using rule 129 (term_tail)
+
+    term_tail  go to state 231
 
 
 state 205
 
-   72 return_statement: RETURN expression . SEMICOLON
+  127 term_tail: ADD_OP term . term_tail
 
-    SEMICOLON  shift, and go to state 225
+    SUB_OP  shift, and go to state 174
+    ADD_OP  shift, and go to state 175
+
+    $default  reduce using rule 129 (term_tail)
+
+    term_tail  go to state 232
 
 
 state 206
 
-   83 if_statement: IF OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
+  132 factor_tail: MULT_OP . factor factor_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    $default  reduce using rule 136 (@13)
 
-    expression            go to state 226
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    factor  go to state 233
+    @13     go to state 178
 
 
 state 207
 
-   92 for_statement: FOR IDENTIFIER . IN IDENTIFIER COLON statement_list END_FOR SEMICOLON
+  133 factor_tail: DIV_OP . factor factor_tail
 
-    IN  shift, and go to state 227
+    $default  reduce using rule 136 (@13)
+
+    factor  go to state 234
+    @13     go to state 178
 
 
 state 208
 
-   91 while_statement: WHILE OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
+  134 factor_tail: MOD_OP . factor factor_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    $default  reduce using rule 136 (@13)
 
-    expression            go to state 228
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    factor  go to state 235
+    @13     go to state 178
 
 
 state 209
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS . IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
+  131 term: @12 factor factor_tail .
 
-    IDENTIFIER  shift, and go to state 229
+    $default  reduce using rule 131 (term)
 
 
 state 210
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE . SEMICOLON
+  137 factor: @13 expo . expo_tail
 
-    SEMICOLON  shift, and go to state 230
+    EXPO_OP  shift, and go to state 236
+
+    $default  reduce using rule 139 (expo_tail)
+
+    expo_tail  go to state 237
 
 
 state 211
 
-   62 statement_list: statement statement_list .
+  141 expo: @14 . negation negation_tail
 
-    $default  reduce using rule 62 (statement_list)
+    IDENTIFIER        shift, and go to state 238
+    NUMBER            shift, and go to state 239
+    OPEN_PARENTHESIS  shift, and go to state 240
+
+    negation       go to state 241
+    function_call  go to state 242
 
 
 state 212
 
-   74 assignment_statement_tail: ASSIGN_OP . expression
+   99 subprogram_call: IDENTIFIER OPEN_PARENTHESIS argument_list . CLOSE_PARENTHESIS
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 231
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    CLOSE_PARENTHESIS  shift, and go to state 243
 
 
 state 213
 
-   75 assignment_statement_tail: ADD_ASSIGN_OP . expression
+  100 argument_list: argument_list_aux .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 232
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 100 (argument_list)
 
 
 state 214
 
-   76 assignment_statement_tail: SUB_ASSIGN_OP . expression
+  102 argument_list_aux: expression . argument_list_tail
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
+    COMMA  shift, and go to state 244
 
-    expression            go to state 233
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 104 (argument_list_tail)
+
+    argument_list_tail  go to state 245
 
 
 state 215
 
-   77 assignment_statement_tail: MULT_ASSIGN_OP . expression
+   87 identifier_tail: OPEN_BRACKETS dimensions . CLOSE_BRACKETS
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 234
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    CLOSE_BRACKETS  shift, and go to state 246
 
 
 state 216
 
-   78 assignment_statement_tail: DIV_ASSIGN_OP . expression
+   78 return_statement: RETURN expression SEMICOLON .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 235
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 78 (return_statement)
 
 
 state 217
 
-   79 assignment_statement_tail: MOD_ASSIGN_OP . expression
+   89 if_statement: IF OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 236
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    CLOSE_PARENTHESIS  shift, and go to state 247
 
 
 state 218
 
-   73 assignment_statement: destination assignment_statement_tail . SEMICOLON
+   98 for_statement: FOR IDENTIFIER IN . IDENTIFIER COLON statement_list END_FOR SEMICOLON
 
-    SEMICOLON  shift, and go to state 237
+    IDENTIFIER  shift, and go to state 248
 
 
 state 219
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list . END_FUNCTION SEMICOLON
-
-    END_FUNCTION  shift, and go to state 238
-
-
-state 220
-
-   36 matrix_assignment_aux_aux: OPEN_BRACES expression CLOSE_BRACES . values_group_list
-
-    COMMA  shift, and go to state 239
-
-    COMMA     [reduce using rule 38 (values_group_list)]
-    $default  reduce using rule 38 (values_group_list)
-
-    values_group_list      go to state 240
-    values_group_list_aux  go to state 241
-
-
-state 221
-
-   93 subprogram_call: IDENTIFIER OPEN_PARENTHESIS argument_list . CLOSE_PARENTHESIS
-
-    CLOSE_PARENTHESIS  shift, and go to state 242
-
-
-state 222
-
-   94 argument_list: argument_list_aux .
-
-    $default  reduce using rule 94 (argument_list)
-
-
-state 223
-
-   96 argument_list_aux: expression . argument_list_tail
-
-    COMMA  shift, and go to state 243
-
-    $default  reduce using rule 98 (argument_list_tail)
-
-    argument_list_tail  go to state 244
-
-
-state 224
-
-   81 identifier_tail: OPEN_BRACKETS dimensions . CLOSE_BRACKETS
-
-    CLOSE_BRACKETS  shift, and go to state 245
-
-
-state 225
-
-   72 return_statement: RETURN expression SEMICOLON .
-
-    $default  reduce using rule 72 (return_statement)
-
-
-state 226
-
-   83 if_statement: IF OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON
-
-    CLOSE_PARENTHESIS  shift, and go to state 246
-
-
-state 227
-
-   92 for_statement: FOR IDENTIFIER IN . IDENTIFIER COLON statement_list END_FOR SEMICOLON
-
-    IDENTIFIER  shift, and go to state 247
-
-
-state 228
-
-   91 while_statement: WHILE OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
-
-    CLOSE_PARENTHESIS  shift, and go to state 248
-
-
-state 229
-
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER . CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
+   97 while_statement: WHILE OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON
 
     CLOSE_PARENTHESIS  shift, and go to state 249
 
 
+state 220
+
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER . CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON
+
+    CLOSE_PARENTHESIS  shift, and go to state 250
+
+
+state 221
+
+   61 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @5 statement_list END_PROCEDURE SEMICOLON .
+
+    $default  reduce using rule 61 (procedure_declaration)
+
+
+state 222
+
+   80 assignment_statement_tail: ASSIGN_OP expression .
+
+    $default  reduce using rule 80 (assignment_statement_tail)
+
+
+state 223
+
+   81 assignment_statement_tail: ADD_ASSIGN_OP expression .
+
+    $default  reduce using rule 81 (assignment_statement_tail)
+
+
+state 224
+
+   82 assignment_statement_tail: SUB_ASSIGN_OP expression .
+
+    $default  reduce using rule 82 (assignment_statement_tail)
+
+
+state 225
+
+   83 assignment_statement_tail: MULT_ASSIGN_OP expression .
+
+    $default  reduce using rule 83 (assignment_statement_tail)
+
+
+state 226
+
+   84 assignment_statement_tail: DIV_ASSIGN_OP expression .
+
+    $default  reduce using rule 84 (assignment_statement_tail)
+
+
+state 227
+
+   85 assignment_statement_tail: MOD_ASSIGN_OP expression .
+
+    $default  reduce using rule 85 (assignment_statement_tail)
+
+
+state 228
+
+   79 assignment_statement: destination assignment_statement_tail SEMICOLON .
+
+    $default  reduce using rule 79 (assignment_statement)
+
+
+state 229
+
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION . SEMICOLON
+
+    SEMICOLON  shift, and go to state 251
+
+
 state 230
 
-   56 procedure_declaration: PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_PROCEDURE SEMICOLON .
+   43 values_group_list_aux: COMMA matrix_assignment_aux_aux .
 
-    $default  reduce using rule 56 (procedure_declaration)
+    $default  reduce using rule 43 (values_group_list_aux)
 
 
 state 231
 
-   74 assignment_statement_tail: ASSIGN_OP expression .
+  128 term_tail: SUB_OP term term_tail .
 
-    $default  reduce using rule 74 (assignment_statement_tail)
+    $default  reduce using rule 128 (term_tail)
 
 
 state 232
 
-   75 assignment_statement_tail: ADD_ASSIGN_OP expression .
+  127 term_tail: ADD_OP term term_tail .
 
-    $default  reduce using rule 75 (assignment_statement_tail)
+    $default  reduce using rule 127 (term_tail)
 
 
 state 233
 
-   76 assignment_statement_tail: SUB_ASSIGN_OP expression .
+  132 factor_tail: MULT_OP factor . factor_tail
 
-    $default  reduce using rule 76 (assignment_statement_tail)
+    MULT_OP  shift, and go to state 206
+    DIV_OP   shift, and go to state 207
+    MOD_OP   shift, and go to state 208
+
+    $default  reduce using rule 135 (factor_tail)
+
+    factor_tail  go to state 252
 
 
 state 234
 
-   77 assignment_statement_tail: MULT_ASSIGN_OP expression .
+  133 factor_tail: DIV_OP factor . factor_tail
 
-    $default  reduce using rule 77 (assignment_statement_tail)
+    MULT_OP  shift, and go to state 206
+    DIV_OP   shift, and go to state 207
+    MOD_OP   shift, and go to state 208
+
+    $default  reduce using rule 135 (factor_tail)
+
+    factor_tail  go to state 253
 
 
 state 235
 
-   78 assignment_statement_tail: DIV_ASSIGN_OP expression .
+  134 factor_tail: MOD_OP factor . factor_tail
 
-    $default  reduce using rule 78 (assignment_statement_tail)
+    MULT_OP  shift, and go to state 206
+    DIV_OP   shift, and go to state 207
+    MOD_OP   shift, and go to state 208
+
+    $default  reduce using rule 135 (factor_tail)
+
+    factor_tail  go to state 254
 
 
 state 236
 
-   79 assignment_statement_tail: MOD_ASSIGN_OP expression .
+  138 expo_tail: EXPO_OP . expo expo_tail
 
-    $default  reduce using rule 79 (assignment_statement_tail)
+    $default  reduce using rule 140 (@14)
+
+    expo  go to state 255
+    @14   go to state 211
 
 
 state 237
 
-   73 assignment_statement: destination assignment_statement_tail SEMICOLON .
+  137 factor: @13 expo expo_tail .
 
-    $default  reduce using rule 73 (assignment_statement)
+    $default  reduce using rule 137 (factor)
 
 
 state 238
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION . SEMICOLON
+  145 negation: IDENTIFIER .
+  148 function_call: IDENTIFIER . OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
 
-    SEMICOLON  shift, and go to state 250
+    OPEN_PARENTHESIS  shift, and go to state 256
+
+    $default  reduce using rule 145 (negation)
 
 
 state 239
 
-   39 values_group_list_aux: COMMA . matrix_assignment_aux_aux
+  146 negation: NUMBER .
 
-    OPEN_BRACES  shift, and go to state 180
-
-    matrix_assignment_aux_aux  go to state 251
+    $default  reduce using rule 146 (negation)
 
 
 state 240
 
-   36 matrix_assignment_aux_aux: OPEN_BRACES expression CLOSE_BRACES values_group_list .
+  147 negation: OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS
 
-    $default  reduce using rule 36 (matrix_assignment_aux_aux)
+    $default  reduce using rule 109 (@8)
+
+    expression  go to state 257
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 241
 
-   37 values_group_list: values_group_list_aux .
+  141 expo: @14 negation . negation_tail
 
-    $default  reduce using rule 37 (values_group_list)
+    NEG_OP  shift, and go to state 258
+
+    $default  reduce using rule 143 (negation_tail)
+
+    negation_tail  go to state 259
 
 
 state 242
 
-   93 subprogram_call: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS .
+  144 negation: function_call .
 
-    $default  reduce using rule 93 (subprogram_call)
+    $default  reduce using rule 144 (negation)
 
 
 state 243
 
-   97 argument_list_tail: COMMA . argument_list_aux
+   99 subprogram_call: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS .
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    argument_list_aux     go to state 252
-    expression            go to state 223
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    $default  reduce using rule 99 (subprogram_call)
 
 
 state 244
 
-   96 argument_list_aux: expression argument_list_tail .
+  103 argument_list_tail: COMMA . argument_list_aux
 
-    $default  reduce using rule 96 (argument_list_aux)
+    $default  reduce using rule 109 (@8)
+
+    argument_list_aux  go to state 260
+    expression         go to state 214
+    term_or            go to state 86
+    @8                 go to state 87
 
 
 state 245
 
-   81 identifier_tail: OPEN_BRACKETS dimensions CLOSE_BRACKETS .
+  102 argument_list_aux: expression argument_list_tail .
 
-    $default  reduce using rule 81 (identifier_tail)
+    $default  reduce using rule 102 (argument_list_aux)
 
 
 state 246
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list else_clausule END_IF SEMICOLON
+   87 identifier_tail: OPEN_BRACKETS dimensions CLOSE_BRACKETS .
 
-    COLON  shift, and go to state 253
+    $default  reduce using rule 87 (identifier_tail)
 
 
 state 247
 
-   92 for_statement: FOR IDENTIFIER IN IDENTIFIER . COLON statement_list END_FOR SEMICOLON
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list else_clausule END_IF SEMICOLON
 
-    COLON  shift, and go to state 254
+    COLON  shift, and go to state 261
 
 
 state 248
 
-   91 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list END_WHILE SEMICOLON
+   98 for_statement: FOR IDENTIFIER IN IDENTIFIER . COLON statement_list END_FOR SEMICOLON
 
-    COLON  shift, and go to state 255
+    COLON  shift, and go to state 262
 
 
 state 249
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS . COLON case_clasule other_clasule END_SWITCH SEMICOLON
+   97 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list END_WHILE SEMICOLON
 
-    COLON  shift, and go to state 256
+    COLON  shift, and go to state 263
 
 
 state 250
 
-   57 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON statement_list END_FUNCTION SEMICOLON .
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS . COLON case_clasule other_clasule END_SWITCH SEMICOLON
 
-    $default  reduce using rule 57 (function_declaration)
+    COLON  shift, and go to state 264
 
 
 state 251
 
-   39 values_group_list_aux: COMMA matrix_assignment_aux_aux .
+   63 function_declaration: FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON @6 statement_list END_FUNCTION SEMICOLON .
 
-    $default  reduce using rule 39 (values_group_list_aux)
+    $default  reduce using rule 63 (function_declaration)
 
 
 state 252
 
-   97 argument_list_tail: COMMA argument_list_aux .
+  132 factor_tail: MULT_OP factor factor_tail .
 
-    $default  reduce using rule 97 (argument_list_tail)
+    $default  reduce using rule 132 (factor_tail)
 
 
 state 253
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list else_clausule END_IF SEMICOLON
+  133 factor_tail: DIV_OP factor factor_tail .
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
-
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 257
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    $default  reduce using rule 133 (factor_tail)
 
 
 state 254
 
-   92 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON . statement_list END_FOR SEMICOLON
+  134 factor_tail: MOD_OP factor factor_tail .
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
-
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 258
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    $default  reduce using rule 134 (factor_tail)
 
 
 state 255
 
-   91 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list END_WHILE SEMICOLON
+  138 expo_tail: EXPO_OP expo . expo_tail
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
+    EXPO_OP  shift, and go to state 236
 
-    $default  reduce using rule 63 (statement_list)
+    $default  reduce using rule 139 (expo_tail)
 
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 259
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    expo_tail  go to state 265
 
 
 state 256
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON . case_clasule other_clasule END_SWITCH SEMICOLON
+  148 function_call: IDENTIFIER OPEN_PARENTHESIS . parameter_list CLOSE_PARENTHESIS
 
-    CASE  shift, and go to state 260
+    STRING     shift, and go to state 16
+    INT        shift, and go to state 17
+    REAL       shift, and go to state 18
+    COMPLEX    shift, and go to state 19
+    DOUBLE     shift, and go to state 20
+    BOOLEAN    shift, and go to state 21
+    ENUM       shift, and go to state 22
+    STRUCT     shift, and go to state 23
+    SET_OF     shift, and go to state 24
+    MATRIX_OF  shift, and go to state 25
+    CONST      shift, and go to state 26
+    REF        shift, and go to state 27
 
-    $default  reduce using rule 88 (case_clasule)
+    $default  reduce using rule 65 (parameter_list)
 
-    case_clasule  go to state 261
+    variable_declaration          go to state 89
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    parameter_list                go to state 266
 
 
 state 257
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . else_clausule END_IF SEMICOLON
+  147 negation: OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS
 
-    ELSE  shift, and go to state 262
-
-    $default  reduce using rule 85 (else_clausule)
-
-    else_clausule  go to state 263
+    CLOSE_PARENTHESIS  shift, and go to state 267
 
 
 state 258
 
-   92 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list . END_FOR SEMICOLON
+  142 negation_tail: NEG_OP . negation negation_tail
 
-    END_FOR  shift, and go to state 264
+    IDENTIFIER        shift, and go to state 238
+    NUMBER            shift, and go to state 239
+    OPEN_PARENTHESIS  shift, and go to state 240
+
+    negation       go to state 268
+    function_call  go to state 242
 
 
 state 259
 
-   91 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . END_WHILE SEMICOLON
+  141 expo: @14 negation negation_tail .
 
-    END_WHILE  shift, and go to state 265
+    $default  reduce using rule 141 (expo)
 
 
 state 260
 
-   87 case_clasule: CASE . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
+  103 argument_list_tail: COMMA argument_list_aux .
 
-    OPEN_PARENTHESIS  shift, and go to state 266
+    $default  reduce using rule 103 (argument_list_tail)
 
 
 state 261
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule . other_clasule END_SWITCH SEMICOLON
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list else_clausule END_IF SEMICOLON
 
-    OTHER  shift, and go to state 267
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
 
-    $default  reduce using rule 90 (other_clasule)
+    $default  reduce using rule 69 (statement_list)
 
-    other_clasule  go to state 268
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 269
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
 
 
 state 262
 
-   84 else_clausule: ELSE . statement_list
+   98 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON . statement_list END_FOR SEMICOLON
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
 
-    $default  reduce using rule 63 (statement_list)
+    $default  reduce using rule 69 (statement_list)
 
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 269
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 270
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
 
 
 state 263
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule . END_IF SEMICOLON
+   97 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list END_WHILE SEMICOLON
 
-    END_IF  shift, and go to state 270
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
+
+    $default  reduce using rule 69 (statement_list)
+
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 271
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
 
 
 state 264
 
-   92 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR . SEMICOLON
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON . case_clasule other_clasule END_SWITCH SEMICOLON
 
-    SEMICOLON  shift, and go to state 271
+    CASE  shift, and go to state 272
+
+    $default  reduce using rule 94 (case_clasule)
+
+    case_clasule  go to state 273
 
 
 state 265
 
-   91 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE . SEMICOLON
+  138 expo_tail: EXPO_OP expo expo_tail .
 
-    SEMICOLON  shift, and go to state 272
+    $default  reduce using rule 138 (expo_tail)
 
 
 state 266
 
-   87 case_clasule: CASE OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
+  148 function_call: IDENTIFIER OPEN_PARENTHESIS parameter_list . CLOSE_PARENTHESIS
 
-    IDENTIFIER        shift, and go to state 71
-    NUMBER            shift, and go to state 72
-    OPEN_PARENTHESIS  shift, and go to state 73
-
-    expression            go to state 273
-    term_or               go to state 75
-    term_and              go to state 76
-    term_bool_comparison  go to state 77
-    term_arit_comparison  go to state 78
-    term                  go to state 79
-    factor                go to state 80
-    expo                  go to state 81
-    negation              go to state 82
-    function_call         go to state 83
+    CLOSE_PARENTHESIS  shift, and go to state 274
 
 
 state 267
 
-   89 other_clasule: OTHER . COLON statement_list
+  147 negation: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS .
 
-    COLON  shift, and go to state 274
+    $default  reduce using rule 147 (negation)
 
 
 state 268
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule . END_SWITCH SEMICOLON
+  142 negation_tail: NEG_OP negation . negation_tail
 
-    END_SWITCH  shift, and go to state 275
+    NEG_OP  shift, and go to state 258
+
+    $default  reduce using rule 143 (negation_tail)
+
+    negation_tail  go to state 275
 
 
 state 269
 
-   84 else_clausule: ELSE statement_list .
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . else_clausule END_IF SEMICOLON
 
-    $default  reduce using rule 84 (else_clausule)
+    ELSE  shift, and go to state 276
+
+    $default  reduce using rule 91 (else_clausule)
+
+    else_clausule  go to state 277
 
 
 state 270
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF . SEMICOLON
+   98 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list . END_FOR SEMICOLON
 
-    SEMICOLON  shift, and go to state 276
+    END_FOR  shift, and go to state 278
 
 
 state 271
 
-   92 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR SEMICOLON .
+   97 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . END_WHILE SEMICOLON
 
-    $default  reduce using rule 92 (for_statement)
+    END_WHILE  shift, and go to state 279
 
 
 state 272
 
-   91 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON .
+   93 case_clasule: CASE . OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
 
-    $default  reduce using rule 91 (while_statement)
+    OPEN_PARENTHESIS  shift, and go to state 280
 
 
 state 273
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule . other_clasule END_SWITCH SEMICOLON
 
-    CLOSE_PARENTHESIS  shift, and go to state 277
+    OTHER  shift, and go to state 281
+
+    $default  reduce using rule 96 (other_clasule)
+
+    other_clasule  go to state 282
 
 
 state 274
 
-   89 other_clasule: OTHER COLON . statement_list
+  148 function_call: IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS .
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
-
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 278
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    $default  reduce using rule 148 (function_call)
 
 
 state 275
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH . SEMICOLON
+  142 negation_tail: NEG_OP negation negation_tail .
 
-    SEMICOLON  shift, and go to state 279
+    $default  reduce using rule 142 (negation_tail)
 
 
 state 276
 
-   83 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON .
+   90 else_clausule: ELSE . statement_list
 
-    $default  reduce using rule 83 (if_statement)
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
+
+    $default  reduce using rule 69 (statement_list)
+
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 283
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
 
 
 state 277
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list BREAK SEMICOLON case_clasule
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule . END_IF SEMICOLON
 
-    COLON  shift, and go to state 280
+    END_IF  shift, and go to state 284
 
 
 state 278
 
-   89 other_clasule: OTHER COLON statement_list .
+   98 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR . SEMICOLON
 
-    $default  reduce using rule 89 (other_clasule)
+    SEMICOLON  shift, and go to state 285
 
 
 state 279
 
-   86 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON .
+   97 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE . SEMICOLON
 
-    $default  reduce using rule 86 (switch_statement)
+    SEMICOLON  shift, and go to state 286
 
 
 state 280
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list BREAK SEMICOLON case_clasule
+   93 case_clasule: CASE OPEN_PARENTHESIS . expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
 
-    IDENTIFIER  shift, and go to state 183
-    RETURN      shift, and go to state 184
-    INT         shift, and go to state 14
-    REAL        shift, and go to state 15
-    COMPLEX     shift, and go to state 16
-    STRING      shift, and go to state 17
-    DOUBLE      shift, and go to state 18
-    BOOLEAN     shift, and go to state 19
-    ENUM        shift, and go to state 20
-    STRUCT      shift, and go to state 21
-    SET_OF      shift, and go to state 22
-    MATRIX_OF   shift, and go to state 23
-    CONST       shift, and go to state 24
-    REF         shift, and go to state 25
-    IF          shift, and go to state 185
-    FOR         shift, and go to state 186
-    WHILE       shift, and go to state 187
-    SWITCH      shift, and go to state 188
+    $default  reduce using rule 109 (@8)
 
-    $default  reduce using rule 63 (statement_list)
-
-    variable_declaration          go to state 189
-    simple_variable_declaration   go to state 28
-    type                          go to state 29
-    compost_variable_declaration  go to state 30
-    statement_list                go to state 281
-    statement                     go to state 191
-    return_statement              go to state 192
-    assignment_statement          go to state 193
-    destination                   go to state 194
-    if_statement                  go to state 195
-    switch_statement              go to state 196
-    while_statement               go to state 197
-    for_statement                 go to state 198
-    subprogram_call               go to state 199
+    expression  go to state 287
+    term_or     go to state 86
+    @8          go to state 87
 
 
 state 281
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . BREAK SEMICOLON case_clasule
+   95 other_clasule: OTHER . COLON statement_list
 
-    BREAK  shift, and go to state 282
+    COLON  shift, and go to state 288
 
 
 state 282
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK . SEMICOLON case_clasule
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule . END_SWITCH SEMICOLON
 
-    SEMICOLON  shift, and go to state 283
+    END_SWITCH  shift, and go to state 289
 
 
 state 283
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON . case_clasule
+   90 else_clausule: ELSE statement_list .
 
-    CASE  shift, and go to state 260
-
-    $default  reduce using rule 88 (case_clasule)
-
-    case_clasule  go to state 284
+    $default  reduce using rule 90 (else_clausule)
 
 
 state 284
 
-   87 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule .
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF . SEMICOLON
 
-    $default  reduce using rule 87 (case_clasule)
+    SEMICOLON  shift, and go to state 290
+
+
+state 285
+
+   98 for_statement: FOR IDENTIFIER IN IDENTIFIER COLON statement_list END_FOR SEMICOLON .
+
+    $default  reduce using rule 98 (for_statement)
+
+
+state 286
+
+   97 while_statement: WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list END_WHILE SEMICOLON .
+
+    $default  reduce using rule 97 (while_statement)
+
+
+state 287
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression . CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule
+
+    CLOSE_PARENTHESIS  shift, and go to state 291
+
+
+state 288
+
+   95 other_clasule: OTHER COLON . statement_list
+
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
+
+    $default  reduce using rule 69 (statement_list)
+
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 292
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
+
+
+state 289
+
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH . SEMICOLON
+
+    SEMICOLON  shift, and go to state 293
+
+
+state 290
+
+   89 if_statement: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list else_clausule END_IF SEMICOLON .
+
+    $default  reduce using rule 89 (if_statement)
+
+
+state 291
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS . COLON statement_list BREAK SEMICOLON case_clasule
+
+    COLON  shift, and go to state 294
+
+
+state 292
+
+   95 other_clasule: OTHER COLON statement_list .
+
+    $default  reduce using rule 95 (other_clasule)
+
+
+state 293
+
+   92 switch_statement: SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON case_clasule other_clasule END_SWITCH SEMICOLON .
+
+    $default  reduce using rule 92 (switch_statement)
+
+
+state 294
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON . statement_list BREAK SEMICOLON case_clasule
+
+    IDENTIFIER  shift, and go to state 149
+    STRING      shift, and go to state 16
+    RETURN      shift, and go to state 150
+    INT         shift, and go to state 17
+    REAL        shift, and go to state 18
+    COMPLEX     shift, and go to state 19
+    DOUBLE      shift, and go to state 20
+    BOOLEAN     shift, and go to state 21
+    ENUM        shift, and go to state 22
+    STRUCT      shift, and go to state 23
+    SET_OF      shift, and go to state 24
+    MATRIX_OF   shift, and go to state 25
+    CONST       shift, and go to state 26
+    REF         shift, and go to state 27
+    IF          shift, and go to state 151
+    FOR         shift, and go to state 152
+    WHILE       shift, and go to state 153
+    SWITCH      shift, and go to state 154
+
+    $default  reduce using rule 69 (statement_list)
+
+    variable_declaration          go to state 155
+    simple_variable_declaration   go to state 30
+    type                          go to state 31
+    compost_variable_declaration  go to state 32
+    statement_list                go to state 295
+    statement                     go to state 157
+    return_statement              go to state 158
+    assignment_statement          go to state 159
+    destination                   go to state 160
+    if_statement                  go to state 161
+    switch_statement              go to state 162
+    while_statement               go to state 163
+    for_statement                 go to state 164
+    subprogram_call               go to state 165
+
+
+state 295
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list . BREAK SEMICOLON case_clasule
+
+    BREAK  shift, and go to state 296
+
+
+state 296
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK . SEMICOLON case_clasule
+
+    SEMICOLON  shift, and go to state 297
+
+
+state 297
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON . case_clasule
+
+    CASE  shift, and go to state 272
+
+    $default  reduce using rule 94 (case_clasule)
+
+    case_clasule  go to state 298
+
+
+state 298
+
+   93 case_clasule: CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON statement_list BREAK SEMICOLON case_clasule .
+
+    $default  reduce using rule 93 (case_clasule)

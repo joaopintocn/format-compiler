@@ -1,6 +1,7 @@
 %% Segundo exemplo de código usado no primeiro relatório 
 
-variables: int x = factorial(4);
+variables: 
+	int x = factorial(4);
 
 subprograms:
 

@@ -44,8 +44,8 @@
      STRING = 260,
      NUMBER = 261,
      COMPLEX_NUMBER = 262,
-     REAL_NUMBER = 263,
-     INT_NUMBER = 264,
+     INT_NUMBER = 263,
+     REAL_NUMBER = 264,
      IMPORT = 265,
      VARIABLES_SECTION = 266,
      SUBPROGRAMS_SECTION = 267,
@@ -124,8 +124,8 @@
 #define STRING 260
 #define NUMBER 261
 #define COMPLEX_NUMBER 262
-#define REAL_NUMBER 263
-#define INT_NUMBER 264
+#define INT_NUMBER 263
+#define REAL_NUMBER 264
 #define IMPORT 265
 #define VARIABLES_SECTION 266
 #define SUBPROGRAMS_SECTION 267
@@ -204,8 +204,8 @@
 typedef union YYSTYPE
 #line 12 "format.y"
 {
-	int 	iValue; 	//
-	char 	cValue;		//
+	int 	iValue;
+	double 	dValue; 	//
 	char * 	sValue;		//
 }
 /* Line 1529 of yacc.c.  */
