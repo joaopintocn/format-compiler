@@ -142,7 +142,7 @@ variable_declarations_tail :
 
 
 subprogram_section :
-	SUBPROGRAMS_SECTION { printf("\nsubprograms:\n"); } COLON subprogram_declarations 
+	SUBPROGRAMS_SECTION COLON { printf("\nsubprograms:\n"); } subprogram_declarations 
 	|
 	;
 
@@ -158,9 +158,9 @@ subprogram_declarations_tail :
 
 
 simple_variable_declaration : 
-	type IDENTIFIER  { printf("%s", $2); }  simple_variable_declaration_value
-	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
-	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
+	type IDENTIFIER  { printf("ID"); }  simple_variable_declaration_value
+	| CONST { printf("const "); } type IDENTIFIER { printf("ID"); } ASSIGN_OP { printf(" = "); } expression 
+	| REF { printf("ref "); } type IDENTIFIER { printf("ID"); } simple_variable_declaration_value
 	;
 
 simple_variable_declaration_value :
@@ -178,10 +178,10 @@ type :
 	;
 
 compost_variable_declaration :
-	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("%s", $9); } matrix_assignment
-	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4); } set_assignment
-	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7); } identifier_list END_ENUM { printf(" end_enum"); }
-	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
+	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("ID"); } matrix_assignment
+	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("ID"); } set_assignment
+	| ENUM { printf("enum "); } IDENTIFIER { printf("ID"); } COLON { printf(" : "); } IDENTIFIER { printf("ID"); } identifier_list END_ENUM { printf(" end_enum"); }
+	| STRUCT { printf("struct "); } IDENTIFIER { printf("ID"); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
 	;
 
 matrix_assignment : 
@@ -230,7 +230,7 @@ values_list :
 	;
 
 identifier_list :
-	COMMA { printf(", "); } IDENTIFIER { printf("%s", $3); } identifier_list
+	COMMA { printf(", "); } IDENTIFIER { printf("ID"); } identifier_list
 	|
 	;
 
@@ -258,13 +258,13 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin procedure %s:\n" , $2); }
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure ID("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
 	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
 	;
 
 function_declaration :
-	FUNCTION type IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS COLON { printf("\n\begin function %s:\n" , $3); }
+	FUNCTION { printf("function "); } type IDENTIFIER { printf("ID"); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
 	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
@@ -276,7 +276,7 @@ parameter_list :
 	;
 
 parameter_list_tail :
-	COMMA variable_declaration parameter_list_tail
+	COMMA { printf(", "); } variable_declaration parameter_list_tail
 	|
 	;
 
@@ -293,7 +293,7 @@ statement :
 	| for_statement
 	| subprogram_call
 	| return_statement
-	| variable_declaration
+	| variable_declaration SEMICOLON { printf(";\n" ); }
 	;
 
 return_statement :    
@@ -301,7 +301,7 @@ return_statement :
 	;
 
 assignment_statement :
-	destination assignment_statement_tail SEMICOLON { printf("\n\assignment \n" ); }
+	destination assignment_statement_tail SEMICOLON { printf(";\n" ); }
 	;
 
 assignment_statement_tail :
@@ -324,34 +324,34 @@ identifier_tail :
 	;
 
 if_statement :    
-	IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON
+	IF OPEN_PARENTHESIS { printf("if (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :\n" ); }
 		statement_list
 	else_clausule
-	END_IF SEMICOLON
+	END_IF SEMICOLON { printf("end_if;" ); }
 	;
 
 else_clausule :
-	ELSE statement_list
+	ELSE { printf("else \n" ); } statement_list
 	|
 	;
 
 switch_statement : 
-	SWITCH OPEN_PARENTHESIS IDENTIFIER CLOSE_PARENTHESIS COLON
+	SWITCH OPEN_PARENTHESIS { printf("switch (" ); } IDENTIFIER { printf("ID" ); } CLOSE_PARENTHESIS COLON { printf(") :" ); }
 		case_clasule
 		other_clasule
-	END_SWITCH SEMICOLON
+	END_SWITCH SEMICOLON { printf("end_switch;" ); }
 	;
 
 case_clasule :
-	CASE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS COLON
+	CASE OPEN_PARENTHESIS { printf("case (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :" ); }
 		statement_list
-	BREAK SEMICOLON
+	BREAK SEMICOLON { printf("break; (" ); }
 	case_clasule
 	|
 	;
 
 other_clasule :
-	OTHER COLON statement_list
+	OTHER COLON { printf("other :" ); } statement_list
 	|
 	;
 
@@ -408,8 +408,8 @@ term_and :
 	;
 
 term_bool_comparison_tail :
-	EQ_OP term_bool_comparison term_bool_comparison_tail /* EQ_OP ‘==’ */
-	| NEQ_OP term_bool_comparison term_bool_comparison_tail /* NEQ_OP ‘!=’ */
+	EQ_OP { printf(" == "); } term_bool_comparison term_bool_comparison_tail /* EQ_OP ‘==’ */
+	| NEQ_OP { printf(" != "); } term_bool_comparison term_bool_comparison_tail /* NEQ_OP ‘!=’ */
 	|
 	;
 
@@ -418,10 +418,10 @@ term_bool_comparison :
 	;
 
 term_arit_comparison_tail :
-	LEQ_OP term_arit_comparison term_arit_comparison_tail /* LEQ_OP = <= */
-	| BEQ_OP term_arit_comparison term_arit_comparison_tail /* BEQ_OP = >= */
-	| LT_OP term_arit_comparison term_arit_comparison_tail /* LT_OP = < */
-	| BT_OP term_arit_comparison term_arit_comparison_tail /* LT_OP = > */
+	LEQ_OP { printf(" <= "); } term_arit_comparison term_arit_comparison_tail /* LEQ_OP = <= */
+	| BEQ_OP { printf(" >= "); } term_arit_comparison term_arit_comparison_tail /* BEQ_OP = >= */
+	| LT_OP { printf(" < "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = < */
+	| BT_OP { printf(" > "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = > */
 	| 
 	;
 
@@ -430,8 +430,8 @@ term_arit_comparison :
 	;
 
 term_tail :
-	ADD_OP term term_tail /* - */
-	| SUB_OP term term_tail /* + */
+	ADD_OP { printf(" + "); } term term_tail /* - */
+	| SUB_OP { printf(" - "); } term term_tail /* + */
 	|
 	;
 
@@ -440,9 +440,9 @@ term :
 	;
 
 factor_tail :
-	MULT_OP factor factor_tail /* * */
-	| DIV_OP factor factor_tail /* / */
-	| MOD_OP factor factor_tail /* % */
+	MULT_OP { printf(" * "); } factor factor_tail /* * */
+	| DIV_OP { printf(" / "); } factor factor_tail /* / */
+	| MOD_OP { printf(" %% "); } factor factor_tail /* % */
 	|
 	;
 
@@ -469,7 +469,7 @@ negation :
 	| REAL_NUMBER { printf("%f", $1); } 
 	| COMPLEX_NUMBER { printf("%d", $1); } 
 	| STRING { printf("%s", $1); } 
-	| IDENTIFIER { printf("%s", $1); } 
+	| IDENTIFIER { printf("ID"); } 
 	;
 
 function_call :
