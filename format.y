@@ -269,7 +269,6 @@ function_declaration :
 		statement_list
 	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
-	;
 
 parameter_list :
 	variable_declaration parameter_list_tail
@@ -298,7 +297,7 @@ statement :
 	;
 
 return_statement :    
-	RETURN expression SEMICOLON { printf("\n\return \n" ); }
+	RETURN { printf("return "); } expression SEMICOLON { printf(";\n" ); }
 	;
 
 assignment_statement :
@@ -471,6 +470,7 @@ negation :
 	| COMPLEX_NUMBER { printf("%d", $1); } 
 	| STRING { printf("%s", $1); } 
 	| IDENTIFIER { printf("ID"); } 
+	| subprogram_call
 	;
 
 function_call :
