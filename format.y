@@ -1,4 +1,3 @@
-/* yacc -d format.y*/
 %{
 	#include <stdio.h>
 
@@ -456,15 +455,16 @@ expo_tail :
 	;			
 
 expo :
-	negation negation_tail
+	negation_unsub negation_unsub_tail
 
 
-negation_tail:
-	NEG_OP { printf("!"); }  negation negation_tail /* ! */
+negation_unsub_tail:
+	NEG_OP { printf("!"); }  negation_unsub  /* ! */
+	|SUB_OP { printf("-"); }  negation_unsub  /* - */
 	|
 	;	
 	
-negation :
+negation_unsub :
 	INT_NUMBER { printf("%i", $1); } 
 	| REAL_NUMBER { printf("%f", $1); } 
 	| COMPLEX_NUMBER { printf("%d", $1); } 
