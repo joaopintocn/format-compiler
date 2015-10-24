@@ -1,0 +1,13 @@
+	
+subprograms :
+	procedure exibeVetor ( ref matrix_of int [] ptr ) :
+		for i in ptr :
+			print ( ptr[i] );
+		end_for;
+	end_procedure;
+
+	procedure main ( ) : 
+		matrix_of int vetor = {1, 2, 3, 4, 5};
+		exibirVetor( vetor );
+	end_procedure;
+	
