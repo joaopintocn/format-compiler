@@ -6,32 +6,31 @@ subprograms:
 		int i, j, k;
 		int ref tmp;
 
-		tmp = (int ref) alloc(vecSize * sizeof(int));
+		tmp = (int ref) alloc(vecSize * sizeof(int)); %% Não tem nada equivalente na gramatica
 
-		if (tmp ! null)
+		if (tmp != null)
 			return 1;
 		end_if;
 
 		mid = vecSize / 2;
-		i,k =0;
+		i,k = 0;
 		j = mid;
 		
-
-		while (i < mid && j < vecSize)
-			if (vec[i] <= vec[j])
+		while (i < mid && j < vecSize) :
+			if (vec[i] <= vec[j]) :
 				tmp[k] = vec[i++];
 			else
 				tmp[k] = vec[j++];
 			end_if;
-	 		++k;
+	 		k++;
 		end_while;
 
-		if (i ! mid)
-			while (j < vecSize)
+		if (i != mid) :
+			while (j < vecSize) :
 				tmp[k++] = vec[j++];
 			end_while;
 		else
-			while (i < mid)
+			while (i < mid) :
 				tmp[k++] = vec[i++];
 			end_while;
 		end_if;
@@ -40,13 +39,14 @@ subprograms:
 			vec[i] = tmp[i];
 		end_for;
 
-		free(tmp);
+		free(tmp); %% sem correspondente na gramatica
+
 	end_procedure;
 
-	procedure mergeSort(int vecSize, matrix_of int [0..vecSize] vec)
+	procedure mergeSort(int vecSize, matrix_of int [0..vecSize] vec) :
 		int mid;
 
-		if (vecSize > 1)
+		if (vecSize > 1) :
 			mid = vecSize / 2;
 			mergeSort(vec, mid);
 			mergeSort(vec + mid, vecSize - mid);
