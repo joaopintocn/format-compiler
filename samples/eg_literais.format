@@ -1,15 +1,19 @@
-365 		
-3.1416 		
-false 		
-"O quê?"
-3.14        
-10.        
-0.001        
-1e100        
-3.14e-10        
-0E0
-3.14i        
-10.i        
-10i        
-1e100i        
-3.14e-10i
+%% Exemplo teste relativo a literais
+
+variables:
+	
+	int a = 365; 		
+	double real b = 3.14161514161713;
+	boolean c = false;		
+	string d = "O quê?";
+	real e = 3.14;   
+	real f = 10.;        
+	real g = 0.001;        
+	real h = 1e100;       
+	real i = 3.14e-10;
+	real j = 0E0;
+	complex l = 3.14i;        
+	complex m = 10.i;      
+	complex n = 10i;      
+	complex o = 1e100i;        
+	complex p = 3.14e-10i;

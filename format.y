@@ -356,7 +356,7 @@ other_clasule :
 	;
 
 while_statement :
-	WHILE OPEN_PARENTHESIS { printf("while (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :" ); }
+	WHILE OPEN_PARENTHESIS { printf("while (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :\n" ); }
 		statement_list
 	END_WHILE SEMICOLON { printf("end_while;" ); }
 	;

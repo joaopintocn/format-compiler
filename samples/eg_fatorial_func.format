@@ -1,4 +1,5 @@
 %% Segundo exemplo de código usado no primeiro relatório 
+%% VALIDADO
 
 variables: 
 	int x = 4;

@@ -1,4 +1,5 @@
 %% Contador atualizado pelos iteradores secundários
+%% VALIDADO
 
 variables: 
 	int count = i + j;          %% i -- mais externo; j -- mais interno.

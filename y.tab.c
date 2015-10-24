@@ -2258,7 +2258,7 @@ yyreduce:
 
   case 155:
 #line 359 "format.y"
-    { printf(") :" ); }
+    { printf(") :\n" ); }
     break;
 
   case 156:

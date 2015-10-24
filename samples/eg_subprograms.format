@@ -1,9 +1,11 @@
+%%VALIDADO
+
 subprograms: 
 
 	function int fun():
 
-	end_function fun;
+	end_function;
 
 	procedure add():
 
-	end_procedure add;
+	end_procedure;
