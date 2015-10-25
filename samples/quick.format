@@ -1,0 +1,37 @@
+subprograms : 
+
+	procedure quickSort (matrix_of int [] valor, int esquerda, int direita) :
+
+	int i, j, x, y;
+
+	i = esquerda;
+	j = direita;
+	x = valor[(esquerda + direita) / 2];
+
+	while (i <= j) :
+		while (valor[i] < x && i < direita) :
+			i++;
+		end_while;
+
+		while (valor[j] > x && j > esquerda) :
+			j--;
+		end_while;
+
+		if (i <= j) :
+			y = valor[i];
+			valor[i] = valor[j];
+			valor[j] = y;
+			i++;
+			j--;
+		end_if;
+	end_while;
+
+	if (j > esquerda)
+		quickSort(valor, esquerda, j);
+	end_if;
+
+	if (i < direita)
+		quickSort(valor,  i, direita);
+	end_if;
+
+end_procedure;   

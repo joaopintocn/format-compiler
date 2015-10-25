@@ -1,0 +1,12 @@
+
+subprograms:
+
+	procedure main ( ): 
+		int x = 5;
+		ref int ptr_x; %% ponteiro para x
+		ref int ptr_ptr_x; %% ponteiro para o poneiro de x
+
+		ptr_x = x;
+		ptr_ptr_x = ptr_x;
+
+	end_procedure;
