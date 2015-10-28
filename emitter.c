@@ -99,7 +99,7 @@ void emit (int t, char* tval)  /*  generates output  */
 
     case INT_NUMBER:
       printf("%s", tval); break;
-    case COMPLEX_NUMBER:
+    case IMAGINARY_PART:
       printf("%s", tval); break;
     case REAL_NUMBER:
       printf("%s", tval); break;

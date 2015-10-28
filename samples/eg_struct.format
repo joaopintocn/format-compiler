@@ -1,23 +1,25 @@
+%% TO-DO: No momento nossa gramática não permite a declaração de tipos não padrão.
+%% TO-DO: Não se atentou que a gramática não atende a necessidade de acesso ao campos de um struct.
 
 variables :
 	struct conta : 
 		int num_conta;
-		string nome
+		string nome;
 		real saldo; 
 	end_struct;
 
-	conta conta1, ptr;
+	%%conta conta1, ptr;
 	
 subprograms :
 
 	procedure main ( ) : 
-		conta1.num_conta = 2;
-		strcpy ( conta1.nome, "Maria");
-		conta1.saldo = 482.25;
+		%%conta1.num_conta = 2;
+		%%strcpy ( conta1.nome, "Maria");
+		%%conta1.saldo = 482.25;
 		ptr = conta1;
 
-		print(ptr.num_conta);
-		print(ptr.nome);
-		print(ptr.saldo);
+		%%print(ptr.num_conta);
+		%%print(ptr.nome);
+		%%print(ptr.saldo);
 	end_procedure;
 	

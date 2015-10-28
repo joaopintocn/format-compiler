@@ -1,3 +1,5 @@
+%% INCOMPLETO (FORA DA GRAMÁTICA)
+
 programs:
 
 	procedure selection_sort (matrix_of int [] num, int tam) :

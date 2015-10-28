@@ -21,10 +21,10 @@ LETRA			[a-zA-Z]
 DIGITO			[0-9]
 EXPOENTE 		(e|E)[+-]?{DIGITO}+
 INT_NUMBER		{DIGITO}+
-NUM_PONTO 		{INT_NUMBER}"."{DIGITO}+
-COMPLEX_NUMBER	({NUM_PONTO}|{INT_NUMBER})(i|I)
-REAL_NUMBER 	{NUM_PONTO}|{NUM_PONTO}{EXPOENTE}
-NUMBER 			{REAL_NUMBER}|{COMPLEX_NUMBER}|{INT_NUMBER}
+FLOAT_NUMBER 	{INT_NUMBER}"."{DIGITO}+
+IMAGINARY_PART	({FLOAT_NUMBER}|{INT_NUMBER})(i|I)
+REAL_NUMBER 	{FLOAT_NUMBER}|{FLOAT_NUMBER}{EXPOENTE}
+NUMBER 			{REAL_NUMBER}|{IMAGINARY_PART}|{INT_NUMBER}
 
 IDENTIFIER 		({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
@@ -111,11 +111,11 @@ end_switch 			{return END_SWITCH; }
 "^"  			    {return EXPO_OP;}
 "."	 				{return DOT_OP;}
 
-\"(\\.|[^\\"])*\" 	{ yylval.sValue = strdup(yytext); 	return STRING; } 
+\"(\\.|[^\\"])*\" 	{ yylval.sValue = strdup(yytext); 	return STRING_LIT; } 
 
 {IDENTIFIER}		{ yylval.sValue = strdup(yytext); 	return IDENTIFIER;}
 {INT_NUMBER}		{ yylval.iValue = atoi(yytext); 	return INT_NUMBER; }
-{COMPLEX_NUMBER}	{ 
+{IMAGINARY_PART}	{ 
 
 	char *pt = strchr (yytext, '.');
 
@@ -124,7 +124,7 @@ end_switch 			{return END_SWITCH; }
 	} else {
 		yylval.iValue = atoi(yytext);
 	}
-	return COMPLEX_NUMBER; }
+	return IMAGINARY_PART; }
 
 {REAL_NUMBER} 		{ yylval.dValue = atof(yytext); 	return REAL_NUMBER; }
 

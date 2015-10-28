@@ -16,9 +16,9 @@
 
 %start program
 
-%token <sValue> NAME IDENTIFIER	STRING 
-%token <iValue> NUMBER COMPLEX_NUMBER INT_NUMBER
-%token <dValue> REAL_NUMBER 
+%token <sValue> IDENTIFIER	STRING_LIT
+%token <iValue> INT_NUMBER
+%token <dValue> REAL_NUMBER IMAGINARY_PART NUMBER
 %token					
 
 IMPORT				
@@ -33,7 +33,7 @@ RETURN
 INT
 REAL
 COMPLEX
-STRING_TYPE
+STRING
 DOUBLE
 BOOLEAN
 ENUM
@@ -102,7 +102,7 @@ COMMENT
 %%
 
 program :
-	program_header program_body
+	program_header program_body { printf("\n"); }
 	;
 
 program_header :
@@ -111,7 +111,7 @@ program_header :
 	;
 
 import : 
-	IMPORT STRING { printf("import %s\n", $2); }
+	IMPORT STRING_LIT { printf("import %s\n", $2); }
 	;
 
 program_body : 
@@ -190,22 +190,18 @@ matrix_assignment :
 
 
 matrix_assignment_aux : 
-	ASSIGN_OP { printf(" = "); } matrix_assignment_aux_aux
+	ASSIGN_OP { printf(" = { "); } OPEN_BRACES matrix_assignment_aux_aux
+
+
+matrix_assignment_aux_aux:
+	set_assignment_aux_aux CLOSE_BRACES { printf(" }"); }
+	| OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES { printf(" }"); } matrix_assignment_aux_aux_aux CLOSE_BRACES { printf(" }"); }
 	;
 
 
-matrix_assignment_aux_aux : 
-	OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES { printf(" }"); } values_group_list
-	;
-
-values_group_list :
-	values_group_list_aux
+matrix_assignment_aux_aux_aux : 
+	COMMA { printf(", "); } OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES { printf(" }"); } matrix_assignment_aux_aux_aux
 	|
-	;
-
-
-values_group_list_aux :
-	COMMA { printf(",\n"); } matrix_assignment_aux_aux
 	;
 
 
@@ -258,7 +254,7 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure ID("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
 	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
 	;
@@ -326,7 +322,7 @@ if_statement :
 	IF OPEN_PARENTHESIS { printf("if (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :\n" ); }
 		statement_list
 	else_clausule
-	END_IF SEMICOLON { printf("end_if;" ); }
+	END_IF SEMICOLON { printf("end_if;\n" ); }
 	;
 
 else_clausule :
@@ -357,17 +353,17 @@ other_clasule :
 while_statement :
 	WHILE OPEN_PARENTHESIS { printf("while (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :\n" ); }
 		statement_list
-	END_WHILE SEMICOLON { printf("end_while;" ); }
+	END_WHILE SEMICOLON { printf("end_while;\n" ); }
 	;
 
 for_statement :
 	FOR { printf("for " ); } IDENTIFIER { printf("%s", $3 ); } IN { printf(" in " ); } IDENTIFIER { printf("%s", $7 ); } COLON { printf(":\n" ); }
 		statement_list
-	END_FOR SEMICOLON { printf("end_for;" ); }
+	END_FOR SEMICOLON { printf("end_for;\n" ); }
 	;
 
 subprogram_call : 
-	IDENTIFIER { printf("%s", $1 ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); }
+	IDENTIFIER { printf("%s", $1 ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); } SEMICOLON { printf(";\n" ); }
 	;
 
 argument_list :
@@ -460,22 +456,21 @@ expo :
 
 negation_unsub_tail:
 	NEG_OP { printf("!"); }  negation_unsub  /* ! */
-	|SUB_OP { printf("-"); }  negation_unsub  /* - */
 	|
 	;	
 	
 negation_unsub :
 	INT_NUMBER { printf("%i", $1); } 
 	| REAL_NUMBER { printf("%f", $1); } 
-	| COMPLEX_NUMBER { printf("%d", $1); } 
-	| STRING { printf("%s", $1); } 
-	| IDENTIFIER { printf("%s", $1); } 
-	| subprogram_call
+	| IMAGINARY_PART { printf("%f", $1); } 
+	| STRING_LIT { printf("%s", $1); } 
+	| IDENTIFIER { printf("%s", $1); } negation_unsub_aux
 	;
 
-function_call :
-	IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS
+negation_unsub_aux :
+	OPEN_BRACKETS { printf("["); } expression { printf("]"); } CLOSE_BRACKETS
+	| OPEN_PARENTHESIS { printf("( "); } argument_list CLOSE_PARENTHESIS { printf(" )"); }
+	|
 	;
-
 
 %%

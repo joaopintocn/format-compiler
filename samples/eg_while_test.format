@@ -10,7 +10,7 @@ subprograms :
 	procedure main() :
 
 		while (i < 9):
-			aux = x*2;
+			aux = x * 2;
 			x = aux;
 			i += 1;
 		end_while;

@@ -110,7 +110,7 @@
      IDENTIFIER = 259,
      STRING = 260,
      NUMBER = 261,
-     COMPLEX_NUMBER = 262,
+     IMAGINARY_PART = 262,
      REAL_NUMBER = 263,
      INT_NUMBER = 264,
      IMPORT = 265,
@@ -584,7 +584,7 @@ static const yytype_uint16 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "NAME", "IDENTIFIER", "STRING", "NUMBER",
-  "COMPLEX_NUMBER", "REAL_NUMBER", "INT_NUMBER", "IMPORT",
+  "IMAGINARY_PART", "REAL_NUMBER", "INT_NUMBER", "IMPORT",
   "VARIABLES_SECTION", "SUBPROGRAMS_SECTION", "PROCEDURE", "FUNCTION",
   "END_PROCEDURE", "END_FUNCTION", "RETURN", "INT", "REAL", "COMPLEX",
   "STRING_TYPE", "DOUBLE", "BOOLEAN", "ENUM", "STRUCT", "SET_OF",

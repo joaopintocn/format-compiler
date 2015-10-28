@@ -1234,7 +1234,7 @@ case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
 #line 114 "format.l"
-{ yylval.sValue = strdup(yytext); 	return STRING; } 
+{ yylval.sValue = strdup(yytext); 	return STRING_LIT; } 
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
@@ -1258,7 +1258,7 @@ YY_RULE_SETUP
 	} else {
 		yylval.iValue = atoi(yytext);
 	}
-	return COMPLEX_NUMBER; }
+	return IMAGINARY_PART; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP

@@ -2,7 +2,7 @@ subprograms :
 
 	procedure quickSort (matrix_of int [] valor, int esquerda, int direita) :
 
-	int i, j, x, y;
+	%%ERROR%% int i, j, x, y;
 
 	i = esquerda;
 	j = direita;
@@ -10,27 +10,27 @@ subprograms :
 
 	while (i <= j) :
 		while (valor[i] < x && i < direita) :
-			i++;
+			i = i + 1;
 		end_while;
 
 		while (valor[j] > x && j > esquerda) :
-			j--;
+			j = j - 1;
 		end_while;
 
 		if (i <= j) :
 			y = valor[i];
 			valor[i] = valor[j];
 			valor[j] = y;
-			i++;
-			j--;
+			i = i + 1;
+			j = j - 1;
 		end_if;
 	end_while;
 
-	if (j > esquerda)
+	if (j > esquerda) :
 		quickSort(valor, esquerda, j);
 	end_if;
 
-	if (i < direita)
+	if (i < direita) :
 		quickSort(valor,  i, direita);
 	end_if;
 

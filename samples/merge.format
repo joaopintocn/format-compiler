@@ -3,48 +3,49 @@ subprograms:
 	procedure merge(int vecSize, matrix_of int [] vec) :
 
 		int mid;
-		int i, j, k;
-		int ref tmp;
+		%% int i, j, k;
+		ref int tmp;
 
-		tmp = (int ref) alloc(vecSize * sizeof(int)); %% Não validado! 
+		%% tmp = (ref int) alloc(vecSize * sizeof(int)); %% Não validado! 
 		%% gramatica: ref int alloc <assignment_P> tem que resolver!
 
-		if (tmp != null)
+		if (tmp != null):
 			return 1;
 		end_if;
 
 		mid = vecSize / 2;
-		i,k = 0;
+		%%i,k = 0;
 		j = mid;
 		
 		while (i < mid && j < vecSize) :
 			if (vec[i] <= vec[j]) :
-				tmp[k] = vec[i++];
-			else
-				tmp[k] = vec[j++];
+				%%tmp[k] = vec[i++];
+			else:
+				%%tmp[k] = vec[j++];
 			end_if;
-	 		k++;
+	 		%%ERROR%% k++;
 		end_while;
 
 		if (i != mid) :
 			while (j < vecSize) :
-				tmp[k++] = vec[j++];
+				%%ERROR%% tmp[k++] = vec[j++];
 			end_while;
-		else
+		else:
 			while (i < mid) :
-				tmp[k++] = vec[i++];
+				%%ERROR%% tmp[k+1] = vec[i+1];
 			end_while;
 		end_if;
 
-		for (i = 0; i < vecSize; ++i)
-			vec[i] = tmp[i];
+		for i in vec:
+			%%ERROR%% vec[i] = tmp[i];
 		end_for;
 
 		free(tmp); %% sem correspondente na gramatica
 
 	end_procedure;
 
-	procedure mergeSort(int vecSize, matrix_of int [0..vecSize] vec) :
+	%%ERROR%% procedure mergeSort(int vecSize, matrix_of int [0..vecSize] vec) :
+	procedure mergeSort(int vecSize, matrix_of int [0..2] vec) :
 		int mid;
 
 		if (vecSize > 1) :
