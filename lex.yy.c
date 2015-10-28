@@ -794,7 +794,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 35 "format.l"
+#line 34 "format.l"
 
 
 #line 801 "lex.yy.c"
@@ -882,402 +882,411 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 37 "format.l"
+#line 36 "format.l"
 { /* emit(COMMENT, yytext); */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 39 "format.l"
+#line 38 "format.l"
 {return IMPORT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 40 "format.l"
+#line 39 "format.l"
 {return VARIABLES_SECTION; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 41 "format.l"
+#line 40 "format.l"
 {return SUBPROGRAMS_SECTION; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 42 "format.l"
+#line 41 "format.l"
 {return PROCEDURE;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 43 "format.l"
+#line 42 "format.l"
 {return FUNCTION; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 44 "format.l"
+#line 43 "format.l"
 {return END_PROCEDURE;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 45 "format.l"
+#line 44 "format.l"
 {return END_FUNCTION; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 46 "format.l"
+#line 45 "format.l"
 {return RETURN;	}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 48 "format.l"
+#line 47 "format.l"
 {return INT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 49 "format.l"
+#line 48 "format.l"
 {return REAL; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 50 "format.l"
+#line 49 "format.l"
 {return COMPLEX; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 51 "format.l"
+#line 50 "format.l"
 {return DOUBLE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 52 "format.l"
+#line 51 "format.l"
 {return STRING;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 53 "format.l"
+#line 52 "format.l"
 {return BOOLEAN;}	
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 54 "format.l"
+#line 53 "format.l"
 {return ENUM; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 55 "format.l"
+#line 54 "format.l"
 {return STRUCT; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 56 "format.l"
+#line 55 "format.l"
 {return SET_OF; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 57 "format.l"
+#line 56 "format.l"
 {return MATRIX_OF; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 58 "format.l"
+#line 57 "format.l"
 {return END_STRUCT; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 59 "format.l"
+#line 58 "format.l"
 {return END_ENUM; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 60 "format.l"
+#line 59 "format.l"
 {return CONST; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 61 "format.l"
+#line 60 "format.l"
 {return REF; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 63 "format.l"
+#line 62 "format.l"
 {return IF; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 64 "format.l"
+#line 63 "format.l"
 {return ELSE;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 65 "format.l"
+#line 64 "format.l"
 {return FOR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 66 "format.l"
+#line 65 "format.l"
 {return IN;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 67 "format.l"
+#line 66 "format.l"
 {return WHILE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 68 "format.l"
+#line 67 "format.l"
 {return SWITCH; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 69 "format.l"
+#line 68 "format.l"
 {return CASE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 70 "format.l"
+#line 69 "format.l"
 {return BREAK; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 71 "format.l"
+#line 70 "format.l"
 {return OTHER; } 
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 72 "format.l"
+#line 71 "format.l"
 {return END_IF;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 73 "format.l"
+#line 72 "format.l"
 {return END_FOR; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 74 "format.l"
+#line 73 "format.l"
 {return END_WHILE; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 75 "format.l"
+#line 74 "format.l"
 {return END_SWITCH; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 77 "format.l"
+#line 76 "format.l"
 {return SEMICOLON; }			
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 78 "format.l"
+#line 77 "format.l"
 {return COMMA; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 79 "format.l"
+#line 78 "format.l"
 {return COLON; }				
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 80 "format.l"
+#line 79 "format.l"
 {return OPEN_PARENTHESIS; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 81 "format.l"
+#line 80 "format.l"
 {return CLOSE_PARENTHESIS; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 82 "format.l"
+#line 81 "format.l"
 {return OPEN_BRACKETS; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 83 "format.l"
+#line 82 "format.l"
 {return CLOSE_BRACKETS; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 84 "format.l"
+#line 83 "format.l"
 {return OPEN_BRACES; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 85 "format.l"
+#line 84 "format.l"
 {return CLOSE_BRACES; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 86 "format.l"
+#line 85 "format.l"
 {return RANGE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 88 "format.l"
+#line 87 "format.l"
 {return ASSIGN_OP; }	
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 89 "format.l"
+#line 88 "format.l"
 {return ADD_ASSIGN_OP;}				
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 90 "format.l"
+#line 89 "format.l"
 {return SUB_ASSIGN_OP;}	
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 91 "format.l"
+#line 90 "format.l"
 {return MULT_ASSIGN_OP; }	
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 92 "format.l"
+#line 91 "format.l"
 {return DIV_ASSIGN_OP; }	
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 93 "format.l"
+#line 92 "format.l"
 {return MOD_ASSIGN_OP; }	
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 94 "format.l"
+#line 93 "format.l"
 {return INCREMENT_OP; }	
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 95 "format.l"
+#line 94 "format.l"
 {return DECREMENT_OP; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 97 "format.l"
+#line 96 "format.l"
 {return AND_OP; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 98 "format.l"
+#line 97 "format.l"
 {return OR_OP; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 99 "format.l"
+#line 98 "format.l"
 {return NEG_OP;}			
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 101 "format.l"
+#line 100 "format.l"
 {return LEQ_OP;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 102 "format.l"
+#line 101 "format.l"
 {return BEQ_OP;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 103 "format.l"
+#line 102 "format.l"
 {return EQ_OP; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 104 "format.l"
+#line 103 "format.l"
 {return NEQ_OP;}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 105 "format.l"
+#line 104 "format.l"
 {return SUB_OP; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 106 "format.l"
+#line 105 "format.l"
 {return ADD_OP; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 107 "format.l"
+#line 106 "format.l"
 {return MULT_OP;}	
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 108 "format.l"
+#line 107 "format.l"
 {return DIV_OP; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 109 "format.l"
+#line 108 "format.l"
 {return MOD_OP; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 110 "format.l"
+#line 109 "format.l"
 {return LT_OP; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 111 "format.l"
+#line 110 "format.l"
 {return BT_OP;}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 112 "format.l"
+#line 111 "format.l"
 {return EXPO_OP;}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 113 "format.l"
+#line 112 "format.l"
 {return DOT_OP;}
 	YY_BREAK
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 115 "format.l"
-{return STRING; } 
+#line 114 "format.l"
+{ yylval.sValue = strdup(yytext); 	return STRING; } 
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 117 "format.l"
-{ return IDENTIFIER;}
+#line 116 "format.l"
+{ yylval.sValue = strdup(yytext); 	return IDENTIFIER;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 118 "format.l"
-{ return INT_NUMBER; }
+#line 117 "format.l"
+{ yylval.iValue = atoi(yytext); 	return INT_NUMBER; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 119 "format.l"
-{ return COMPLEX_NUMBER; }
+#line 118 "format.l"
+{ 
+
+	char *pt = strchr (yytext, '.');
+
+	if (pt != NULL) {
+		yylval.dValue = atof(yytext);
+	} else {
+		yylval.iValue = atoi(yytext);
+	}
+	return COMPLEX_NUMBER; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 120 "format.l"
-{ return REAL_NUMBER; }
+#line 129 "format.l"
+{ yylval.dValue = atof(yytext); 	return REAL_NUMBER; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 122 "format.l"
+#line 131 "format.l"
 { return EOF; }
 	YY_BREAK
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 124 "format.l"
+#line 133 "format.l"
 { /* whitespace separates tokens */ }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 125 "format.l"
+#line 134 "format.l"
 { /* discard bad characters */ }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 128 "format.l"
+#line 137 "format.l"
 ECHO;
 	YY_BREAK
-#line 1281 "lex.yy.c"
+#line 1290 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2274,7 +2283,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 128 "format.l"
+#line 137 "format.l"
 
 
 

@@ -157,9 +157,9 @@ subprogram_declarations_tail :
 
 
 simple_variable_declaration : 
-	type IDENTIFIER  { printf("ID"); }  simple_variable_declaration_value
-	| CONST { printf("const "); } type IDENTIFIER { printf("ID"); } ASSIGN_OP { printf(" = "); } expression 
-	| REF { printf("ref "); } type IDENTIFIER { printf("ID"); } simple_variable_declaration_value
+	type IDENTIFIER  { printf("%s", $2); }  simple_variable_declaration_value
+	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
+	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
 	;
 
 simple_variable_declaration_value :
@@ -177,10 +177,10 @@ type :
 	;
 
 compost_variable_declaration :
-	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("ID"); } matrix_assignment
-	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("ID"); } set_assignment
-	| ENUM { printf("enum "); } IDENTIFIER { printf("ID"); } COLON { printf(" : "); } IDENTIFIER { printf("ID"); } identifier_list END_ENUM { printf(" end_enum"); }
-	| STRUCT { printf("struct "); } IDENTIFIER { printf("ID"); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
+	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("%s", $9); } matrix_assignment
+	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4); } set_assignment
+	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7); } identifier_list END_ENUM { printf(" end_enum"); }
+	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
 	;
 
 matrix_assignment : 
@@ -229,7 +229,7 @@ values_list :
 	;
 
 identifier_list :
-	COMMA { printf(", "); } IDENTIFIER { printf("ID"); } identifier_list
+	COMMA { printf(", "); } IDENTIFIER { printf("%s", $3); } identifier_list
 	|
 	;
 
@@ -264,7 +264,7 @@ procedure_declaration :
 	;
 
 function_declaration :
-	FUNCTION { printf("function "); } type IDENTIFIER { printf("ID"); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
 	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
@@ -313,7 +313,7 @@ assignment_statement_tail :
 	;
 
 destination :
-	IDENTIFIER { printf("ID" ); } identifier_tail
+	IDENTIFIER { printf("%s", $1 ); } identifier_tail
 	;
 
 /* permite atribuição de valor a um elemento de matriz*/
@@ -335,7 +335,7 @@ else_clausule :
 	;
 
 switch_statement : 
-	SWITCH OPEN_PARENTHESIS { printf("switch (" ); } IDENTIFIER { printf("ID" ); } CLOSE_PARENTHESIS COLON { printf(") :" ); }
+	SWITCH OPEN_PARENTHESIS { printf("switch (" ); } IDENTIFIER { printf("%s", $4 ); } CLOSE_PARENTHESIS COLON { printf(") :" ); }
 		case_clasule
 		other_clasule
 	END_SWITCH SEMICOLON { printf("end_switch;" ); }
@@ -361,13 +361,13 @@ while_statement :
 	;
 
 for_statement :
-	FOR { printf("for " ); } IDENTIFIER { printf("ID" ); } IN { printf(" in " ); } IDENTIFIER { printf("ID" ); } COLON { printf(":\n" ); }
+	FOR { printf("for " ); } IDENTIFIER { printf("%s", $3 ); } IN { printf(" in " ); } IDENTIFIER { printf("%s", $7 ); } COLON { printf(":\n" ); }
 		statement_list
 	END_FOR SEMICOLON { printf("end_for;" ); }
 	;
 
 subprogram_call : 
-	IDENTIFIER { printf("ID" ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); }
+	IDENTIFIER { printf("%s", $1 ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); }
 	;
 
 argument_list :
@@ -469,7 +469,7 @@ negation_unsub :
 	| REAL_NUMBER { printf("%f", $1); } 
 	| COMPLEX_NUMBER { printf("%d", $1); } 
 	| STRING { printf("%s", $1); } 
-	| IDENTIFIER { printf("ID"); } 
+	| IDENTIFIER { printf("%s", $1); } 
 	| subprogram_call
 	;
 

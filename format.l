@@ -26,8 +26,7 @@ COMPLEX_NUMBER	({NUM_PONTO}|{INT_NUMBER})(i|I)
 REAL_NUMBER 	{NUM_PONTO}|{NUM_PONTO}{EXPOENTE}
 NUMBER 			{REAL_NUMBER}|{COMPLEX_NUMBER}|{INT_NUMBER}
 
-IDENTIFIER 				({LETRA}|_)({LETRA}|{DIGITO}|_)*
-
+IDENTIFIER 		({LETRA}|_)({LETRA}|{DIGITO}|_)*
 
 
 
@@ -112,12 +111,22 @@ end_switch 			{return END_SWITCH; }
 "^"  			    {return EXPO_OP;}
 "."	 				{return DOT_OP;}
 
-\"(\\.|[^\\"])*\" 	{return STRING; } 
+\"(\\.|[^\\"])*\" 	{ yylval.sValue = strdup(yytext); 	return STRING; } 
 
-{IDENTIFIER}				{ return IDENTIFIER;}
-{INT_NUMBER}		{ return INT_NUMBER; }
-{COMPLEX_NUMBER}	{ return COMPLEX_NUMBER; }
-{REAL_NUMBER} 		{ return REAL_NUMBER; }
+{IDENTIFIER}		{ yylval.sValue = strdup(yytext); 	return IDENTIFIER;}
+{INT_NUMBER}		{ yylval.iValue = atoi(yytext); 	return INT_NUMBER; }
+{COMPLEX_NUMBER}	{ 
+
+	char *pt = strchr (yytext, '.');
+
+	if (pt != NULL) {
+		yylval.dValue = atof(yytext);
+	} else {
+		yylval.iValue = atoi(yytext);
+	}
+	return COMPLEX_NUMBER; }
+
+{REAL_NUMBER} 		{ yylval.dValue = atof(yytext); 	return REAL_NUMBER; }
 
 {EOF}				{ return EOF; }
 
