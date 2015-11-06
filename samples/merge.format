@@ -3,7 +3,7 @@ subprograms:
 	procedure merge(int vecSize, matrix_of int [] vec) :
 
 		int mid;
-		%% int i, j, k;
+		%%ERROR%% int i, j, k;
 		ref int tmp;
 
 		%% tmp = (ref int) alloc(vecSize * sizeof(int)); %% Não validado! 
@@ -14,7 +14,7 @@ subprograms:
 		end_if;
 
 		mid = vecSize / 2;
-		%%i,k = 0;
+		%%ERROR%% i,k = 0;
 		j = mid;
 		
 		while (i < mid && j < vecSize) :

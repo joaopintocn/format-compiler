@@ -1,3 +1,5 @@
+%% INCOMPLETO (FORA DA GRAMÁTICA)
+
 subprograms : 
 
 	procedure quickSort (matrix_of int [] valor, int esquerda, int direita) :
