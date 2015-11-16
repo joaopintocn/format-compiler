@@ -238,7 +238,7 @@ type :
 	| DOUBLE REAL 		{ printf("double real "); tipo_provis = "double real";}
 	| REAL 				{ printf("real "); tipo_provis = "real";}
 	| COMPLEX 			{ printf("complex "); tipo_provis = "complex";}
-	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean"; imprimir(indice, tabela);}
+	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean"; /*imprimir(indice, tabela);*/}
 	| STRING 			{ printf("string "); tipo_provis = "string";}
 	;
 
