@@ -165,12 +165,19 @@ simple_variable_declaration :
 	{
 		printf("%s", $2);
 		nome_provis = $2;
-		if (op == 1) { //variável global ou subprograma
-			push(nome_provis, tipo_provis, nivel, deslocamentoGlobal, tabela);
-			deslocamentoGlobal++;
-		} else { //variável local
-			push(nome_provis, tipo_provis, nivel, deslocamentoLocal,  tabela);
-			deslocamentoLocal++;
+
+		verRepeticao = findRepeatedSymbol(nome_provis, nivel, tabela);
+
+		if (verRepeticao == 0) {
+			if (op == 1) { //variável global ou subprograma
+				push(nome_provis, tipo_provis, nivel, deslocamentoGlobal, tabela);
+				deslocamentoGlobal++;
+			} else { //variável local
+				push(nome_provis, tipo_provis, nivel, deslocamentoLocal,  tabela);
+				deslocamentoLocal++;
+			}
+		} else {
+			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", nome_provis);
 		}
 	} 			simple_variable_declaration_value
 	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
@@ -187,7 +194,7 @@ type :
 	| DOUBLE REAL 		{ printf("double real "); tipo_provis = "double real";}
 	| REAL 				{ printf("real "); tipo_provis = "real";}
 	| COMPLEX 			{ printf("complex "); tipo_provis = "complex";}
-	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean"; imprimir(tabela);}
+	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean";}// imprimir(tabela);}
 	| STRING 			{ printf("string "); tipo_provis = "string";}
 	;
 

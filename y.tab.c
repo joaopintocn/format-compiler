@@ -668,28 +668,28 @@ static const yytype_uint16 yyrline[] =
 {
        0,   104,   104,   104,   113,   114,   118,   122,   126,   126,
      128,   133,   133,   137,   138,   142,   143,   148,   148,   149,
-     153,   157,   158,   165,   164,   176,   176,   176,   176,   177,
-     177,   177,   181,   181,   182,   186,   187,   188,   189,   190,
-     191,   195,   195,   195,   195,   195,   196,   196,   196,   197,
-     197,   197,   197,   197,   198,   198,   198,   198,   202,   203,
-     208,   208,   212,   213,   213,   213,   218,   218,   218,   218,
-     219,   224,   225,   229,   229,   229,   234,   238,   238,   239,
-     243,   243,   243,   244,   248,   249,   253,   253,   257,   257,
-     258,   262,   262,   263,   267,   268,   272,   272,   272,   287,
-     287,   287,   287,   287,   302,   303,   307,   307,   308,   312,
-     313,   317,   318,   319,   320,   321,   322,   323,   324,   328,
-     328,   332,   336,   336,   337,   337,   338,   338,   339,   339,
-     340,   340,   341,   341,   345,   345,   350,   350,   351,   355,
-     355,   355,   362,   362,   363,   367,   367,   367,   367,   374,
-     374,   376,   374,   378,   382,   382,   383,   387,   387,   387,
-     393,   393,   393,   393,   393,   393,   399,   399,   399,   399,
-     403,   404,   408,   412,   412,   413,   417,   421,   421,   422,
-     426,   430,   430,   431,   435,   439,   439,   440,   440,   441,
-     445,   449,   449,   450,   450,   451,   451,   452,   452,   453,
-     457,   461,   461,   462,   462,   463,   467,   471,   471,   472,
-     472,   473,   473,   474,   478,   482,   482,   483,   487,   491,
-     491,   492,   496,   497,   498,   499,   500,   500,   504,   504,
-     504,   505,   505,   506
+     153,   157,   158,   165,   164,   183,   183,   183,   183,   184,
+     184,   184,   188,   188,   189,   193,   194,   195,   196,   197,
+     198,   202,   202,   202,   202,   202,   203,   203,   203,   204,
+     204,   204,   204,   204,   205,   205,   205,   205,   209,   210,
+     215,   215,   219,   220,   220,   220,   225,   225,   225,   225,
+     226,   231,   232,   236,   236,   236,   241,   245,   245,   246,
+     250,   250,   250,   251,   255,   256,   260,   260,   264,   264,
+     265,   269,   269,   270,   274,   275,   279,   279,   279,   294,
+     294,   294,   294,   294,   309,   310,   314,   314,   315,   319,
+     320,   324,   325,   326,   327,   328,   329,   330,   331,   335,
+     335,   339,   343,   343,   344,   344,   345,   345,   346,   346,
+     347,   347,   348,   348,   352,   352,   357,   357,   358,   362,
+     362,   362,   369,   369,   370,   374,   374,   374,   374,   381,
+     381,   383,   381,   385,   389,   389,   390,   394,   394,   394,
+     400,   400,   400,   400,   400,   400,   406,   406,   406,   406,
+     410,   411,   415,   419,   419,   420,   424,   428,   428,   429,
+     433,   437,   437,   438,   442,   446,   446,   447,   447,   448,
+     452,   456,   456,   457,   457,   458,   458,   459,   459,   460,
+     464,   468,   468,   469,   469,   470,   474,   478,   478,   479,
+     479,   480,   480,   481,   485,   489,   489,   490,   494,   498,
+     498,   499,   503,   504,   505,   506,   507,   507,   511,   511,
+     511,   512,   512,   513
 };
 #endif
 
@@ -1963,12 +1963,19 @@ yyreduce:
     {
 		printf("%s", (yyvsp[(2) - (2)].sValue));
 		nome_provis = (yyvsp[(2) - (2)].sValue);
-		if (op == 1) { //variável global ou subprograma
-			push(nome_provis, tipo_provis, nivel, deslocamentoGlobal, tabela);
-			deslocamentoGlobal++;
-		} else { //variável local
-			push(nome_provis, tipo_provis, nivel, deslocamentoLocal,  tabela);
-			deslocamentoLocal++;
+
+		verRepeticao = findRepeatedSymbol(nome_provis, nivel, tabela);
+
+		if (verRepeticao == 0) {
+			if (op == 1) { //variável global ou subprograma
+				push(nome_provis, tipo_provis, nivel, deslocamentoGlobal, tabela);
+				deslocamentoGlobal++;
+			} else { //variável local
+				push(nome_provis, tipo_provis, nivel, deslocamentoLocal,  tabela);
+				deslocamentoLocal++;
+			}
+		} else {
+			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", nome_provis);
 		}
 	}
     break;
@@ -1976,336 +1983,336 @@ yyreduce:
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 176 "format.y"
+#line 183 "format.y"
     { printf("const "); }
     break;
 
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 176 "format.y"
+#line 183 "format.y"
     { printf("%s", (yyvsp[(4) - (4)].sValue)); }
     break;
 
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 176 "format.y"
+#line 183 "format.y"
     { printf(" = "); }
     break;
 
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 177 "format.y"
+#line 184 "format.y"
     { printf("ref "); }
     break;
 
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 177 "format.y"
+#line 184 "format.y"
     { printf("%s", (yyvsp[(4) - (4)].sValue)); }
     break;
 
   case 32:
 
 /* Line 1806 of yacc.c  */
-#line 181 "format.y"
+#line 188 "format.y"
     { printf(" = "); }
     break;
 
   case 35:
 
 /* Line 1806 of yacc.c  */
-#line 186 "format.y"
+#line 193 "format.y"
     { printf("int ");  tipo_provis = "int";}
     break;
 
   case 36:
 
 /* Line 1806 of yacc.c  */
-#line 187 "format.y"
+#line 194 "format.y"
     { printf("double real "); tipo_provis = "double real";}
     break;
 
   case 37:
 
 /* Line 1806 of yacc.c  */
-#line 188 "format.y"
+#line 195 "format.y"
     { printf("real "); tipo_provis = "real";}
     break;
 
   case 38:
 
 /* Line 1806 of yacc.c  */
-#line 189 "format.y"
+#line 196 "format.y"
     { printf("complex "); tipo_provis = "complex";}
     break;
 
   case 39:
 
 /* Line 1806 of yacc.c  */
-#line 190 "format.y"
-    { printf("boolean "); tipo_provis = "boolean"; imprimir(tabela);}
+#line 197 "format.y"
+    { printf("boolean "); tipo_provis = "boolean";}
     break;
 
   case 40:
 
 /* Line 1806 of yacc.c  */
-#line 191 "format.y"
+#line 198 "format.y"
     { printf("string "); tipo_provis = "string";}
     break;
 
   case 41:
 
 /* Line 1806 of yacc.c  */
-#line 195 "format.y"
+#line 202 "format.y"
     { printf("matrix_of "); }
     break;
 
   case 42:
 
 /* Line 1806 of yacc.c  */
-#line 195 "format.y"
+#line 202 "format.y"
     { printf("[ "); }
     break;
 
   case 43:
 
 /* Line 1806 of yacc.c  */
-#line 195 "format.y"
+#line 202 "format.y"
     { printf(" ] "); }
     break;
 
   case 44:
 
 /* Line 1806 of yacc.c  */
-#line 195 "format.y"
+#line 202 "format.y"
     { printf("%s", (yyvsp[(9) - (9)].sValue)); }
     break;
 
   case 46:
 
 /* Line 1806 of yacc.c  */
-#line 196 "format.y"
+#line 203 "format.y"
     { printf("set_of "); }
     break;
 
   case 47:
 
 /* Line 1806 of yacc.c  */
-#line 196 "format.y"
+#line 203 "format.y"
     { printf("%s", (yyvsp[(4) - (4)].sValue)); }
     break;
 
   case 49:
 
 /* Line 1806 of yacc.c  */
-#line 197 "format.y"
+#line 204 "format.y"
     { printf("enum "); }
     break;
 
   case 50:
 
 /* Line 1806 of yacc.c  */
-#line 197 "format.y"
+#line 204 "format.y"
     { printf("%s", (yyvsp[(3) - (3)].sValue)); }
     break;
 
   case 51:
 
 /* Line 1806 of yacc.c  */
-#line 197 "format.y"
+#line 204 "format.y"
     { printf(" : "); }
     break;
 
   case 52:
 
 /* Line 1806 of yacc.c  */
-#line 197 "format.y"
+#line 204 "format.y"
     { printf("%s", (yyvsp[(7) - (7)].sValue)); }
     break;
 
   case 53:
 
 /* Line 1806 of yacc.c  */
-#line 197 "format.y"
+#line 204 "format.y"
     { printf(" end_enum"); }
     break;
 
   case 54:
 
 /* Line 1806 of yacc.c  */
-#line 198 "format.y"
+#line 205 "format.y"
     { printf("struct "); }
     break;
 
   case 55:
 
 /* Line 1806 of yacc.c  */
-#line 198 "format.y"
+#line 205 "format.y"
     { printf("%s", (yyvsp[(3) - (3)].sValue)); }
     break;
 
   case 56:
 
 /* Line 1806 of yacc.c  */
-#line 198 "format.y"
+#line 205 "format.y"
     { printf(" : \n\t"); }
     break;
 
   case 57:
 
 /* Line 1806 of yacc.c  */
-#line 198 "format.y"
+#line 205 "format.y"
     { printf("end_struct"); }
     break;
 
   case 60:
 
 /* Line 1806 of yacc.c  */
-#line 208 "format.y"
+#line 215 "format.y"
     { printf(" = { "); }
     break;
 
   case 62:
 
 /* Line 1806 of yacc.c  */
-#line 212 "format.y"
+#line 219 "format.y"
     { printf(" }"); }
     break;
 
   case 63:
 
 /* Line 1806 of yacc.c  */
-#line 213 "format.y"
+#line 220 "format.y"
     { printf("{ "); }
     break;
 
   case 64:
 
 /* Line 1806 of yacc.c  */
-#line 213 "format.y"
+#line 220 "format.y"
     { printf(" }"); }
     break;
 
   case 65:
 
 /* Line 1806 of yacc.c  */
-#line 213 "format.y"
+#line 220 "format.y"
     { printf(" }"); }
     break;
 
   case 66:
 
 /* Line 1806 of yacc.c  */
-#line 218 "format.y"
+#line 225 "format.y"
     { printf(", "); }
     break;
 
   case 67:
 
 /* Line 1806 of yacc.c  */
-#line 218 "format.y"
+#line 225 "format.y"
     { printf("{ "); }
     break;
 
   case 68:
 
 /* Line 1806 of yacc.c  */
-#line 218 "format.y"
+#line 225 "format.y"
     { printf(" }"); }
     break;
 
   case 73:
 
 /* Line 1806 of yacc.c  */
-#line 229 "format.y"
+#line 236 "format.y"
     { printf(" = "); }
     break;
 
   case 74:
 
 /* Line 1806 of yacc.c  */
-#line 229 "format.y"
+#line 236 "format.y"
     { printf("{ "); }
     break;
 
   case 75:
 
 /* Line 1806 of yacc.c  */
-#line 229 "format.y"
+#line 236 "format.y"
     { printf(" }"); }
     break;
 
   case 77:
 
 /* Line 1806 of yacc.c  */
-#line 238 "format.y"
+#line 245 "format.y"
     { printf(", "); }
     break;
 
   case 80:
 
 /* Line 1806 of yacc.c  */
-#line 243 "format.y"
+#line 250 "format.y"
     { printf(", "); }
     break;
 
   case 81:
 
 /* Line 1806 of yacc.c  */
-#line 243 "format.y"
+#line 250 "format.y"
     { printf("%s", (yyvsp[(3) - (3)].sValue)); }
     break;
 
   case 86:
 
 /* Line 1806 of yacc.c  */
-#line 253 "format.y"
+#line 260 "format.y"
     {printf("%i", (yyvsp[(1) - (1)].iValue));}
     break;
 
   case 88:
 
 /* Line 1806 of yacc.c  */
-#line 257 "format.y"
+#line 264 "format.y"
     {printf("..");}
     break;
 
   case 89:
 
 /* Line 1806 of yacc.c  */
-#line 257 "format.y"
+#line 264 "format.y"
     {printf("%i", (yyvsp[(3) - (3)].iValue));}
     break;
 
   case 91:
 
 /* Line 1806 of yacc.c  */
-#line 262 "format.y"
+#line 269 "format.y"
     {printf(", ");}
     break;
 
   case 96:
 
 /* Line 1806 of yacc.c  */
-#line 272 "format.y"
+#line 279 "format.y"
     { printf("procedure %s(", (yyvsp[(2) - (3)].sValue)); nivel++; push((yyvsp[(2) - (3)].sValue), "procedure", 1, deslocamentoGlobal, tabela); deslocamentoGlobal++; op=2;}
     break;
 
   case 97:
 
 /* Line 1806 of yacc.c  */
-#line 272 "format.y"
+#line 279 "format.y"
     { printf("):\n"); }
     break;
 
   case 98:
 
 /* Line 1806 of yacc.c  */
-#line 275 "format.y"
+#line 282 "format.y"
     {
 		printf("\nend_procedure;\n");
 		nivel--;
@@ -2320,35 +2327,35 @@ yyreduce:
   case 99:
 
 /* Line 1806 of yacc.c  */
-#line 287 "format.y"
+#line 294 "format.y"
     { printf("function "); nivel++;}
     break;
 
   case 100:
 
 /* Line 1806 of yacc.c  */
-#line 287 "format.y"
+#line 294 "format.y"
     { printf("%s", (yyvsp[(4) - (4)].sValue)); push((yyvsp[(4) - (4)].sValue), "function", 1, deslocamentoGlobal, tabela); deslocamentoGlobal++; op=2;}
     break;
 
   case 101:
 
 /* Line 1806 of yacc.c  */
-#line 287 "format.y"
+#line 294 "format.y"
     { printf("("); }
     break;
 
   case 102:
 
 /* Line 1806 of yacc.c  */
-#line 287 "format.y"
+#line 294 "format.y"
     { printf("):\n"); }
     break;
 
   case 103:
 
 /* Line 1806 of yacc.c  */
-#line 290 "format.y"
+#line 297 "format.y"
     {
 		printf("\nend_function;\n");
 		nivel--;
@@ -2363,455 +2370,455 @@ yyreduce:
   case 106:
 
 /* Line 1806 of yacc.c  */
-#line 307 "format.y"
+#line 314 "format.y"
     { printf(", "); }
     break;
 
   case 118:
 
 /* Line 1806 of yacc.c  */
-#line 324 "format.y"
+#line 331 "format.y"
     { printf(";\n" ); }
     break;
 
   case 119:
 
 /* Line 1806 of yacc.c  */
-#line 328 "format.y"
+#line 335 "format.y"
     { printf("return "); }
     break;
 
   case 120:
 
 /* Line 1806 of yacc.c  */
-#line 328 "format.y"
+#line 335 "format.y"
     { printf(";\n" ); }
     break;
 
   case 121:
 
 /* Line 1806 of yacc.c  */
-#line 332 "format.y"
+#line 339 "format.y"
     { printf(";\n" ); }
     break;
 
   case 122:
 
 /* Line 1806 of yacc.c  */
-#line 336 "format.y"
+#line 343 "format.y"
     { printf(" = "); }
     break;
 
   case 124:
 
 /* Line 1806 of yacc.c  */
-#line 337 "format.y"
+#line 344 "format.y"
     { printf(" += "); }
     break;
 
   case 126:
 
 /* Line 1806 of yacc.c  */
-#line 338 "format.y"
+#line 345 "format.y"
     { printf(" -= "); }
     break;
 
   case 128:
 
 /* Line 1806 of yacc.c  */
-#line 339 "format.y"
+#line 346 "format.y"
     { printf(" *= "); }
     break;
 
   case 130:
 
 /* Line 1806 of yacc.c  */
-#line 340 "format.y"
+#line 347 "format.y"
     { printf(" /= "); }
     break;
 
   case 132:
 
 /* Line 1806 of yacc.c  */
-#line 341 "format.y"
+#line 348 "format.y"
     { printf(" %%= "); }
     break;
 
   case 134:
 
 /* Line 1806 of yacc.c  */
-#line 345 "format.y"
+#line 352 "format.y"
     { printf("%s", (yyvsp[(1) - (1)].sValue) ); }
     break;
 
   case 136:
 
 /* Line 1806 of yacc.c  */
-#line 350 "format.y"
+#line 357 "format.y"
     { printf(" [" ); }
     break;
 
   case 137:
 
 /* Line 1806 of yacc.c  */
-#line 350 "format.y"
+#line 357 "format.y"
     { printf("] " ); }
     break;
 
   case 139:
 
 /* Line 1806 of yacc.c  */
-#line 355 "format.y"
+#line 362 "format.y"
     { printf("if (" ); }
     break;
 
   case 140:
 
 /* Line 1806 of yacc.c  */
-#line 355 "format.y"
+#line 362 "format.y"
     { printf(") :\n" ); }
     break;
 
   case 141:
 
 /* Line 1806 of yacc.c  */
-#line 358 "format.y"
+#line 365 "format.y"
     { printf("end_if;\n" ); }
     break;
 
   case 142:
 
 /* Line 1806 of yacc.c  */
-#line 362 "format.y"
+#line 369 "format.y"
     { printf("else: \n" ); }
     break;
 
   case 145:
 
 /* Line 1806 of yacc.c  */
-#line 367 "format.y"
+#line 374 "format.y"
     { printf("switch (" ); }
     break;
 
   case 146:
 
 /* Line 1806 of yacc.c  */
-#line 367 "format.y"
+#line 374 "format.y"
     { printf("%s", (yyvsp[(4) - (4)].sValue) ); }
     break;
 
   case 147:
 
 /* Line 1806 of yacc.c  */
-#line 367 "format.y"
+#line 374 "format.y"
     { printf(") :" ); }
     break;
 
   case 148:
 
 /* Line 1806 of yacc.c  */
-#line 370 "format.y"
+#line 377 "format.y"
     { printf("end_switch;" ); }
     break;
 
   case 149:
 
 /* Line 1806 of yacc.c  */
-#line 374 "format.y"
+#line 381 "format.y"
     { printf("case (" ); }
     break;
 
   case 150:
 
 /* Line 1806 of yacc.c  */
-#line 374 "format.y"
+#line 381 "format.y"
     { printf(") :" ); }
     break;
 
   case 151:
 
 /* Line 1806 of yacc.c  */
-#line 376 "format.y"
+#line 383 "format.y"
     { printf("break; (" ); }
     break;
 
   case 154:
 
 /* Line 1806 of yacc.c  */
-#line 382 "format.y"
+#line 389 "format.y"
     { printf("other :" ); }
     break;
 
   case 157:
 
 /* Line 1806 of yacc.c  */
-#line 387 "format.y"
+#line 394 "format.y"
     { printf("while (" ); }
     break;
 
   case 158:
 
 /* Line 1806 of yacc.c  */
-#line 387 "format.y"
+#line 394 "format.y"
     { printf(") :\n" ); }
     break;
 
   case 159:
 
 /* Line 1806 of yacc.c  */
-#line 389 "format.y"
+#line 396 "format.y"
     { printf("end_while;\n" ); }
     break;
 
   case 160:
 
 /* Line 1806 of yacc.c  */
-#line 393 "format.y"
+#line 400 "format.y"
     { printf("for " ); }
     break;
 
   case 161:
 
 /* Line 1806 of yacc.c  */
-#line 393 "format.y"
+#line 400 "format.y"
     { printf("%s", (yyvsp[(3) - (3)].sValue) ); }
     break;
 
   case 162:
 
 /* Line 1806 of yacc.c  */
-#line 393 "format.y"
+#line 400 "format.y"
     { printf(" in " ); }
     break;
 
   case 163:
 
 /* Line 1806 of yacc.c  */
-#line 393 "format.y"
+#line 400 "format.y"
     { printf("%s", (yyvsp[(7) - (7)].sValue) ); }
     break;
 
   case 164:
 
 /* Line 1806 of yacc.c  */
-#line 393 "format.y"
+#line 400 "format.y"
     { printf(":\n" ); }
     break;
 
   case 165:
 
 /* Line 1806 of yacc.c  */
-#line 395 "format.y"
+#line 402 "format.y"
     { printf("end_for;\n" ); }
     break;
 
   case 166:
 
 /* Line 1806 of yacc.c  */
-#line 399 "format.y"
+#line 406 "format.y"
     { printf("%s", (yyvsp[(1) - (1)].sValue) ); }
     break;
 
   case 167:
 
 /* Line 1806 of yacc.c  */
-#line 399 "format.y"
+#line 406 "format.y"
     { printf("( " ); }
     break;
 
   case 168:
 
 /* Line 1806 of yacc.c  */
-#line 399 "format.y"
+#line 406 "format.y"
     { printf(" )" ); }
     break;
 
   case 169:
 
 /* Line 1806 of yacc.c  */
-#line 399 "format.y"
+#line 406 "format.y"
     { printf(";\n" ); }
     break;
 
   case 173:
 
 /* Line 1806 of yacc.c  */
-#line 412 "format.y"
+#line 419 "format.y"
     { printf(", " ); }
     break;
 
   case 177:
 
 /* Line 1806 of yacc.c  */
-#line 421 "format.y"
+#line 428 "format.y"
     { printf(" || " ); }
     break;
 
   case 181:
 
 /* Line 1806 of yacc.c  */
-#line 430 "format.y"
+#line 437 "format.y"
     { printf(" && " ); }
     break;
 
   case 185:
 
 /* Line 1806 of yacc.c  */
-#line 439 "format.y"
+#line 446 "format.y"
     { printf(" == "); }
     break;
 
   case 187:
 
 /* Line 1806 of yacc.c  */
-#line 440 "format.y"
+#line 447 "format.y"
     { printf(" != "); }
     break;
 
   case 191:
 
 /* Line 1806 of yacc.c  */
-#line 449 "format.y"
+#line 456 "format.y"
     { printf(" <= "); }
     break;
 
   case 193:
 
 /* Line 1806 of yacc.c  */
-#line 450 "format.y"
+#line 457 "format.y"
     { printf(" >= "); }
     break;
 
   case 195:
 
 /* Line 1806 of yacc.c  */
-#line 451 "format.y"
+#line 458 "format.y"
     { printf(" < "); }
     break;
 
   case 197:
 
 /* Line 1806 of yacc.c  */
-#line 452 "format.y"
+#line 459 "format.y"
     { printf(" > "); }
     break;
 
   case 201:
 
 /* Line 1806 of yacc.c  */
-#line 461 "format.y"
+#line 468 "format.y"
     { printf(" + "); }
     break;
 
   case 203:
 
 /* Line 1806 of yacc.c  */
-#line 462 "format.y"
+#line 469 "format.y"
     { printf(" - "); }
     break;
 
   case 207:
 
 /* Line 1806 of yacc.c  */
-#line 471 "format.y"
+#line 478 "format.y"
     { printf(" * "); }
     break;
 
   case 209:
 
 /* Line 1806 of yacc.c  */
-#line 472 "format.y"
+#line 479 "format.y"
     { printf(" / "); }
     break;
 
   case 211:
 
 /* Line 1806 of yacc.c  */
-#line 473 "format.y"
+#line 480 "format.y"
     { printf(" %% "); }
     break;
 
   case 215:
 
 /* Line 1806 of yacc.c  */
-#line 482 "format.y"
+#line 489 "format.y"
     { printf("^"); }
     break;
 
   case 219:
 
 /* Line 1806 of yacc.c  */
-#line 491 "format.y"
+#line 498 "format.y"
     { printf("!"); }
     break;
 
   case 222:
 
 /* Line 1806 of yacc.c  */
-#line 496 "format.y"
+#line 503 "format.y"
     { printf("%i", (yyvsp[(1) - (1)].iValue)); }
     break;
 
   case 223:
 
 /* Line 1806 of yacc.c  */
-#line 497 "format.y"
+#line 504 "format.y"
     { printf("%f", (yyvsp[(1) - (1)].dValue)); }
     break;
 
   case 224:
 
 /* Line 1806 of yacc.c  */
-#line 498 "format.y"
+#line 505 "format.y"
     { printf("%f", (yyvsp[(1) - (1)].dValue)); }
     break;
 
   case 225:
 
 /* Line 1806 of yacc.c  */
-#line 499 "format.y"
+#line 506 "format.y"
     { printf("%s", (yyvsp[(1) - (1)].sValue)); }
     break;
 
   case 226:
 
 /* Line 1806 of yacc.c  */
-#line 500 "format.y"
+#line 507 "format.y"
     { printf("%s", (yyvsp[(1) - (1)].sValue)); }
     break;
 
   case 228:
 
 /* Line 1806 of yacc.c  */
-#line 504 "format.y"
+#line 511 "format.y"
     { printf("["); }
     break;
 
   case 229:
 
 /* Line 1806 of yacc.c  */
-#line 504 "format.y"
+#line 511 "format.y"
     { printf("]"); }
     break;
 
   case 231:
 
 /* Line 1806 of yacc.c  */
-#line 505 "format.y"
+#line 512 "format.y"
     { printf("( "); }
     break;
 
   case 232:
 
 /* Line 1806 of yacc.c  */
-#line 505 "format.y"
+#line 512 "format.y"
     { printf(" )"); }
     break;
 
 
 
 /* Line 1806 of yacc.c  */
-#line 2815 "y.tab.c"
+#line 2822 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3042,7 +3049,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 509 "format.y"
+#line 516 "format.y"
 
 
 /*int main(int argc, char **argv){

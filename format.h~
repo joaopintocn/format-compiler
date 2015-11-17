@@ -4,6 +4,7 @@
 #include <string.h>
 
 int i; //para contra lar o loop
+int verRepeticao; //para ser usada quando for ver repetição de símbolo no mesmo escopo
 
 int op=1; //1 = deslocGlobal | 2 = deslocLocal
 int deslocamentoLocal=1;  //para quando for uma variável local ou parâmetro
@@ -51,8 +52,28 @@ void pop(Tabela *t) {
 	};
 }
 
-int findSymbol(char *nome, int nivel, Tabela *p) { //ainda não está pronta
+int findRepeatedSymbol(char *nome, int nivel, Tabela *t) { //ainda não está pronta
+	if (t->prox == NULL) {
+		return(0);
+	} else if (strcmp(nome, t->prox->nome) == 0) {
+		if (nivel == t->prox->nivel) {
+			return(1);		
+		} else {
+			return(0);
+		}
+	} else {
+		return(findRepeatedSymbol(nome, nivel, t->prox));
+	}
+}
 
+int findSymbol(char *nome, Tabela *t) { //ainda não está pronta
+	if (t->prox == NULL) {
+		return(0);
+	} else if (strcmp(nome, t->prox->nome) == 0) {
+		return(1);
+	} else {
+		return(findSymbol(nome, t->prox));
+	}
 }
 
 void imprimir(Tabela *t) {

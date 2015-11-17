@@ -7,12 +7,14 @@ variables :
 		real yy;
 		int i = 0;
 		string aux;
+		int aux;
 
 subprograms :
 	procedure main() :
-
 		int n;
-
+		
+		string yy;
+	
 		while (i < 9):
 			aux = u * 2;
 			x = aux;
@@ -21,7 +23,8 @@ subprograms :
 	end_procedure ;
 
 	function int fun():
-		inn r = 5;
+		real u;
+		int r = 5;
 	end_function;
 
 	procedure main2() :
