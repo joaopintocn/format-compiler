@@ -5,6 +5,7 @@
 
 int i; //para contra lar o loop
 int verRepeticao; //para ser usada quando for ver repetição de símbolo no mesmo escopo
+int foiDeclarada; //para ser usada quando for ver se uma variável foi declarada antes de usada
 
 int op=1; //1 = deslocGlobal | 2 = deslocLocal
 int deslocamentoLocal=1;  //para quando for uma variável local ou parâmetro

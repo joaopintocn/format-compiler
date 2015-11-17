@@ -349,7 +349,14 @@ assignment_statement_tail :
 	;
 
 destination :
-	IDENTIFIER { printf("%s", $1 ); } identifier_tail
+	IDENTIFIER 
+		{
+			printf("%s", $1);
+			foiDeclarada = findSymbol($1, tabela);
+			if (foiDeclarada == 0) {
+				printf("\n---------\nErro: A variável '%s' usada sem ser declarada\n----------\n", $1);
+			}
+		} identifier_tail
 	;
 
 /* permite atribuição de valor a um elemento de matriz*/
@@ -504,7 +511,14 @@ negation_unsub :
 	| REAL_NUMBER { printf("%f", $1); } 
 	| IMAGINARY_PART { printf("%f", $1); } 
 	| STRING_LIT { printf("%s", $1); } 
-	| IDENTIFIER { printf("%s", $1); } negation_unsub_aux
+	| IDENTIFIER
+		{
+			foiDeclarada = findSymbol($1, tabela);
+			if (foiDeclarada == 0) {
+				printf("\n---------\nErro: A variável '%s' usada sem ser declarada\n----------\n", $1);
+			}
+			printf("%s", $1);
+		} negation_unsub_aux
 	;
 
 negation_unsub_aux :

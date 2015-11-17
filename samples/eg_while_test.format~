@@ -11,8 +11,7 @@ variables :
 
 subprograms :
 	procedure main() :
-		int n;
-		
+		int n;		
 		string yy;
 	
 		while (i < 9):
@@ -25,8 +24,11 @@ subprograms :
 	function int fun():
 		real u;
 		int r = 5;
+		int x;
 	end_function;
 
 	procedure main2() :
-		boolean x;
+		int x;
+		int y;
+		boolean y;
 	end_procedure;

@@ -5,14 +5,12 @@ variables :
 		int u = 1;
 		double real v;
 		real yy;
-		int i = 0;
 		string aux;
 		int aux;
 
 subprograms :
 	procedure main() :
-		int n;
-		
+		int n;		
 		string yy;
 	
 		while (i < 9):
@@ -25,9 +23,11 @@ subprograms :
 	function int fun():
 		real u;
 		int r = 5;
+		int x;
 	end_function;
 
 	procedure main2() :
 		int x;
-		boolean x;
+		int y;
+		boolean y;
 	end_procedure;
