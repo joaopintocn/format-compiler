@@ -1,70 +1,9 @@
 %{
 	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-
-	int nivel=0;
-	int indice=0;
-	char *nome_provis; //para armazenar um nome de variável antes de inserir
-	char *tipo_provis; //para armazenar um nome de tipo antes de inserir
-
-	typedef struct tab {
-		char *nome;
-		char *tipo;
-		int nivel;
-		int deslocamento;
-		struct tab *prox;
-	} Tabela;
-
-	Tabela tabela[999];
-
-	void imprimir(int indice, Tabela p[999]) {
-		printf("\n-------------\n");
-		int i;
-		for (i=0; i < indice; i++) {
-			printf("%s | %s | %i\n", p[i].nome, p[i].tipo, p[i].nivel);
-		}
-		printf("-------------\n");
-	}
-
-	/*//função que insere elementos ao final da lista
-	void insere_T(char *nome, char *tipo, int nivel, Tabela *p) {
-		printf("\n--- %s | %s | %i ---\n", nome, tipo, nivel);
-
-		//Tabela *nova = (Tabela *) malloc(sizeof (Tabela));
-		//Tabela *ultimo;
-
-		//for (ultimo = p; ultimo->prox != NULL; ultimo = ultimo->prox) //busca o último elemento p/ inserir o novo após ele
-		//{ }
-
-		//nova->nome = nome;
-		//nova->tipo = tipo;
-		//nova->nivel = nivel;
-
-		//nova->prox = ultimo->prox;
-		//ultimo->prox = nova;
-	}
-
-	função que procura elemento na lista e retorna 1 se achar, 0 c.c
-	//int strcmp(str1, str2); 0 qdo igual, 1 c.c
-	int busca_T(char *nome, int nivel, Tabela *p) {
-		Tabela *nova = (Tabela *) malloc(sizeof (Tabela));
-		Tabela *ultimo;
-
-		for (ultimo = p; ultimo->prox != NULL; ultimo = ultimo->prox) {//percorre a lista
-			if (strcmp(nome, ultimo->nome) == 0) {
-				if ((ultimo->nivel == nivel) || (ultimo->nivel == 0)) {
-					return(1);
-				}
-			}
-		}
-		return(0);
-	}*/
+	#include "format.h"
 
 	void yyerror (char *s);
-
 	int yylex();
-
 %}
 
 
@@ -122,15 +61,15 @@ END_SWITCH
 SEMICOLON 			/* ; */		
 COMMA				/* , */
 COLON				/* : */		
-OPEN_PARENTHESIS        	/* ( */
-CLOSE_PARENTHESIS       	/* ) */
-OPEN_BRACKETS			/* [ */
-CLOSE_BRACKETS			/* ] */
+OPEN_PARENTHESIS    /* ( */
+CLOSE_PARENTHESIS   /* ) */
+OPEN_BRACKETS		/* [ */
+CLOSE_BRACKETS		/* ] */
 OPEN_BRACES			/* { */
-CLOSE_BRACES			/* } */
+CLOSE_BRACES		/* } */
 RANGE				/* .. */
 
-ASSIGN_OP		/* = */
+ASSIGN_OP			/* = */
 ADD_ASSIGN_OP 		/* += */	
 SUB_ASSIGN_OP 		/* -= */
 MULT_ASSIGN_OP		/* *= */
@@ -162,7 +101,12 @@ COMMENT
 %%
 
 program :
-	program_header program_body { printf("\n"); }//tabela = (Tabela *) malloc(sizeof (Tabela)); tabela->prox = NULL;}
+	{
+		//declarando a tabela de símbolos no início do programa
+		tabela = (Tabela *) malloc(sizeof (Tabela));
+		tabela->prox = NULL;
+	}
+	program_header program_body { printf("\n"); }
 	;
 
 program_header :
@@ -217,13 +161,18 @@ subprogram_declarations_tail :
 
 
 simple_variable_declaration : 
-	type IDENTIFIER  { printf("%s", $2);
-						nome_provis = $2;
-						tabela[indice].nome = nome_provis; /*insere_T(nome_provis, tipo_provis, nivel, tabela);*/
-						tabela[indice].nivel = nivel;
-						tabela[indice].tipo = tipo_provis;
-						indice++;
-					}  simple_variable_declaration_value
+	type IDENTIFIER
+	{
+		printf("%s", $2);
+		nome_provis = $2;
+		if (op == 1) { //variável global ou subprograma
+			push(nome_provis, tipo_provis, nivel, deslocamentoGlobal, tabela);
+			deslocamentoGlobal++;
+		} else { //variável local
+			push(nome_provis, tipo_provis, nivel, deslocamentoLocal,  tabela);
+			deslocamentoLocal++;
+		}
+	} 			simple_variable_declaration_value
 	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
 	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
 	;
@@ -238,7 +187,7 @@ type :
 	| DOUBLE REAL 		{ printf("double real "); tipo_provis = "double real";}
 	| REAL 				{ printf("real "); tipo_provis = "real";}
 	| COMPLEX 			{ printf("complex "); tipo_provis = "complex";}
-	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean"; /*imprimir(indice, tabela);*/}
+	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean"; imprimir(tabela);}
 	| STRING 			{ printf("string "); tipo_provis = "string";}
 	;
 
@@ -320,15 +269,33 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2); nivel++;} parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2); nivel++; push($2, "procedure", 1, deslocamentoGlobal, tabela); deslocamentoGlobal++; op=2;} parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
-	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
+	END_PROCEDURE SEMICOLON
+	{
+		printf("\nend_procedure;\n");
+		nivel--;
+		op=1;
+		for (i=1; i < deslocamentoLocal; i++) { //apaga as entradas do escopo local e zera o deslocamento
+			pop(tabela);
+		}
+		deslocamentoLocal=1;
+	} 
 	;
 
 function_declaration :
-	FUNCTION { printf("function "); nivel++;} type IDENTIFIER { printf("%s", $4); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	FUNCTION { printf("function "); nivel++;} type IDENTIFIER { printf("%s", $4); push($4, "function", 1, deslocamentoGlobal, tabela); deslocamentoGlobal++; op=2;} OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
-	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
+	END_FUNCTION SEMICOLON
+	{
+		printf("\nend_function;\n");
+		nivel--;
+		op=1;
+		for (i=1; i < deslocamentoLocal; i++) { //apaga as entradas do escopo local e zera o deslocamento
+			pop(tabela);
+		}
+		deslocamentoLocal=1;
+	} 
 	;
 
 parameter_list :

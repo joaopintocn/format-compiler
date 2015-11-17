@@ -2,7 +2,7 @@
 import "mod.f"
 
 variables :
-		int x = 1;
+		int u = 1;
 		double real v;
 		real yy;
 		int i = 0;
@@ -14,11 +14,15 @@ subprograms :
 		int n;
 
 		while (i < 9):
-			aux = x * 2;
+			aux = u * 2;
 			x = aux;
 			i += 1;
 		end_while;
 	end_procedure ;
+
+	function int fun():
+		inn r = 5;
+	end_function;
 
 	procedure main2() :
 		boolean x;

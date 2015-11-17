@@ -201,7 +201,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 71 "format.y"
+#line 10 "format.y"
 
 	int 	iValue;
 	double 	dValue; 	//
