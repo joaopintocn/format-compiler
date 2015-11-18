@@ -1,9 +1,12 @@
 %{
 	#include <stdio.h>
 	#include "format.h"
+	#include "table.appel.h"
 
+	//APPTAB_Table *table;
 	void yyerror (char *s);
 	int yylex();
+
 %}
 
 
@@ -105,6 +108,7 @@ program :
 		//declarando a tabela de símbolos no início do programa
 		tabela = (Tabela *) malloc(sizeof (Tabela));
 		tabela->prox = NULL;
+		//table = (APPTAB_Table *) malloc(sizeof (APPTAB_Table));
 	}
 	program_header program_body { printf("\n"); }
 	;
@@ -529,11 +533,11 @@ negation_unsub_aux :
 
 %%
 
-/*int main(int argc, char **argv){
-        yyin = fopen( argv[1], "r" );
-        yyparse();
-        return 0;
-}*/
+// int main(int argc, char **argv){
+//         yyin = fopen( argv[1], "r" );
+//         yyparse();
+//         return 0;
+// }
 void yyerror(char *msg){
         printf("\n%s\n", msg);
 }
