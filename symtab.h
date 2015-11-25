@@ -1,7 +1,30 @@
+#ifndef _SYMTAB_H_
+#define _SYMTAB_H_
+
+/* Procedure st_insert inserts line numbers and
+ * memory locations into the symbol table
+ * loc = memory location is inserted only the
+ * first time, otherwise ignored
+ */
+void st_insert( char * key, char * name );
+
+/* Function st_lookup returns the memory 
+ * location of a variable or -1 if not found
+ */
+int st_lookup ( char * name );
+
+/* Procedure printSymTab prints a formatted 
+ * listing of the symbol table contents 
+ * to the listing file
+ */
+void printSymTab(char * listing);
+
+
 //Arquivo que implementa as funções da tabela de símbolos
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "symtab.h"
 
 int i; //para contra lar o loop
 int verRepeticao; //para ser usada quando for ver repetição de símbolo no mesmo escopo
@@ -83,3 +106,5 @@ void imprimir(Tabela *t) {
 		imprimir(t->prox);
 	}
 }
+
+#endif
