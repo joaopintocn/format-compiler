@@ -21,9 +21,7 @@ void printSymTab(char * listing);
 
 
 //Arquivo que implementa as funções da tabela de símbolos
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "globals.h"
 #include "symtab.h"
 
 int i; //para contra lar o loop
@@ -49,6 +47,7 @@ typedef struct tab {
 
 Tabela *tabela;
 
+// 
 //função que insere elementos na tabela
 void push(char *nome, char *tipo, int nivel, int desloc, Tabela *p) {
 	//declara nova célula e add seus valores
