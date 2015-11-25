@@ -4,3 +4,5 @@ bin/parser
 y.tab.c
 
 y.tab.h
+
+format.tab.c

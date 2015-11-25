@@ -1,12 +1,5 @@
 %{
-	#include <stdio.h>
-	#include "format.h"
-	#include "table.appel.h"
-
-	//APPTAB_Table *table;
-	void yyerror (char *s);
-	int yylex();
-
+	#include "parse.h"
 %}
 
 
@@ -21,7 +14,7 @@
 %token <sValue> IDENTIFIER	STRING_LIT
 %token <iValue> INT_NUMBER
 %token <dValue> REAL_NUMBER IMAGINARY_PART NUMBER
-%token					
+%token 
 
 IMPORT				
 VARIABLES_SECTION
@@ -64,15 +57,15 @@ END_SWITCH
 SEMICOLON 			/* ; */		
 COMMA				/* , */
 COLON				/* : */		
-OPEN_PARENTHESIS    /* ( */
-CLOSE_PARENTHESIS   /* ) */
-OPEN_BRACKETS		/* [ */
-CLOSE_BRACKETS		/* ] */
+OPEN_PARENTHESIS        	/* ( */
+CLOSE_PARENTHESIS       	/* ) */
+OPEN_BRACKETS			/* [ */
+CLOSE_BRACKETS			/* ] */
 OPEN_BRACES			/* { */
-CLOSE_BRACES		/* } */
+CLOSE_BRACES			/* } */
 RANGE				/* .. */
 
-ASSIGN_OP			/* = */
+ASSIGN_OP		/* = */
 ADD_ASSIGN_OP 		/* += */	
 SUB_ASSIGN_OP 		/* -= */
 MULT_ASSIGN_OP		/* *= */
@@ -101,16 +94,13 @@ DOT_OP 				/*.*/
 
 COMMENT
 
+
+%type<sValue> type
+
 %%
 
 program :
-	{
-		//declarando a tabela de símbolos no início do programa
-		tabela = (Tabela *) malloc(sizeof (Tabela));
-		tabela->prox = NULL;
-		//table = (APPTAB_Table *) malloc(sizeof (APPTAB_Table));
-	}
-	program_header program_body { printf("\n"); }
+	program_header program_body { init(); printf("\n"); }
 	;
 
 program_header :
@@ -165,25 +155,7 @@ subprogram_declarations_tail :
 
 
 simple_variable_declaration : 
-	type IDENTIFIER
-	{
-		printf("%s", $2);
-		nome_provis = $2;
-
-		verRepeticao = findRepeatedSymbol(nome_provis, nivel, tabela);
-
-		if (verRepeticao == 0) {
-			if (op == 1) { //variável global ou subprograma
-				push(nome_provis, tipo_provis, nivel, deslocamentoGlobal, tabela);
-				deslocamentoGlobal++;
-			} else { //variável local
-				push(nome_provis, tipo_provis, nivel, deslocamentoLocal,  tabela);
-				deslocamentoLocal++;
-			}
-		} else {
-			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", nome_provis);
-		}
-	} 			simple_variable_declaration_value
+	type IDENTIFIER simple_variable_declaration_value		{ P_simple_variable_declaration(NULL, $1, $2); printf("%s %s", $1, $2); }
 	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
 	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
 	;
@@ -194,12 +166,12 @@ simple_variable_declaration_value :
 	;
 
 type : 
-	INT 				{ printf("int ");  tipo_provis = "int";}
-	| DOUBLE REAL 		{ printf("double real "); tipo_provis = "double real";}
-	| REAL 				{ printf("real "); tipo_provis = "real";}
-	| COMPLEX 			{ printf("complex "); tipo_provis = "complex";}
-	| BOOLEAN 			{ printf("boolean "); tipo_provis = "boolean";}// imprimir(tabela);}
-	| STRING 			{ printf("string "); tipo_provis = "string";}
+	INT 				{ $$ = "int"; }
+	| DOUBLE REAL 		{ $$ = "double real"; }
+	| REAL 				{ $$ = "real"; }
+	| COMPLEX 			{ $$ = "complex"; }
+	| BOOLEAN 			{ $$ = "boolean"; }
+	| STRING 			{ $$ = "string"; }
 	;
 
 compost_variable_declaration :
@@ -217,7 +189,7 @@ matrix_assignment :
 
 matrix_assignment_aux : 
 	ASSIGN_OP { printf(" = { "); } OPEN_BRACES matrix_assignment_aux_aux
-	;
+
 
 matrix_assignment_aux_aux:
 	set_assignment_aux_aux CLOSE_BRACES { printf(" }"); }
@@ -280,33 +252,15 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2); nivel++; push($2, "procedure", 1, deslocamentoGlobal, tabela); deslocamentoGlobal++; op=2;} parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
-	END_PROCEDURE SEMICOLON
-	{
-		printf("\nend_procedure;\n");
-		nivel--;
-		op=1;
-		for (i=1; i < deslocamentoLocal; i++) { //apaga as entradas do escopo local e zera o deslocamento
-			pop(tabela);
-		}
-		deslocamentoLocal=1;
-	} 
+	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
 	;
 
 function_declaration :
-	FUNCTION { printf("function "); nivel++;} type IDENTIFIER { printf("%s", $4); push($4, "function", 1, deslocamentoGlobal, tabela); deslocamentoGlobal++; op=2;} OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
-	END_FUNCTION SEMICOLON
-	{
-		printf("\nend_function;\n");
-		nivel--;
-		op=1;
-		for (i=1; i < deslocamentoLocal; i++) { //apaga as entradas do escopo local e zera o deslocamento
-			pop(tabela);
-		}
-		deslocamentoLocal=1;
-	} 
+	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
 
 parameter_list :
@@ -353,14 +307,7 @@ assignment_statement_tail :
 	;
 
 destination :
-	IDENTIFIER 
-		{
-			printf("%s", $1);
-			foiDeclarada = findSymbol($1, tabela);
-			if (foiDeclarada == 0) {
-				printf("\n---------\nErro: A variável '%s' usada sem ser declarada\n----------\n", $1);
-			}
-		} identifier_tail
+	IDENTIFIER identifier_tail		{ DESTINATION_identifier($1); printf("%s", $1 ); }
 	;
 
 /* permite atribuição de valor a um elemento de matriz*/
@@ -503,7 +450,7 @@ expo_tail :
 
 expo :
 	negation_unsub negation_unsub_tail
-	;
+
 
 negation_unsub_tail:
 	NEG_OP { printf("!"); }  negation_unsub  /* ! */
@@ -515,14 +462,7 @@ negation_unsub :
 	| REAL_NUMBER { printf("%f", $1); } 
 	| IMAGINARY_PART { printf("%f", $1); } 
 	| STRING_LIT { printf("%s", $1); } 
-	| IDENTIFIER
-		{
-			foiDeclarada = findSymbol($1, tabela);
-			if (foiDeclarada == 0) {
-				printf("\n---------\nErro: A variável '%s' usada sem ser declarada\n----------\n", $1);
-			}
-			printf("%s", $1);
-		} negation_unsub_aux
+	| IDENTIFIER { printf("%s", $1); } negation_unsub_aux
 	;
 
 negation_unsub_aux :
@@ -533,11 +473,13 @@ negation_unsub_aux :
 
 %%
 
-// int main(int argc, char **argv){
-//         yyin = fopen( argv[1], "r" );
-//         yyparse();
-//         return 0;
-// }
-void yyerror(char *msg){
+int main(int argc, char **argv){
+        //yyin = fopen( argv[1], "r" );
+        yyparse();
+        return 0;
+}
+
+int yyerror(char *msg) {
         printf("\n%s\n", msg);
+        return 1;
 }

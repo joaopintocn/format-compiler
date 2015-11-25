@@ -1,6 +1,20 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
 
+#include <stdio.h>   /* gets */
+#include <stdlib.h>  /* atoi, malloc */
+#include <string.h>  /* strcpy */
+#include "uthash.h"
+
+struct BucketListRec
+   { const char * key;
+   	 char * name;
+   	 int isFunction;
+   	 int numParameter;
+   	 char * listTypeParameter;
+	 UT_hash_handle hh;
+   };
+
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
  * loc = memory location is inserted only the
@@ -11,7 +25,7 @@ void st_insert( char * key, char * name );
 /* Function st_lookup returns the memory 
  * location of a variable or -1 if not found
  */
-int st_lookup ( char * name );
+struct BucketListRec * st_lookup ( char * name );
 
 /* Procedure printSymTab prints a formatted 
  * listing of the symbol table contents 
@@ -19,10 +33,9 @@ int st_lookup ( char * name );
  */
 void printSymTab(char * listing);
 
+/*
 
 //Arquivo que implementa as funções da tabela de símbolos
-#include "globals.h"
-#include "symtab.h"
 
 int i; //para contra lar o loop
 int verRepeticao; //para ser usada quando for ver repetição de símbolo no mesmo escopo
@@ -47,20 +60,6 @@ typedef struct tab {
 
 Tabela *tabela;
 
-// 
-//função que insere elementos na tabela
-void push(char *nome, char *tipo, int nivel, int desloc, Tabela *p) {
-	//declara nova célula e add seus valores
-	Tabela *nova = (Tabela *) malloc(sizeof (Tabela));
-		nova->nome = nome;
-		nova->tipo = tipo;
-		nova->nivel = nivel;
-		nova->deslocamento = desloc;
-	
-	//liga o novo elemento à pilha
-	nova->prox = p->prox;
-	p->prox = nova;
-}
 
 //remover o topo da tabela
 void pop(Tabela *t) {
@@ -89,21 +88,6 @@ int findRepeatedSymbol(char *nome, int nivel, Tabela *t) { //ainda não está pr
 	}
 }
 
-int findSymbol(char *nome, Tabela *t) { //ainda não está pronta
-	if (t->prox == NULL) {
-		return(0);
-	} else if (strcmp(nome, t->prox->nome) == 0) {
-		return(1);
-	} else {
-		return(findSymbol(nome, t->prox));
-	}
-}
-
-void imprimir(Tabela *t) {
-	if (t->prox != NULL) {
-		printf("\n------%s | %s | %i | %i\n", t->prox->nome, t->prox->tipo, t->prox->nivel, t->prox->deslocamento);
-		imprimir(t->prox);
-	}
-}
+*/
 
 #endif

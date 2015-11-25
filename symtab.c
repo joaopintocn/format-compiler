@@ -1,18 +1,6 @@
-#include <stdio.h>   /* gets */
-#include <stdlib.h>  /* atoi, malloc */
-#include <string.h>  /* strcpy */
-#include "uthash.h"
+#include "symtab.h"
 
-struct BucketListRec
-   { const char * key;
-   	 char * name;
-   	 int isFunction;
-   	 int numParameter;
-   	 char * listTypeParameter;
-	 UT_hash_handle hh;
-   };
-
-struct BucketListRec *hashTable = NULL;
+struct BucketListRec * hashTable = NULL;
 
 void st_insert(char *key, char *name) {
   struct BucketListRec *s;
@@ -27,10 +15,12 @@ void st_insert(char *key, char *name) {
 } /* st_insert */
 
 
-struct BucketListRec st_lookup ( char * name ) {
+struct BucketListRec * st_lookup ( char * name ) {
   struct BucketListRec *s;
 
-    //TO-DO Aqui deve-se usar a variável "name" usar a lista de escopo e gerar a chave "key"
+    // TO-DO Aqui deve-se usar a variável "name" usar a lista de escopo e gerar a chave "key"
+    // Por enquanto a chave está igual ao nome.
+    char * key = name;
 
     HASH_FIND_INT( hashTable, key, s );  /* s: output pointer */
     return s;
