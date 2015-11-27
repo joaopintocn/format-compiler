@@ -2,32 +2,32 @@
 import "mod.f"
 
 variables :
-		int u = 1;
-		double real v;
-		real yy;
-		string aux;
-		int aux;
+	int u;
+	double real v;
+	real yy;
+	string aux;
+	int aux;
 
-subprograms :
-	procedure main() :
-		int n;		
-		string yy;
-	
-		while (i < 9):
-			aux = u * 2;
-			x = aux;
-			i += 1;
-		end_while;
-	end_procedure ;
+%%subprograms :
+%%	procedure main() :
+%%		int n;		
+%%		string yy;
+%%	
+%%		while (i < 9):
+%%			aux = u * 2;
+%%			x = aux;
+%%			i += 1;
+%%		end_while;
+%%	end_procedure ;
 
-	function int fun():
-		real u;
-		int r = 5;
-		int x;
-	end_function;
+%%	function int fun():
+%%		real u;
+%%		int r = 5;
+%%		int x;
+%%	end_function;
 
-	procedure main2() :
-		int x;
-		int y;
-		boolean y;
-	end_procedure;
+%%	procedure main2() :
+%%		int x;
+%%		int y;
+%%		boolean y;
+%%	end_procedure;

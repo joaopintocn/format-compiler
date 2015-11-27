@@ -11,11 +11,11 @@ int yyerror (char *s);
 
 int yylex();
 
-void init();
+void P_program();
 
 void DESTINATION_identifier(char * name);
 
 
-void P_simple_variable_declaration(char * modifier, char * type, char * name);
+char * P_simple_variable_declaration(char * modifier, char * type, char * name);
 
 #endif

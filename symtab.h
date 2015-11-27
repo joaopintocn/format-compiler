@@ -15,6 +15,15 @@ struct BucketListRec
 	 UT_hash_handle hh;
    };
 
+//LinkedList * currScope;
+
+/* Procedure st_insert generate a key based on 
+ * variable name and its escope to insert it 
+ * on hash table. 
+ */
+//char * st_generate_key(LinkedList * currScope, char * name );
+
+
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
  * loc = memory location is inserted only the

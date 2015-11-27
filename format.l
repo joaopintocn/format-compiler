@@ -111,22 +111,22 @@ end_switch 			{return END_SWITCH; }
 "^"  			    {return EXPO_OP;}
 "."	 				{return DOT_OP;}
 
-\"(\\.|[^\\"])*\" 	{ yylval.sValue = strdup(yytext); 	return STRING_LIT; } 
+\"(\\.|[^\\"])*\" 	{ yylval.utype.sValue = strdup(yytext); 	return STRING_LIT; } 
 
-{IDENTIFIER}		{ yylval.sValue = strdup(yytext); 	return IDENTIFIER;}
-{INT_NUMBER}		{ yylval.iValue = atoi(yytext); 	return INT_NUMBER; }
+{IDENTIFIER}		{ yylval.utype.sValue = strdup(yytext); 	return IDENTIFIER;}
+{INT_NUMBER}		{ yylval.utype.iValue = atoi(yytext); 	return INT_NUMBER; }
 {IMAGINARY_PART}	{ 
 
 	char *pt = strchr (yytext, '.');
 
 	if (pt != NULL) {
-		yylval.dValue = atof(yytext);
+		yylval.utype.dValue = atof(yytext);
 	} else {
-		yylval.iValue = atoi(yytext);
+		yylval.utype.iValue = atoi(yytext);
 	}
 	return IMAGINARY_PART; }
 
-{REAL_NUMBER} 		{ yylval.dValue = atof(yytext); 	return REAL_NUMBER; }
+{REAL_NUMBER} 		{ yylval.utype.dValue = atof(yytext); 	return REAL_NUMBER; }
 
 {EOF}				{ return EOF; }
 

@@ -1234,17 +1234,17 @@ case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
 #line 114 "format.l"
-{ yylval.sValue = strdup(yytext); 	return STRING_LIT; } 
+{ yylval.utype.sValue = strdup(yytext); 	return STRING_LIT; } 
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 116 "format.l"
-{ yylval.sValue = strdup(yytext); 	return IDENTIFIER;}
+{ yylval.utype.sValue = strdup(yytext); 	return IDENTIFIER;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 117 "format.l"
-{ yylval.iValue = atoi(yytext); 	return INT_NUMBER; }
+{ yylval.utype.iValue = atoi(yytext); 	return INT_NUMBER; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
@@ -1254,16 +1254,16 @@ YY_RULE_SETUP
 	char *pt = strchr (yytext, '.');
 
 	if (pt != NULL) {
-		yylval.dValue = atof(yytext);
+		yylval.utype.dValue = atof(yytext);
 	} else {
-		yylval.iValue = atoi(yytext);
+		yylval.utype.iValue = atoi(yytext);
 	}
 	return IMAGINARY_PART; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 129 "format.l"
-{ yylval.dValue = atof(yytext); 	return REAL_NUMBER; }
+{ yylval.utype.dValue = atof(yytext); 	return REAL_NUMBER; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
