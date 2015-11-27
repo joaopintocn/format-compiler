@@ -13,6 +13,8 @@ int yylex();
 
 void P_program();
 
+void P_import();
+
 void P_destination(char * name);
 
 

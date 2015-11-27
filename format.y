@@ -104,7 +104,7 @@ COMMENT
 %%
 
 program :
-    program_header program_body     { P_program(); printf("\n"); }
+    program_header program_body     { P_program(); }
     ;
 
 program_header :
@@ -113,7 +113,7 @@ program_header :
     ;
 
 import : 
-    IMPORT STRING_LIT   { printf("import %s\n", $2.sValue); }
+    IMPORT STRING_LIT   { P_import($2.sValue); }
     ;
 
 program_body : 
@@ -159,7 +159,7 @@ subprogram_declarations_tail :
 
 
 simple_variable_declaration : 
-	type IDENTIFIER simple_variable_declaration_value		{ P_simple_variable_declaration(NULL, $1.sValue, $2.sValue); printf("%s %s", $1.sValue, $2.sValue); }
+	type IDENTIFIER simple_variable_declaration_value		{ P_simple_variable_declaration(NULL, $1.sValue, $2.sValue); }
 	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4.sValue); } ASSIGN_OP { printf(" = "); } expression 
 	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4.sValue); } simple_variable_declaration_value
 	;

@@ -14,6 +14,12 @@ void P_program() {
 	st_insert(".new", "new");
 
 	printSymTab("teste.txt");
+	printf("\n");
+}
+
+void P_import(char * file) {
+	printf("import %s\n", file);
+	st_insert(file, file);
 }
 
 void P_destination(char * name) {
@@ -35,4 +41,5 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name) {
 		} else {
 			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", name);
 		}
+		 printf("%s %s", type, name);
 }
