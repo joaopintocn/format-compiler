@@ -4,23 +4,27 @@
 
 
 %union {
-	int 	iValue;
-	double 	dValue; 	//
-	char * 	sValue;		//
+    struct { 
+        int     iValue;
+        double  dValue;
+        char *  sValue; 
+    } utype;
 };
 
 %start program
 
-%token <sValue> IDENTIFIER	STRING_LIT
-%token <iValue> INT_NUMBER
-%token <dValue> REAL_NUMBER IMAGINARY_PART NUMBER
-%token 
+%token <utype> 
+IDENTIFIER  
+STRING_LIT
+INT_NUMBER 
+REAL_NUMBER 
+IMAGINARY_PART
 
-IMPORT				
+IMPORT              
 VARIABLES_SECTION
 SUBPROGRAMS_SECTION
-PROCEDURE			
-FUNCTION			
+PROCEDURE           
+FUNCTION            
 END_PROCEDURE
 END_FUNCTION
 RETURN
@@ -57,15 +61,15 @@ END_SWITCH
 SEMICOLON 			/* ; */		
 COMMA				/* , */
 COLON				/* : */		
-OPEN_PARENTHESIS        	/* ( */
-CLOSE_PARENTHESIS       	/* ) */
-OPEN_BRACKETS			/* [ */
-CLOSE_BRACKETS			/* ] */
+OPEN_PARENTHESIS    /* ( */
+CLOSE_PARENTHESIS   /* ) */
+OPEN_BRACKETS		/* [ */
+CLOSE_BRACKETS		/* ] */
 OPEN_BRACES			/* { */
-CLOSE_BRACES			/* } */
+CLOSE_BRACES		/* } */
 RANGE				/* .. */
 
-ASSIGN_OP		/* = */
+ASSIGN_OP		    /*  = */
 ADD_ASSIGN_OP 		/* += */	
 SUB_ASSIGN_OP 		/* -= */
 MULT_ASSIGN_OP		/* *= */
@@ -90,27 +94,27 @@ MOD_OP				/* % */
 LT_OP				/* < */
 BT_OP				/* > */
 EXPO_OP				/* ^ */ 
-DOT_OP 				/*.*/
+DOT_OP 				/* . */
 
 COMMENT
 
 
-%type<sValue> type
+%type<utype> type
 
 %%
 
 program :
-	program_header program_body { init(); printf("\n"); }
-	;
+    program_header program_body     { P_program(); printf("\n"); }
+    ;
 
 program_header :
-	import program_header
-	|
-	;
+    import program_header
+    |
+    ;
 
 import : 
-	IMPORT STRING_LIT { printf("import %s\n", $2); }
-	;
+    IMPORT STRING_LIT   { printf("import %s\n", $2.sValue); }
+    ;
 
 program_body : 
 	variable_section subprogram_section
@@ -155,9 +159,9 @@ subprogram_declarations_tail :
 
 
 simple_variable_declaration : 
-	type IDENTIFIER simple_variable_declaration_value		{ P_simple_variable_declaration(NULL, $1, $2); printf("%s %s", $1, $2); }
-	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4); } ASSIGN_OP { printf(" = "); } expression 
-	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4); } simple_variable_declaration_value
+	type IDENTIFIER simple_variable_declaration_value		{ P_simple_variable_declaration(NULL, $1.sValue, $2.sValue); printf("%s %s", $1.sValue, $2.sValue); }
+	| CONST { printf("const "); } type IDENTIFIER { printf("%s", $4.sValue); } ASSIGN_OP { printf(" = "); } expression 
+	| REF { printf("ref "); } type IDENTIFIER { printf("%s", $4.sValue); } simple_variable_declaration_value
 	;
 
 simple_variable_declaration_value :
@@ -166,19 +170,19 @@ simple_variable_declaration_value :
 	;
 
 type : 
-	INT 				{ $$ = "int"; }
-	| DOUBLE REAL 		{ $$ = "double real"; }
-	| REAL 				{ $$ = "real"; }
-	| COMPLEX 			{ $$ = "complex"; }
-	| BOOLEAN 			{ $$ = "boolean"; }
-	| STRING 			{ $$ = "string"; }
+	INT 				{ $$.sValue = "int"; }
+	| DOUBLE REAL 		{ $$.sValue = "double real"; }
+	| REAL 				{ $$.sValue = "real"; }
+	| COMPLEX 			{ $$.sValue = "complex"; }
+	| BOOLEAN 			{ $$.sValue = "boolean"; }
+	| STRING 			{ $$.sValue = "string"; }
 	;
 
 compost_variable_declaration :
-	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("%s", $9); } matrix_assignment
-	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4); } set_assignment
-	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7); } identifier_list END_ENUM { printf(" end_enum"); }
-	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
+	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("%s", $9.sValue); } matrix_assignment
+	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4.sValue); } set_assignment
+	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3.sValue); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7.sValue); } identifier_list END_ENUM { printf(" end_enum"); }
+	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3.sValue); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
 	;
 
 matrix_assignment : 
@@ -223,7 +227,7 @@ values_list :
 	;
 
 identifier_list :
-	COMMA { printf(", "); } IDENTIFIER { printf("%s", $3); } identifier_list
+	COMMA { printf(", "); } IDENTIFIER { printf("%s", $3.sValue); } identifier_list
 	|
 	;
 
@@ -233,11 +237,11 @@ dimensions :
 	;
 
 range :
-	INT_NUMBER {printf("%i", $1);} range_tail
+	INT_NUMBER {printf("%i", $1.iValue);} range_tail
 	;
 
 range_tail :
-	RANGE {printf("..");} INT_NUMBER {printf("%i", $3);}
+	RANGE {printf("..");} INT_NUMBER {printf("%i", $3.iValue);}
 	|
 	;
 
@@ -252,13 +256,13 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2.sValue); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
 	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
 	;
 
 function_declaration :
-	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4.sValue); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
 		statement_list
 	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
@@ -307,7 +311,7 @@ assignment_statement_tail :
 	;
 
 destination :
-	IDENTIFIER identifier_tail		{ DESTINATION_identifier($1); printf("%s", $1 ); }
+	IDENTIFIER identifier_tail		{ P_destination($1.sValue); printf("%s", $1.sValue ); }
 	;
 
 /* permite atribuição de valor a um elemento de matriz*/
@@ -329,7 +333,7 @@ else_clausule :
 	;
 
 switch_statement : 
-	SWITCH OPEN_PARENTHESIS { printf("switch (" ); } IDENTIFIER { printf("%s", $4 ); } CLOSE_PARENTHESIS COLON { printf(") :" ); }
+	SWITCH OPEN_PARENTHESIS { printf("switch (" ); } IDENTIFIER { printf("%s", $4.sValue ); } CLOSE_PARENTHESIS COLON { printf(") :" ); }
 		case_clasule
 		other_clasule
 	END_SWITCH SEMICOLON { printf("end_switch;" ); }
@@ -355,13 +359,13 @@ while_statement :
 	;
 
 for_statement :
-	FOR { printf("for " ); } IDENTIFIER { printf("%s", $3 ); } IN { printf(" in " ); } IDENTIFIER { printf("%s", $7 ); } COLON { printf(":\n" ); }
+	FOR { printf("for " ); } IDENTIFIER { printf("%s", $3.sValue ); } IN { printf(" in " ); } IDENTIFIER { printf("%s", $7.sValue ); } COLON { printf(":\n" ); }
 		statement_list
 	END_FOR SEMICOLON { printf("end_for;\n" ); }
 	;
 
 subprogram_call : 
-	IDENTIFIER { printf("%s", $1 ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); } SEMICOLON { printf(";\n" ); }
+	IDENTIFIER { printf("%s", $1.sValue ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); } SEMICOLON { printf(";\n" ); }
 	;
 
 argument_list :
@@ -458,11 +462,11 @@ negation_unsub_tail:
 	;	
 	
 negation_unsub :
-	INT_NUMBER { printf("%i", $1); } 
-	| REAL_NUMBER { printf("%f", $1); } 
-	| IMAGINARY_PART { printf("%f", $1); } 
-	| STRING_LIT { printf("%s", $1); } 
-	| IDENTIFIER { printf("%s", $1); } negation_unsub_aux
+	INT_NUMBER { printf("%i", $1.iValue); } 
+	| REAL_NUMBER { printf("%f", $1.dValue); } 
+	| IMAGINARY_PART { printf("%f", $1.dValue); } 
+	| STRING_LIT { printf("%s", $1.sValue); } 
+	| IDENTIFIER { printf("%s", $1.sValue); } negation_unsub_aux
 	;
 
 negation_unsub_aux :

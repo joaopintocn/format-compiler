@@ -22,7 +22,7 @@ struct BucketListRec * st_lookup ( char * name ) {
     // Por enquanto a chave está igual ao nome.
     char * key = name;
 
-    HASH_FIND_INT( hashTable, key, s );  /* s: output pointer */
+    HASH_FIND_STR( hashTable, key, s );  /* s: output pointer */
     return s;
 } /* st_lookup */
 

@@ -1234,59 +1234,50 @@ case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
 #line 114 "format.l"
-{ yylval.sValue = strdup(yytext); 	return STRING_LIT; } 
+{ yylval.utype.sValue = strdup(yytext); 	return STRING_LIT; } 
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 116 "format.l"
-{ yylval.sValue = strdup(yytext); 	return IDENTIFIER;}
+{ yylval.utype.sValue = strdup(yytext); 	return IDENTIFIER;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 117 "format.l"
-{ yylval.iValue = atoi(yytext); 	return INT_NUMBER; }
+{ yylval.utype.iValue = atoi(yytext); 		return INT_NUMBER; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
 #line 118 "format.l"
-{ 
-
-	char *pt = strchr (yytext, '.');
-
-	if (pt != NULL) {
-		yylval.dValue = atof(yytext);
-	} else {
-		yylval.iValue = atoi(yytext);
-	}
-	return IMAGINARY_PART; }
+{ yylval.utype.dValue = atof(yytext);		return IMAGINARY_PART; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 129 "format.l"
-{ yylval.dValue = atof(yytext); 	return REAL_NUMBER; }
+#line 120 "format.l"
+{ yylval.utype.dValue = atof(yytext); 		return REAL_NUMBER; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 131 "format.l"
+#line 122 "format.l"
 { return EOF; }
 	YY_BREAK
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 133 "format.l"
+#line 124 "format.l"
 { /* whitespace separates tokens */ }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 134 "format.l"
+#line 125 "format.l"
 { /* discard bad characters */ }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 137 "format.l"
+#line 128 "format.l"
 ECHO;
 	YY_BREAK
-#line 1290 "lex.yy.c"
+#line 1281 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2283,7 +2274,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 137 "format.l"
+#line 128 "format.l"
 
 
 
