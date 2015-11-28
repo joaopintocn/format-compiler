@@ -20,14 +20,11 @@ EOF				-1
 LETRA			[a-zA-Z]
 DIGITO			[0-9]
 EXPOENTE 		(e|E)[+-]?{DIGITO}+
-INT_NUMBER		{DIGITO}+
-FLOAT_NUMBER 	{INT_NUMBER}"."{DIGITO}+
-IMAGINARY_PART	({FLOAT_NUMBER}|{INT_NUMBER})(i|I)
-REAL_NUMBER 	{FLOAT_NUMBER}|{FLOAT_NUMBER}{EXPOENTE}
-NUMBER 			{REAL_NUMBER}|{IMAGINARY_PART}|{INT_NUMBER}
-
+INTEGER_NUMBER	{DIGITO}+
+EXPOENTE 		[e|E][+-]?{INTEGER_NUMBER}
+DECIMAL_NUMBER  {INTEGER_NUMBER}\.{INTEGER_NUMBER}
+FLOAT_NUMBER 	-?({DECIMAL_NUMBER}){EXPOENTE}?
 IDENTIFIER 		({LETRA}|_)({LETRA}|{DIGITO}|_)*
-
 
 
 
@@ -46,7 +43,6 @@ return				{return RETURN;	}
 
 int 				{return INT; }
 real  				{return REAL; }
-complex  			{return COMPLEX; }
 double 				{return DOUBLE; }
 string 				{return STRING;}
 boolean 			{return BOOLEAN;}	
@@ -76,12 +72,12 @@ end_switch 			{return END_SWITCH; }
 ";"	 				{return SEMICOLON; }			
 ","	 				{return COMMA; }
 ":"	 				{return COLON; }				
-"("	 				{return OPEN_PARENTHESIS; }
-")"	 				{return CLOSE_PARENTHESIS; }
-"["  				{return OPEN_BRACKETS; }
-"]"  				{return CLOSE_BRACKETS; }
-"{"  				{return OPEN_BRACES; }
-"}"  				{return CLOSE_BRACES; }
+"("	 				{return LPAREN; }
+")"	 				{return RPAREN; }
+"["  				{return LBRACKETS; }
+"]"  				{return RBRACKETS; }
+"{"  				{return LBRACES; }
+"}"  				{return RBRACES; }
 ".."				{return RANGE; }
 
 "=" 				{return ASSIGN_OP; }	
@@ -110,15 +106,13 @@ end_switch 			{return END_SWITCH; }
 ">"  				{return BT_OP;}
 "^"  			    {return EXPO_OP;}
 "."	 				{return DOT_OP;}
+"->"				{return STRUCT_OP;}
 
 \"(\\.|[^\\"])*\" 	{ yylval.utype.sValue = strdup(yytext); 	return STRING_LIT; } 
 
 {IDENTIFIER}		{ yylval.utype.sValue = strdup(yytext); 	return IDENTIFIER;}
-{INT_NUMBER}		{ yylval.utype.iValue = atoi(yytext); 		return INT_NUMBER; }
-{IMAGINARY_PART}	{ yylval.utype.dValue = atof(yytext);		return IMAGINARY_PART; }
-
-{REAL_NUMBER} 		{ yylval.utype.dValue = atof(yytext); 		return REAL_NUMBER; }
-
+{INTEGER_NUMBER}	{ yylval.utype.iValue = atoi(yytext); 		return INTEGER_NUMBER; }
+{FLOAT_NUMBER}   	{ yylval.utype.dValue = atof(yytext); 		return FLOAT_NUMBER; }
 {EOF}				{ return EOF; }
 
 {WS}	{ /* whitespace separates tokens */ }
@@ -130,4 +124,16 @@ end_switch 			{return END_SWITCH; }
 int yywrap()
 {
 	return(1);
+}
+
+int yyerror(void)
+{
+    printf("Error\n");
+    exit(1);
+}
+
+int main(void)
+{
+   yyparse();
+   return 0;
 }

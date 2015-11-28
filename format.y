@@ -4,11 +4,11 @@
 
 
 %union {
-    struct { 
-        int     iValue;
-        double  dValue;
-        char *  sValue; 
-    } utype;
+	struct { 
+		int     iValue;
+		double  dValue;
+		char *  sValue; 
+	} utype;
 };
 
 %start program
@@ -16,9 +16,8 @@
 %token <utype> 
 IDENTIFIER  
 STRING_LIT
-INT_NUMBER 
-REAL_NUMBER 
-IMAGINARY_PART
+INTEGER_NUMBER 
+FLOAT_NUMBER 
 
 IMPORT              
 VARIABLES_SECTION
@@ -31,7 +30,6 @@ RETURN
 
 INT
 REAL
-COMPLEX
 STRING
 DOUBLE
 BOOLEAN
@@ -61,12 +59,12 @@ END_SWITCH
 SEMICOLON 			/* ; */		
 COMMA				/* , */
 COLON				/* : */		
-OPEN_PARENTHESIS    /* ( */
-CLOSE_PARENTHESIS   /* ) */
-OPEN_BRACKETS		/* [ */
-CLOSE_BRACKETS		/* ] */
-OPEN_BRACES			/* { */
-CLOSE_BRACES		/* } */
+LPAREN        	/* ( */
+RPAREN       	/* ) */
+LBRACKETS			/* [ */
+RBRACKETS			/* ] */
+LBRACES			/* { */
+RBRACES			/* } */
 RANGE				/* .. */
 
 ASSIGN_OP		    /*  = */
@@ -86,36 +84,46 @@ LEQ_OP				/* <= */
 BEQ_OP 				/* >= */
 EQ_OP				/* == */
 NEQ_OP				/* != */
-SUB_OP				/* - */
-ADD_OP				/* + */
-MULT_OP				/* * */
-DIV_OP				/* / */
-MOD_OP				/* % */
-LT_OP				/* < */
-BT_OP				/* > */
-EXPO_OP				/* ^ */ 
-DOT_OP 				/* . */
-
+SUB_OP				/* -  */
+ADD_OP				/* +  */
+MULT_OP				/* *  */
+DIV_OP				/* /  */
+MOD_OP				/* %  */
+LT_OP				/* <  */
+BT_OP				/* >  */
+EXPO_OP				/* ^  */ 
+DOT_OP 				/* .  */
+STRUCT_OP			/* -> */
 COMMENT
 
 
+%type<utype> type term expression range_tail range dimensions dimensions_tail
 
-%type<utype> type negation_unsub expression
+
+%left OR_OP
+%left AND_OP
+%left EQ_OP NEQ_OP
+%left LEQ_OP BEQ_OP LT_OP BT_OP
+%left ADD_OP	SUB_OP
+%left MULT_OP	DIV_OP MOD_OP
+%left NEG_OP
+%right	EXPO_OP
+%nonassoc UMINUS
 
 %%
 
 program :
-    program_header program_body     { P_program(); }
-    ;
+	program_header program_body     { P_program(); }
+	;
 
 program_header :
-    import program_header
-    |
-    ;
+	import program_header
+	|
+	;
 
 import : 
-    IMPORT STRING_LIT   { P_import($2.sValue); }
-    ;
+	IMPORT STRING_LIT   { P_import($2.sValue); }
+	;
 
 program_body : 
 	variable_section subprogram_section
@@ -174,13 +182,12 @@ type :
 	INT 				{ $$.sValue = "int"; }
 	| DOUBLE REAL 		{ $$.sValue = "double real"; }
 	| REAL 				{ $$.sValue = "real"; }
-	| COMPLEX 			{ $$.sValue = "complex"; }
 	| BOOLEAN 			{ $$.sValue = "boolean"; }
 	| STRING 			{ $$.sValue = "string"; }
 	;
 
 compost_variable_declaration :
-	MATRIX_OF { printf("matrix_of "); } type OPEN_BRACKETS { printf("[ "); } dimensions CLOSE_BRACKETS { printf(" ] "); } IDENTIFIER { printf("%s", $9.sValue); } matrix_assignment
+	MATRIX_OF type LBRACKETS dimensions RBRACKETS IDENTIFIER matrix_assignment 		{ printf("matrix_of %s [%s] %s", $2.sValue, $4.sValue, $6.sValue); }
 	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4.sValue); } set_assignment
 	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3.sValue); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7.sValue); } identifier_list END_ENUM { printf(" end_enum"); }
 	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3.sValue); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
@@ -193,17 +200,17 @@ matrix_assignment :
 
 
 matrix_assignment_aux : 
-	ASSIGN_OP { printf(" = { "); } OPEN_BRACES matrix_assignment_aux_aux
+	ASSIGN_OP { printf(" = { "); } LBRACES matrix_assignment_aux_aux
 
 
 matrix_assignment_aux_aux:
-	set_assignment_aux_aux CLOSE_BRACES { printf(" }"); }
-	| OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES { printf(" }"); } matrix_assignment_aux_aux_aux CLOSE_BRACES { printf(" }"); }
+	set_assignment_aux_aux RBRACES { printf(" }"); }
+	| LBRACES { printf("{ "); } set_assignment_aux_aux RBRACES { printf(" }"); } matrix_assignment_aux_aux_aux RBRACES { printf(" }"); }
 	;
 
 
 matrix_assignment_aux_aux_aux : 
-	COMMA { printf(", "); } OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES { printf(" }"); } matrix_assignment_aux_aux_aux
+	COMMA { printf(", "); } LBRACES { printf("{ "); } set_assignment_aux_aux RBRACES { printf(" }"); } matrix_assignment_aux_aux_aux
 	|
 	;
 
@@ -214,7 +221,7 @@ set_assignment :
 	;
 
 set_assignment_aux :
-	ASSIGN_OP { printf(" = "); } OPEN_BRACES { printf("{ "); } set_assignment_aux_aux CLOSE_BRACES   { printf(" }"); } 
+	ASSIGN_OP { printf(" = "); } LBRACES { printf("{ "); } set_assignment_aux_aux RBRACES   { printf(" }"); } 
 	;
 
 
@@ -233,22 +240,22 @@ identifier_list :
 	;
 
 dimensions : 
-	range dimensions_tail 
-	|
+	range dimensions_tail	{ $$.sValue = fmt_strcat($1.sValue, $2.sValue); }
+	|						{ $$.sValue = ""; }
 	;
 
 range :
-	INT_NUMBER {printf("%i", $1.iValue);} range_tail
+	INTEGER_NUMBER range_tail	{ $$.sValue = fmt_strcat(fmt_tostr($1.iValue), $2.sValue);}
 	;
 
 range_tail :
-	RANGE {printf("..");} INT_NUMBER {printf("%i", $3.iValue);}
-	|
+	RANGE INTEGER_NUMBER 	{ $$.sValue = fmt_strcat("..", fmt_tostr($2.iValue));}
+	|				 		{ $$.sValue = ""; }
 	;
 
 dimensions_tail :
-	COMMA {printf(", ");} range dimensions_tail
-	|
+	COMMA range dimensions_tail 	{ $$.sValue = fmt_strcat3(", ", $2.sValue, $3.sValue);} 
+	|								{ $$.sValue = ""; }
 	;
 
 subprogram_declaration :
@@ -257,13 +264,13 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER OPEN_PARENTHESIS { printf("procedure %s(", $2.sValue); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	PROCEDURE IDENTIFIER LPAREN { printf("procedure %s(", $2.sValue); } parameter_list RPAREN COLON { printf("):\n"); }
 		statement_list
 	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
 	;
 
 function_declaration :
-	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4.sValue); } OPEN_PARENTHESIS { printf("("); } parameter_list CLOSE_PARENTHESIS COLON { printf("):\n"); }
+	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4.sValue); } LPAREN { printf("("); } parameter_list RPAREN COLON { printf("):\n"); }
 		statement_list
 	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
 	;
@@ -317,12 +324,12 @@ destination :
 
 /* permite atribuição de valor a um elemento de matriz*/
 identifier_tail :
-	OPEN_BRACKETS { printf(" [" ); } dimensions CLOSE_BRACKETS { printf("] " ); }
+	LBRACKETS { printf(" [" ); } dimensions RBRACKETS { printf("] " ); }
 	|
 	;
 
 if_statement :    
-	IF OPEN_PARENTHESIS { printf("if (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :\n" ); }
+	IF LPAREN { printf("if (" ); } expression RPAREN COLON { printf(") :\n" ); }
 		statement_list
 	else_clausule
 	END_IF SEMICOLON { printf("end_if;\n" ); }
@@ -334,14 +341,14 @@ else_clausule :
 	;
 
 switch_statement : 
-	SWITCH OPEN_PARENTHESIS { printf("switch (" ); } IDENTIFIER { printf("%s", $4.sValue ); } CLOSE_PARENTHESIS COLON { printf(") :" ); }
+	SWITCH LPAREN { printf("switch (" ); } IDENTIFIER { printf("%s", $4.sValue ); } RPAREN COLON { printf(") :" ); }
 		case_clasule
 		other_clasule
 	END_SWITCH SEMICOLON { printf("end_switch;" ); }
 	;
 
 case_clasule :
-	CASE OPEN_PARENTHESIS { printf("case (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :" ); }
+	CASE LPAREN { printf("case (" ); } expression RPAREN COLON { printf(") :" ); }
 		statement_list
 	BREAK SEMICOLON { printf("break; (" ); }
 	case_clasule
@@ -354,7 +361,7 @@ other_clasule :
 	;
 
 while_statement :
-	WHILE OPEN_PARENTHESIS { printf("while (" ); } expression CLOSE_PARENTHESIS COLON { printf(") :\n" ); }
+	WHILE LPAREN { printf("while (" ); } expression RPAREN COLON { printf(") :\n" ); }
 		statement_list
 	END_WHILE SEMICOLON { printf("end_while;\n" ); }
 	;
@@ -366,7 +373,7 @@ for_statement :
 	;
 
 subprogram_call : 
-	IDENTIFIER { printf("%s", $1.sValue ); } OPEN_PARENTHESIS { printf("( " ); } argument_list CLOSE_PARENTHESIS { printf(" )" ); } SEMICOLON { printf(";\n" ); }
+	IDENTIFIER { printf("%s", $1.sValue ); } LPAREN { printf("( " ); } argument_list RPAREN { printf(" )" ); } SEMICOLON { printf(";\n" ); }
 	;
 
 argument_list :
@@ -383,126 +390,60 @@ argument_list_tail :
 	|
 	;
 
-expression :
-    term_or term_or_tail
-    ;
 
-term_or_tail : 
-    OR_OP { printf(" || " ); } term_or term_or_tail /* OR_OP = '||'  */
-    |
-    ;
-
-term_or :
-    term_and term_and_tail
-    ;
-
-term_and_tail :
-    AND_OP { printf(" && " ); } term_and term_and_tail /* AND_OP = ‘&&’ */
-    |
-    ;
-
-term_and :
-    term_bool_comparison term_bool_comparison_tail
-    ;
-
-term_bool_comparison_tail :
-    EQ_OP { printf(" == "); } term_bool_comparison term_bool_comparison_tail /* EQ_OP ‘==’ */
-    | NEQ_OP { printf(" != "); } term_bool_comparison term_bool_comparison_tail /* NEQ_OP ‘!=’ */
-    |
-    ;
-
-term_bool_comparison :
-    term_arit_comparison term_arit_comparison_tail
-    ;
-
-term_arit_comparison_tail :
-    LEQ_OP { printf(" <= "); } term_arit_comparison term_arit_comparison_tail /* LEQ_OP = <= */
-    | BEQ_OP { printf(" >= "); } term_arit_comparison term_arit_comparison_tail /* BEQ_OP = >= */
-    | LT_OP { printf(" < "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = < */
-    | BT_OP { printf(" > "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = > */
-    | 
-    ;
-
-term_arit_comparison :
-    term term_tail
-    ;
-
-term_tail :
-    ADD_OP { printf(" + "); } term term_tail /* - */
-    | SUB_OP { printf(" - "); } term term_tail /* + */
-    |
-    ;
-
-term :
-    factor factor_tail
-    ;
-
-factor_tail :
-    MULT_OP { printf(" * "); } factor factor_tail /* * */
-    | DIV_OP { printf(" / "); } factor factor_tail /* / */
-    | MOD_OP { printf(" %% "); } factor factor_tail /* % */
-    |
-    ;
-
-factor :
-    expo expo_tail
-    ;   
-
-expo_tail :
-    EXPO_OP { printf("^"); } expo expo_tail /* ^ */
-    |
-    ;           
-
-expo :
-    negation_unsub negation_unsub_tail
-
-
-negation_unsub_tail:
-    NEG_OP { printf("!"); }  negation_unsub  /* ! */
-    |
-    ;
-
-	
-negation_unsub :
-	INT_NUMBER         { $$.iValue = $1.iValue; } 
-	| REAL_NUMBER      { $$.dValue = $1.dValue; } 
-    | IMAGINARY_PART   { $$.dValue = $1.dValue; }
-	| IDENTIFIER       {
-        char * key = $1.sValue;
-        struct BucketListRec * entry = st_lookup(key);
-
-        if (entry == NULL) {
-                printf("\n---------\nErro: A variável '%s' não foi declarada.\n----------\n", $1.sValue);
-            } else {
-                switch (entry->type){
-                    case INT:
-                        $$.iValue = entry->iValue;
-                        break;
-                    case DOUBLE:
-                        $$.dValue = entry->dValue;
-                        break;
-                }   
-            }
-            printf("%s", $1.sValue);
- }
+expression:
+	  term			
+	| expression OR_OP {printf(" || ");} expression 	
+	| expression AND_OP {printf("&& ");} expression  
+	| expression EQ_OP {printf("==");} expression  
+	| expression NEQ_OP{printf("!=");} expression 
+	| expression LEQ_OP {printf("<=");} expression  
+	| expression BEQ_OP {printf(">=");} expression  
+	| expression LT_OP {printf("<");} expression     
+	| expression BT_OP {printf(">");} expression   
+	| expression ADD_OP {printf("+");} expression	
+	| expression SUB_OP {printf("-");}expression	
+	| expression MULT_OP {printf("*");} expression	
+	| expression DIV_OP {printf("/");} expression	
+	| expression MOD_OP {printf("%%");} expression	
+	| expression EXPO_OP {printf("^");}expression	
+	| NEG_OP {printf("!");} expression
+	| SUB_OP {printf("-");} expression	%prec UMINUS
+	| LPAREN {printf("(");}	expression RPAREN {printf(")");}
 	;
 
-negation_unsub_aux :
-    OPEN_BRACKETS { printf("["); } expression { printf("]"); } CLOSE_BRACKETS
-    | OPEN_PARENTHESIS { printf("( "); } argument_list CLOSE_PARENTHESIS { printf(" )"); }
-    |
-    ;
+term :
+	INTEGER_NUMBER			{ $$.iValue = $1.iValue; } 
+	| FLOAT_NUMBER			{ $$.dValue = $1.dValue; } 
+	| STRING_LIT            { $$.sValue = $1.sValue; } 
+	| IDENTIFIER term_tail	{ 
 
+
+		char * key = $1.sValue;
+		struct BucketListRec * entry = st_lookup(key);
+
+		if (entry == NULL) {
+				printf("\n---------\nErro: A variável '%s' não foi declarada.\n----------\n", $1.sValue);
+			} else {
+				switch (entry->type){
+					case INT:
+						$$.iValue = entry->iValue;
+						break;
+					case DOUBLE:
+						$$.dValue = entry->dValue;
+						break;
+				}   
+			}
+			printf("%s", $1.sValue);
+
+
+	}
+	| subprogram_call   { $$.iValue = 0; }
+
+term_tail :
+	LBRACKETS dimensions RBRACKETS { printf("[%s]", $2.sValue); } 
+	| STRUCT_OP { printf("->"); } IDENTIFIER  { printf("%s", $3.sValue); }
+	|
+	;
 
 %%
-
-int main(int argc, char **argv){
-        //yyin = fopen( argv[1], "r" );
-        yyparse();
-        return 0;
-}
-
-int yyerror(char *msg) {
-        printf("\n%s\n", msg);
-        return 1;
-}
