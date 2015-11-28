@@ -1,5 +1,32 @@
 #include "parse.h"
 
+// String Module 
+
+char * fmt_strcat3(char * str_1, char * str_2, char * str_3) {
+
+    char * new_str = (char *) malloc(1 + strlen(str_1)+ strlen(str_2) );
+    new_str = fmt_strcat(str_1, str_2);
+    new_str = fmt_strcat(new_str, str_3);
+    return new_str;
+}
+
+char * fmt_strcat(char * str_1, char * str_2) {
+
+      char * new_str = (char *) malloc(1 + strlen(str_1)+ strlen(str_2) );
+      strcpy(new_str, str_1);
+      strcat(new_str, str_2);
+      return new_str;
+}
+
+char * fmt_tostr(int i) {
+	char* buffer;
+	buffer = (char*)calloc(255, sizeof(char));
+	sprintf(buffer, "%d", i);
+	return buffer;
+}
+
+// -----------------
+
 /*
  *
  */

@@ -11,6 +11,12 @@ int yyerror (char *s);
 
 int yylex();
 
+char * fmt_strcat(char * str_1, char * str_2);
+char * fmt_strcat3(char * str_1, char * str_2, char * str_3);
+// char * fmt_strcat(char * str_1, char * str_2, char * str_3, char * str_4);
+
+char * fmt_tostr(int i);
+
 void P_program();
 
 void P_import();
