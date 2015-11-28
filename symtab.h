@@ -4,6 +4,7 @@
 #include <stdio.h>   /* gets */
 #include <stdlib.h>  /* atoi, malloc */
 #include <string.h>  /* strcpy */
+#include "y.tab.h"
 #include "uthash.h"
 
 struct BucketListRec
@@ -11,6 +12,10 @@ struct BucketListRec
    	 char * name;
    	 int isFunction;
    	 int numParameter;
+   	 int iValue;
+   	 double dValue;
+   	 char * sValue;
+   	 enum yytokentype type;
    	 char * listTypeParameter;
 	 UT_hash_handle hh;
    };

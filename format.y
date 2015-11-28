@@ -99,7 +99,8 @@ DOT_OP 				/* . */
 COMMENT
 
 
-%type<utype> type
+
+%type<utype> type negation_unsub expression
 
 %%
 
@@ -383,97 +384,115 @@ argument_list_tail :
 	;
 
 expression :
- 	term_or term_or_tail
-	;
+    term_or term_or_tail
+    ;
 
 term_or_tail : 
-	OR_OP { printf(" || " ); } term_or term_or_tail /* OR_OP = '||'  */
-	|
-	;
+    OR_OP { printf(" || " ); } term_or term_or_tail /* OR_OP = '||'  */
+    |
+    ;
 
 term_or :
-	term_and term_and_tail
-	;
+    term_and term_and_tail
+    ;
 
 term_and_tail :
-	AND_OP { printf(" && " ); } term_and term_and_tail /* AND_OP = ‘&&’ */
-	|
-	;
+    AND_OP { printf(" && " ); } term_and term_and_tail /* AND_OP = ‘&&’ */
+    |
+    ;
 
 term_and :
-	term_bool_comparison term_bool_comparison_tail
-	;
+    term_bool_comparison term_bool_comparison_tail
+    ;
 
 term_bool_comparison_tail :
-	EQ_OP { printf(" == "); } term_bool_comparison term_bool_comparison_tail /* EQ_OP ‘==’ */
-	| NEQ_OP { printf(" != "); } term_bool_comparison term_bool_comparison_tail /* NEQ_OP ‘!=’ */
-	|
-	;
+    EQ_OP { printf(" == "); } term_bool_comparison term_bool_comparison_tail /* EQ_OP ‘==’ */
+    | NEQ_OP { printf(" != "); } term_bool_comparison term_bool_comparison_tail /* NEQ_OP ‘!=’ */
+    |
+    ;
 
 term_bool_comparison :
-	term_arit_comparison term_arit_comparison_tail
-	;
+    term_arit_comparison term_arit_comparison_tail
+    ;
 
 term_arit_comparison_tail :
-	LEQ_OP { printf(" <= "); } term_arit_comparison term_arit_comparison_tail /* LEQ_OP = <= */
-	| BEQ_OP { printf(" >= "); } term_arit_comparison term_arit_comparison_tail /* BEQ_OP = >= */
-	| LT_OP { printf(" < "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = < */
-	| BT_OP { printf(" > "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = > */
-	| 
-	;
+    LEQ_OP { printf(" <= "); } term_arit_comparison term_arit_comparison_tail /* LEQ_OP = <= */
+    | BEQ_OP { printf(" >= "); } term_arit_comparison term_arit_comparison_tail /* BEQ_OP = >= */
+    | LT_OP { printf(" < "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = < */
+    | BT_OP { printf(" > "); } term_arit_comparison term_arit_comparison_tail /* LT_OP = > */
+    | 
+    ;
 
 term_arit_comparison :
-	term term_tail
-	;
+    term term_tail
+    ;
 
 term_tail :
-	ADD_OP { printf(" + "); } term term_tail /* - */
-	| SUB_OP { printf(" - "); } term term_tail /* + */
-	|
-	;
+    ADD_OP { printf(" + "); } term term_tail /* - */
+    | SUB_OP { printf(" - "); } term term_tail /* + */
+    |
+    ;
 
 term :
-	factor factor_tail
-	;
+    factor factor_tail
+    ;
 
 factor_tail :
-	MULT_OP { printf(" * "); } factor factor_tail /* * */
-	| DIV_OP { printf(" / "); } factor factor_tail /* / */
-	| MOD_OP { printf(" %% "); } factor factor_tail /* % */
-	|
-	;
+    MULT_OP { printf(" * "); } factor factor_tail /* * */
+    | DIV_OP { printf(" / "); } factor factor_tail /* / */
+    | MOD_OP { printf(" %% "); } factor factor_tail /* % */
+    |
+    ;
 
 factor :
-	expo expo_tail
-	;	
+    expo expo_tail
+    ;   
 
 expo_tail :
-	EXPO_OP { printf("^"); } expo expo_tail /* ^ */
-	|
-	;			
+    EXPO_OP { printf("^"); } expo expo_tail /* ^ */
+    |
+    ;           
 
 expo :
-	negation_unsub negation_unsub_tail
+    negation_unsub negation_unsub_tail
 
 
 negation_unsub_tail:
-	NEG_OP { printf("!"); }  negation_unsub  /* ! */
-	|
-	;	
+    NEG_OP { printf("!"); }  negation_unsub  /* ! */
+    |
+    ;
+
 	
 negation_unsub :
-	INT_NUMBER { printf("%i", $1.iValue); } 
-	| REAL_NUMBER { printf("%f", $1.dValue); } 
-	| IMAGINARY_PART { printf("%f", $1.dValue); } 
-	| STRING_LIT { printf("%s", $1.sValue); } 
-	| IDENTIFIER { printf("%s", $1.sValue); } negation_unsub_aux
+	INT_NUMBER         { $$.iValue = $1.iValue; } 
+	| REAL_NUMBER      { $$.dValue = $1.dValue; } 
+    | IMAGINARY_PART   { $$.dValue = $1.dValue; }
+	| IDENTIFIER       {
+        char * key = $1.sValue;
+        struct BucketListRec * entry = st_lookup(key);
+
+        if (entry == NULL) {
+                printf("\n---------\nErro: A variável '%s' não foi declarada.\n----------\n", $1.sValue);
+            } else {
+                switch (entry->type){
+                    case INT:
+                        $$.iValue = entry->iValue;
+                        break;
+                    case DOUBLE:
+                        $$.dValue = entry->dValue;
+                        break;
+                }   
+            }
+            printf("%s", $1.sValue);
+ }
 	;
 
 negation_unsub_aux :
-	OPEN_BRACKETS { printf("["); } expression { printf("]"); } CLOSE_BRACKETS
-	| OPEN_PARENTHESIS { printf("( "); } argument_list CLOSE_PARENTHESIS { printf(" )"); }
-	|
-	;
+    OPEN_BRACKETS { printf("["); } expression { printf("]"); } CLOSE_BRACKETS
+    | OPEN_PARENTHESIS { printf("( "); } argument_list CLOSE_PARENTHESIS { printf(" )"); }
+    |
+    ;
+
 
 %%
 
