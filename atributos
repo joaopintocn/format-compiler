@@ -1,0 +1,7 @@
+/* Definição de atributos da linguagem 
+ * Cada linha contém a seguinte estrutura: nome_funcao {lista_atributos};
+ *  - nome_funcao: nome da função;
+ *  - lista_atributos: repetição da estrutura "nome_atributo tipo_atributo", separados por vírgula; 
+ */
+
+<simple_variable_declaration> 	{id identifier, tipo type}
