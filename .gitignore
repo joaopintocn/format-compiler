@@ -8,3 +8,5 @@ y.tab.h
 format.tab.c
 
 lex.yy.c
+
+lex.yy.c

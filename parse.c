@@ -57,6 +57,11 @@ void P_destination(char * name) {
 	}
 }
 
+char * P_expression(char * op_1, char * op, char * op_2) {
+
+return NULL;
+}
+
 void P_simple_variable_declaration(char * modifier, char * type, char * name) {
 	
 		struct BucketListRec * entry = st_lookup(name);

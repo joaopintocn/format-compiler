@@ -6,7 +6,6 @@
 #include <string.h>
 #include "symtab.h"
 
-
 int yyerror (char *s);
 
 int yylex();
@@ -19,10 +18,12 @@ char * fmt_tostr(int i);
 
 void P_program();
 
-void P_import();
+void P_import(char * file);
 
 void P_destination(char * name);
 
+
+char * P_expression(char * op_1, char * op, char * op_2);
 
 void P_simple_variable_declaration(char * modifier, char * type, char * name);
 

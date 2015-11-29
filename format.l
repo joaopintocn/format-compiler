@@ -107,11 +107,11 @@ end_switch 			{return END_SWITCH; }
 "."	 				{return DOT_OP;}
 "->"				{return STRUCT_OP;}
 
-\"(\\.|[^\\"])*\" 	{ yylval.utype.sValue = strdup(yytext); 	return STRING_LIT; } 
+\"(\\.|[^\\"])*\" 	{ yylval.sValue = strdup(yytext); 		return STRING_LIT; } 
 
-{IDENTIFIER}		{ yylval.utype.sValue = strdup(yytext); 	return IDENTIFIER;}
-{INTEGER_NUMBER}	{ yylval.utype.iValue = atoi(yytext); 		return INTEGER_NUMBER; }
-{FLOAT_NUMBER}   	{ yylval.utype.dValue = atof(yytext); 		return FLOAT_NUMBER; }
+{IDENTIFIER}		{ yylval.sValue = strdup(yytext); 		return IDENTIFIER;}
+{INTEGER_NUMBER}	{ yylval.sValue = strdup(yytext); 		return INTEGER_NUMBER; }
+{FLOAT_NUMBER}   	{ yylval.sValue = strdup(yytext); 		return FLOAT_NUMBER; }
 {EOF}				{ return EOF; }
 
 {WS}	{ /* whitespace separates tokens */ }
@@ -131,8 +131,8 @@ int yyerror(void)
     exit(1);
 }
 
-int main(void)
-{
-   yyparse();
-   return 0;
-}
+// int main(void)
+// {
+//    yyparse();
+//    return 0;
+// }
