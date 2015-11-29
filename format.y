@@ -8,7 +8,11 @@
 
 %start program
 
-%token<sValue> IDENTIFIER  STRING_LIT  INTEGER_NUMBER  FLOAT_NUMBER 
+%token<sValue> 
+IDENTIFIER  
+STRING_LIT  
+INTEGER_NUMBER  
+FLOAT_NUMBER 
 
 IMPORT              
 VARIABLES_SECTION
@@ -91,7 +95,7 @@ COMMENT
 %type<sValue> type term expression range_tail range dimensions dimensions_tail subprogram_call simple_variable_declaration_value
 values_list set_assignment set_assignment_aux set_assignment_aux_aux
 matrix_assignment_aux matrix_assignment_aux_aux matrix_assignment_aux_aux_aux matrix_assignment
-
+term_tail identifier_list compost_variable_declaration
 
 %left OR_OP
 %left AND_OP
@@ -123,14 +127,14 @@ program_body :
 	;
 
 variable_section :
-	VARIABLES_SECTION COLON { printf("\n\nvariables:\n\t"); }
+	VARIABLES_SECTION COLON { printf("\n\nvariables:\n"); }
 		variable_declarations 
 	|
 	;
 
 
 variable_declarations :
-	variable_declaration SEMICOLON { printf(";\n\n\t"); } variable_declarations_tail
+	variable_declaration SEMICOLON { printf(";\n\n"); } variable_declarations_tail
 	;
 
 variable_declaration :
@@ -181,9 +185,9 @@ type :
 
 compost_variable_declaration :
 	MATRIX_OF type LBRACKETS dimensions RBRACKETS IDENTIFIER matrix_assignment 		{ printf("matrix_of %s [%s] %s", $2, $4, $5); }
-	| SET_OF { printf("set_of "); } type IDENTIFIER { printf("%s", $4); } set_assignment
-	| ENUM { printf("enum "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : "); } IDENTIFIER { printf("%s", $7); } identifier_list END_ENUM { printf(" end_enum"); }
-	| STRUCT { printf("struct "); } IDENTIFIER { printf("%s", $3); } COLON { printf(" : \n\t"); } variable_declarations END_STRUCT { printf("end_struct"); }
+	| SET_OF type IDENTIFIER set_assignment 										{ printf("set_of %s %s%s", $2, $3, $4); }
+	| ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM 					{ printf("enum %s: %s%s end_enum", $2, $4, $5); }
+	| STRUCT IDENTIFIER COLON { printf("struct %s:\n", $2); } variable_declarations END_STRUCT  { printf("\nend_struct"); }
 	;
 
 matrix_assignment : 
@@ -228,8 +232,8 @@ values_list :
 	;
 
 identifier_list :
-	COMMA { printf(", "); } IDENTIFIER { printf("%s", $3); } identifier_list
-	|
+	COMMA IDENTIFIER identifier_list	{ $$ = fmt_strcat3(", ", $2, $3); } 
+	|									{ $$ = ""; }
 	;
 
 dimensions : 
@@ -418,16 +422,16 @@ term :
 		if (entry == NULL) {
 			printf("\n---------\nErro: A variável '%s' não foi declarada.\n----------\n", $1);
 		} else {
-			$$ = entry->sValue;
+			$$ = fmt_strcat($1, $2) ;
 		}
 
 	}
 	| subprogram_call   { $$ = $1; }
 
 term_tail :
-	LBRACKETS dimensions RBRACKETS { printf("[%s]", $2); } 
-	| STRUCT_OP IDENTIFIER  { printf("->%s", $2); }
-	|
+	LBRACKETS dimensions RBRACKETS 	{ $$ = fmt_strcat("[%s]", $2); } 
+	| STRUCT_OP IDENTIFIER  		{ $$ = fmt_strcat("->%s", $2); }
+	|								{ $$ = ""; }
 	;
 
 %%
