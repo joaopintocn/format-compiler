@@ -40,7 +40,7 @@ void P_program() {
 	st_insert(".delete", "delete");
 	st_insert(".new", "new");
 
-	printSymTab("teste.csv");
+	printSymTab("teste.txt");
 	printf("\n");
 }
 

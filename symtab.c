@@ -31,12 +31,11 @@ void printSymTab(char *filename) {
     struct BucketListRec *s;
     FILE *listing = fopen(filename, "w");
 
-	fprintf(listing, "sep=,\n");
-    fprintf(listing, "Key, Name, Type, \"Num of Parameters\"\n");
-  	fprintf(listing, "----, ----, ----, ----\n");
+  printf("        Key              Name           Type       Num. of Parameters\n");
+    printf("------------------   ------------   ------------   ------------------\n");
 
     for(s=hashTable; s != NULL; s=(struct BucketListRec*)(s->hh.next)) {
-        fprintf(listing, "%-19s, %-11s\n", s->key, s->name);
+        printf("%-19s %-11s\n", s->key, s->name);
     }
     fclose(listing);
 } /* printSymTab */

@@ -8,7 +8,7 @@ variables:
 	int y;
 	real e = 2.876;
 	double real pi = 3.141516;
-	const complex aber = 6.5 + 1i;
+	%%const complex aber = 6.5 + 1i;
 	string msg = "Olá Mundo";
 	ref string msg;
 
