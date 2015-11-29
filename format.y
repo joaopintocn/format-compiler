@@ -163,15 +163,14 @@ subprogram_declarations_tail :
 	;
 
 
-
 simple_variable_declaration : 
-	type IDENTIFIER simple_variable_declaration_value		{ printf("%s %s%s", $1, $2, $3); }
-	| CONST type IDENTIFIER ASSIGN_OP expression 			{ printf("const %s %s = %s", $2, $3, $5); }
-	| REF type IDENTIFIER simple_variable_declaration_value { printf("ref %s %s%s", $2, $3, $4); }
+	type IDENTIFIER simple_variable_declaration_value		{ P_simple_variable_declaration("", $1, $2, $3); }
+	| CONST type IDENTIFIER ASSIGN_OP expression 			{ P_simple_variable_declaration("const", $2, $3, $4); }
+	| REF type IDENTIFIER simple_variable_declaration_value { P_simple_variable_declaration("ref", $2, $3, $4); }
 	;
 
 simple_variable_declaration_value :
-	ASSIGN_OP  expression 	{ $$ = fmt_strcat(" = ", $2); }
+	ASSIGN_OP  expression 	{ $$ = $2; }
 	|						{ $$ = ""; }
 	;
 
@@ -197,17 +196,17 @@ matrix_assignment :
 
 
 matrix_assignment_aux : 
-	ASSIGN_OP LBRACES matrix_assignment_aux_aux 	{ $$ = fmt_strcat(" = { ", $3); } 
+	ASSIGN_OP LBRACES matrix_assignment_aux_aux 	{ $$ = fmt_twostrcat(" = { ", $3); } 
 
 
 matrix_assignment_aux_aux:
-	set_assignment_aux_aux RBRACES { $$ = fmt_strcat($1, " }"); }
-	| LBRACES set_assignment_aux_aux RBRACES matrix_assignment_aux_aux_aux RBRACES { $$ = fmt_strcat3(fmt_strcat3("{ ", $2, " }") , $4, " }"); }
+	set_assignment_aux_aux RBRACES { $$ = fmt_twostrcat($1, " }"); }
+	| LBRACES set_assignment_aux_aux RBRACES matrix_assignment_aux_aux_aux RBRACES { $$ = fmt_threestrcat(fmt_threestrcat("{ ", $2, " }") , $4, " }"); }
 	;
 
 
 matrix_assignment_aux_aux_aux : 
-	COMMA LBRACES set_assignment_aux_aux RBRACES matrix_assignment_aux_aux_aux 	{ $$ = fmt_strcat(fmt_strcat3(", { ", $3, " }"), $5); }
+	COMMA LBRACES set_assignment_aux_aux RBRACES matrix_assignment_aux_aux_aux 	{ $$ = fmt_twostrcat(fmt_threestrcat(", { ", $3, " }"), $5); }
 	|																			{ $$ = ""; }
 	;
 
@@ -218,40 +217,40 @@ set_assignment :
 	;
 
 set_assignment_aux :
-	ASSIGN_OP LBRACES set_assignment_aux_aux RBRACES   { $$ = fmt_strcat3(" = { ", $3, " }"); }
+	ASSIGN_OP LBRACES set_assignment_aux_aux RBRACES   { $$ = fmt_threestrcat(" = { ", $3, " }"); }
 	;
 
 
 set_assignment_aux_aux :
-	expression values_list		{ $$ = fmt_strcat($1, $2); }
+	expression values_list		{ $$ = fmt_twostrcat($1, $2); }
 	;
 
 values_list :
-	COMMA set_assignment_aux_aux 	{ $$ = fmt_strcat(", ", $2); }
+	COMMA set_assignment_aux_aux 	{ $$ = fmt_twostrcat(", ", $2); }
 	|								{ $$ = ""; }
 	;
 
 identifier_list :
-	COMMA IDENTIFIER identifier_list	{ $$ = fmt_strcat3(", ", $2, $3); } 
+	COMMA IDENTIFIER identifier_list	{ $$ = fmt_threestrcat(", ", $2, $3); } 
 	|									{ $$ = ""; }
 	;
 
 dimensions : 
-	range dimensions_tail	{ $$ = fmt_strcat($1, $2); }
+	range dimensions_tail	{ $$ = fmt_twostrcat($1, $2); }
 	|						{ $$ = ""; }
 	;
 
 range :
-	INTEGER_NUMBER range_tail	{ $$ = fmt_strcat($1, $2);}
+	INTEGER_NUMBER range_tail	{ $$ = fmt_twostrcat($1, $2);}
 	;
 
 range_tail :
-	RANGE INTEGER_NUMBER 	{ $$ = fmt_strcat("..", $2);}
+	RANGE INTEGER_NUMBER 	{ $$ = fmt_twostrcat("..", $2);}
 	|				 		{ $$ = ""; }
 	;
 
 dimensions_tail :
-	COMMA range dimensions_tail 	{ $$ = fmt_strcat3(", ", $2, $3);} 
+	COMMA range dimensions_tail 	{ $$ = fmt_threestrcat(", ", $2, $3);} 
 	|								{ $$ = ""; }
 	;
 
@@ -390,23 +389,23 @@ argument_list_tail :
 
 expression:
 	  term { $$ = $1; }
-	| expression OR_OP expression 		{ $$ = fmt_strcat3($1, " || ", $3); }
-	| expression AND_OP expression  	{ $$ = fmt_strcat3($1, " && ", $3); }
-	| expression EQ_OP expression  		{ $$ = fmt_strcat3($1, " == ", $3); }
-	| expression NEQ_OP expression  	{ $$ = fmt_strcat3($1, " != ", $3); }
-	| expression LEQ_OP	expression  	{ $$ = fmt_strcat3($1, " <= ", $3); }
-	| expression BEQ_OP expression  	{ $$ = fmt_strcat3($1, " >= ", $3); }
-	| expression LT_OP expression   	{ $$ = fmt_strcat3($1, " < ", $3); }
-	| expression BT_OP expression   	{ $$ = fmt_strcat3($1, " > ", $3); }
-	| expression ADD_OP expression		{ $$ = fmt_strcat3($1, " + ", $3); }
-	| expression SUB_OP expression		{ $$ = fmt_strcat3($1, " - ", $3); }
-	| expression MULT_OP expression		{ $$ = fmt_strcat3($1, " * ", $3); }
-	| expression DIV_OP expression		{ $$ = fmt_strcat3($1, " / ", $3); }
-	| expression MOD_OP expression		{ $$ = fmt_strcat3($1, " %% ", $3); }
-	| expression EXPO_OP expression		{ $$ = fmt_strcat3($1, " ^ ", $3); }
-	| NEG_OP expression 				{ $$ = fmt_strcat("!", $2);}
-	| SUB_OP expression	%prec UMINUS 	{ $$ = fmt_strcat3("-", $1, $2);}
-	| LPAREN expression RPAREN 			{ $$ = fmt_strcat3("(", $2, ")");}
+	| expression OR_OP expression 		{ $$ = fmt_threestrcat($1, " || ", $3); }
+	| expression AND_OP expression  	{ $$ = fmt_threestrcat($1, " && ", $3); }
+	| expression EQ_OP expression  		{ $$ = fmt_threestrcat($1, " == ", $3); }
+	| expression NEQ_OP expression  	{ $$ = fmt_threestrcat($1, " != ", $3); }
+	| expression LEQ_OP	expression  	{ $$ = fmt_threestrcat($1, " <= ", $3); }
+	| expression BEQ_OP expression  	{ $$ = fmt_threestrcat($1, " >= ", $3); }
+	| expression LT_OP expression   	{ $$ = fmt_threestrcat($1, " < ", $3); }
+	| expression BT_OP expression   	{ $$ = fmt_threestrcat($1, " > ", $3); }
+	| expression ADD_OP expression		{ $$ = fmt_threestrcat($1, " + ", $3); }
+	| expression SUB_OP expression		{ $$ = fmt_threestrcat($1, " - ", $3); }
+	| expression MULT_OP expression		{ $$ = fmt_threestrcat($1, " * ", $3); }
+	| expression DIV_OP expression		{ $$ = fmt_threestrcat($1, " / ", $3); }
+	| expression MOD_OP expression		{ $$ = fmt_threestrcat($1, " %% ", $3); }
+	| expression EXPO_OP expression		{ $$ = fmt_threestrcat($1, " ^ ", $3); }
+	| NEG_OP expression 				{ $$ = fmt_twostrcat("!", $2);}
+	| SUB_OP expression	%prec UMINUS 	{ $$ = fmt_threestrcat("-", $1, $2);}
+	| LPAREN expression RPAREN 			{ $$ = fmt_threestrcat("(", $2, ")");}
 	;
 
 term :
@@ -422,15 +421,15 @@ term :
 		if (entry == NULL) {
 			printf("\n---------\nErro: A variável '%s' não foi declarada.\n----------\n", $1);
 		} else {
-			$$ = fmt_strcat($1, $2) ;
+			$$ = fmt_twostrcat($1, $2) ;
 		}
 
 	}
 	| subprogram_call   { $$ = $1; }
 
 term_tail :
-	LBRACKETS dimensions RBRACKETS 	{ $$ = fmt_strcat("[%s]", $2); } 
-	| STRUCT_OP IDENTIFIER  		{ $$ = fmt_strcat("->%s", $2); }
+	LBRACKETS dimensions RBRACKETS 	{ $$ = fmt_twostrcat("[%s]", $2); } 
+	| STRUCT_OP IDENTIFIER  		{ $$ = fmt_twostrcat("->%s", $2); }
 	|								{ $$ = ""; }
 	;
 

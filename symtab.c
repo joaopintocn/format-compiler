@@ -31,11 +31,14 @@ void printSymTab(char *filename) {
     struct BucketListRec *s;
     FILE *listing = fopen(filename, "w");
 
-  printf("        Key              Name           Type       Num. of Parameters\n");
-    printf("------------------   ------------   ------------   ------------------\n");
+  printf("         Key              Name    isSubprogram isConst isRef       Type       Num. of Parameters\n");
+    printf("-----------------------   -------------   ---   -------------   ------------\n");
 
     for(s=hashTable; s != NULL; s=(struct BucketListRec*)(s->hh.next)) {
-        printf("%-19s %-11s\n", s->key, s->name);
+        char * sp = (s->isSubprogram)?"subprog":"var";
+        char * c = (s->isConst)?"const":"";
+        char * r = (s->isRef)?"ref":"";
+        printf("%-25s   %-15s   %-10s   %-5s   %-3s   %-15s   %-15s\n", s->key, s->name, sp, c, r, s->type, s->value);
     }
     fclose(listing);
 } /* printSymTab */

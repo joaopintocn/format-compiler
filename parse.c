@@ -2,15 +2,15 @@
 
 // String Module 
 
-char * fmt_strcat3(char * str_1, char * str_2, char * str_3) {
+char * fmt_threestrcat(char * str_1, char * str_2, char * str_3) {
 
     char * new_str = (char *) malloc(1 + strlen(str_1)+ strlen(str_2) );
-    new_str = fmt_strcat(str_1, str_2);
-    new_str = fmt_strcat(new_str, str_3);
+    new_str = fmt_twostrcat(str_1, str_2);
+    new_str = fmt_twostrcat(new_str, str_3);
     return new_str;
 }
 
-char * fmt_strcat(char * str_1, char * str_2) {
+char * fmt_twostrcat(char * str_1, char * str_2) {
 
       char * new_str = (char *) malloc(1 + strlen(str_1)+ strlen(str_2) );
       strcpy(new_str, str_1);
@@ -18,11 +18,9 @@ char * fmt_strcat(char * str_1, char * str_2) {
       return new_str;
 }
 
-char * fmt_tostr(int i) {
-	char* buffer;
-	buffer = (char*)calloc(255, sizeof(char));
-	sprintf(buffer, "%d", i);
-	return buffer;
+char * fmt_generateKeyFor(char * name) {
+
+	return name;
 }
 
 // -----------------
@@ -44,6 +42,7 @@ void P_program() {
 	printf("\n");
 }
 
+
 void P_import(char * file) {
 	printf("import %s\n", file);
 	st_insert(file, file);
@@ -62,16 +61,33 @@ char * P_expression(char * op_1, char * op, char * op_2) {
 return NULL;
 }
 
-void P_simple_variable_declaration(char * modifier, char * type, char * name) {
-	
-		struct BucketListRec * entry = st_lookup(name);
+void P_simple_variable_declaration(char * modifier, char * type, char * name, char * initVal) {
+
+		char * key = fmt_generateKeyFor(name);	
+		struct BucketListRec * entry = st_lookup(key);
 
 		if (entry == NULL) {
-			//TO-DO Chamar função responsável por gerar chave
-			char * key = name;
+
 			st_insert(key, name);
+			entry = st_lookup(key);
+			entry->type = type;
+			entry->value = initVal;
+
+			if (strcmp(modifier, "")) {
+				if (strcmp(modifier, "ref")) 
+					entry->isRef = TRUE;
+				if (strcmp(modifier, "const")) 
+					entry->isConst = TRUE;
+				printf("%s %s %s", modifier, type, name);
+			} else {
+				printf("%s %s", type, name);
+			}
+
+			if (!strcmp(initVal,"")) {
+				printf(" = %s", initVal);	
+			}
 		} else {
 			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", name);
 		}
-		 printf("%s %s", type, name);
+
 }

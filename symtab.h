@@ -7,15 +7,17 @@
 #include "y.tab.h"
 #include "uthash.h"
 
+typedef enum { FALSE, TRUE } bool;
+
 struct BucketListRec
    { const char * key;
    	 char * name;
-   	 int isFunction;
+   	 bool isSubprogram;
+	 bool isRef;		
+   	 bool isConst;
    	 int numParameter;
-   	 int iValue;
-   	 double dValue;
-   	 char * sValue;
-   	 enum yytokentype type;
+   	 char * value;
+   	 char * type;
    	 char * listTypeParameter;
 	 UT_hash_handle hh;
    };
