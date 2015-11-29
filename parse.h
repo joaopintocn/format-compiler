@@ -18,6 +18,14 @@ char * fmt_tostr(int i);
 
 void P_program();
 
+/*
+ * O procedimento é responsável por chamar o processo de compilação para o 
+ * arquivo especificado. Dessa forma, deve ser feito o mesmo que se está 
+ * fazendo com o arquivo atual. Caso ele já tenha sido processado nao se faz 
+ * nada. Na tabela de símbolos, as variáveis e subprogramas presentes nele 
+ * está um escopo a baixo das variáveis do sistema e um escopo a cima das 
+ * variáveis e subprogramas do arquivo atual. 
+ */
 void P_import(char * file);
 
 void P_destination(char * name);
