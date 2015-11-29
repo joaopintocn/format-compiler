@@ -91,3 +91,10 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name, ch
 		}
 
 }
+
+void P_compost_variable_declaration_MATRIX(char * type, char * dimensions, char * identifier, char * initVal) {
+	printf("matrix_of %s [%s] %s = %s", type, dimensions, identifier, initVal);
+}
+void P_compost_variable_declaration_SET();
+void P_compost_variable_declaration_ENUM();
+void P_compost_variable_declaration_STRUCT();
