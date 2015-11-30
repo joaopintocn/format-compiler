@@ -31,21 +31,22 @@ char * fmt_generateKeyFor(char * name) {
 void P_program() {
 
 	struct BucketListRec * entry;
-	// 
+	importSystemFunctions("SystemFunctions.csv");
+	/*
 	st_insert(".main", "main");
 	st_insert(".read", "read");
 	st_insert(".write", "write");
 	st_insert(".delete", "delete");
-	st_insert(".new", "new");
+	st_insert(".new", "new");*/
 
-	printSymTab("teste.txt");
+	printSymTab();
 	printf("\n");
 }
 
 
 void P_import(char * file) {
 	printf("import %s\n", file);
-	st_insert(file, file);
+	st_insert(file, file, NULL, 0, FALSE, FALSE, FALSE);
 }
 
 void P_destination(char * name) {
@@ -68,16 +69,18 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name, ch
 
 		if (entry == NULL) {
 
-			st_insert(key, name);
+			st_insert(key, name, type, 0, FALSE, FALSE, FALSE);
 			entry = st_lookup(key);
 			entry->type = type;
 			entry->value = initVal;
 
 			if (strcmp(modifier, "")) {
-				if (strcmp(modifier, "ref")) 
+				if (strcmp(modifier, "ref")) {
 					entry->isRef = TRUE;
-				if (strcmp(modifier, "const")) 
+				}
+				if (strcmp(modifier, "const")) { 
 					entry->isConst = TRUE;
+				}
 				printf("%s %s %s", modifier, type, name);
 			} else {
 				printf("%s %s", type, name);

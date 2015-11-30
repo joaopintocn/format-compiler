@@ -1,0 +1,7 @@
+6
+.main   ; main   ; void ; 2
+.read   ; read   ; void ; 1
+.write  ; write  ; void ; 1
+.delete ; delete ; void ; 1
+.new    ; new    ; void ; 1
+.sqrt   ; sqrt   ; real ; 1
