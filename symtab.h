@@ -27,12 +27,14 @@ struct BucketListRec
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert(char *key, char *name, char *type, int nParameter, bool isSubprogram, bool isRef, bool isConst);
+struct BucketListRec * st_insert(char *key, char *name);
 
 /* Function st_lookup returns the memory 
  * location of a variable or -1 if not found
  */
 struct BucketListRec * st_lookup ( char * name );
+
+void importSystemFunctions(char *fileName);
 
 /* Procedure printSymTab prints a formatted 
  * listing of the symbol table contents 

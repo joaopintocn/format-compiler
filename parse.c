@@ -32,21 +32,13 @@ void P_program() {
 
 	struct BucketListRec * entry;
 	importSystemFunctions("SystemFunctions.csv");
-	/*
-	st_insert(".main", "main");
-	st_insert(".read", "read");
-	st_insert(".write", "write");
-	st_insert(".delete", "delete");
-	st_insert(".new", "new");*/
-
 	printSymTab();
-	printf("\n");
 }
 
 
 void P_import(char * file) {
 	printf("import %s\n", file);
-	st_insert(file, file, NULL, 0, FALSE, FALSE, FALSE);
+	st_insert(fmt_twostrcat("ARQ", file), file);
 }
 
 void P_destination(char * name) {
@@ -69,8 +61,7 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name, ch
 
 		if (entry == NULL) {
 
-			st_insert(key, name, type, 0, FALSE, FALSE, FALSE);
-			entry = st_lookup(key);
+			entry = st_insert(key, name);
 			entry->type = type;
 			entry->value = initVal;
 
