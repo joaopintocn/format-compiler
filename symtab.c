@@ -32,14 +32,15 @@ struct BucketListRec * st_lookup ( char * name ) {
 void importSystemFunctions(char *fileName) {
 	FILE *archive = fopen(fileName, "r");
 
-  struct BucketListRec * entry;
+	struct BucketListRec * entry;
 
 	//para determinar o número de linhas que vai ler
 	int nItems=0;
 	fscanf(archive, "%i", &nItems); 
 	//printf("%i\n", nItems);
 
-	for (int i = 0; i < nItems; i++) {
+	int i=0;
+	for (i = 0; i < nItems; i++) {
 		char aux; //para ler os ponto e virgula separadores e itens
 		char str[100];
 		char *key;
@@ -81,7 +82,14 @@ void printSymTab() {
       char * sp = (s->isSubprogram)?"subprog":"var";
       char * c = (s->isConst)?"const":"";
       char * r = (s->isRef)?"ref":"";
-      printf("%-25s   %-15s   %-10s   %-5s   %-3s   %-15s   %-15s\n", s->key, s->name, sp, c, r, s->type, s->value);
+      printf("%-12s   %-12s   %-12s   %-4i   %-4d   %-4d   %-4d\n",
+		s->key,
+		s->name,
+		s->type,
+		s->numParameter,
+		s->isSubprogram,
+		s->isConst,
+		s->isRef);
     }
     printf("\n");
 } /* printSymTab */

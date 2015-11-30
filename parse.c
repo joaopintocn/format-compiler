@@ -54,24 +54,27 @@ char * P_expression(char * op_1, char * op, char * op_2) {
 return NULL;
 }
 
-void P_simple_variable_declaration(char * modifier, char * type, char * name, char * initVal) {
-
+void P_simple_variable_declaration(char *modifier, char *type, char *name, char* initVal) {
 		char * key = fmt_generateKeyFor(name);	
 		struct BucketListRec * entry = st_lookup(key);
 
 		if (entry == NULL) {
-
 			entry = st_insert(key, name);
 			entry->type = type;
 			entry->value = initVal;
 
+			entry->isRef = FALSE;
+			entry->isSubprogram = FALSE;
+			entry->isConst = FALSE;
+
 			if (strcmp(modifier, "")) {
-				if (strcmp(modifier, "ref")) {
+				if (!strcmp(modifier, "ref")) {
 					entry->isRef = TRUE;
 				}
-				if (strcmp(modifier, "const")) { 
+				if (!strcmp(modifier, "const")) { 
 					entry->isConst = TRUE;
 				}
+
 				printf("%s %s %s", modifier, type, name);
 			} else {
 				printf("%s %s", type, name);
@@ -87,8 +90,27 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name, ch
 }
 
 void P_compost_variable_declaration_MATRIX(char * type, char * dimensions, char * identifier, char * initVal) {
-	printf("matrix_of %s [%s] %s = %s", type, dimensions, identifier, initVal);
+	char * key = fmt_generateKeyFor(identifier);
+	struct BucketListRec * entry = st_lookup(key);
+
+	if (entry == NULL) {
+			entry = st_insert(key, identifier);
+			entry->type = fmt_twostrcat("matrix ", type);
+			entry->dimension = dimensions;
+			//entry->value = initVal;
+
+			entry->isRef = FALSE;
+			entry->isSubprogram = FALSE;
+			entry->isConst = FALSE;
+
+			printf("%s %s", type, identifier);
+		} else {
+			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", identifier);
+		}
+	//printf("matrix_of %s [%s] %s = %s", type, dimensions, identifier, initVal);
+	//st_insert();
 }
+
 void P_compost_variable_declaration_SET();
 void P_compost_variable_declaration_ENUM();
 void P_compost_variable_declaration_STRUCT();

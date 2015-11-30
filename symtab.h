@@ -12,6 +12,7 @@ typedef enum { FALSE, TRUE } bool;
 struct BucketListRec
    { const char * key;
    	 char * name;
+	 char * dimension;
    	 bool isSubprogram;
 	 bool isRef;		
    	 bool isConst;
