@@ -184,7 +184,7 @@ type :
 
 compost_variable_declaration :
 	MATRIX_OF type LBRACKETS dimensions RBRACKETS IDENTIFIER matrix_assignment 		{ P_compost_variable_declaration_MATRIX($2, $4, $6, $7); }
-	| SET_OF type IDENTIFIER set_assignment 										{ printf("set_of %s %s%s", $2, $3, $4); }
+	| SET_OF type IDENTIFIER set_assignment 										{ P_compost_variable_declaration_SET($2, $3, $4); /*printf("set_of %s %s%s", $2, $3, $4);*/ }
 	| ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM 					{ printf("enum %s: %s%s end_enum", $2, $4, $5); }
 	| STRUCT IDENTIFIER COLON { P_compost_variable_declaration_STRUCT($2); /*printf("struct %s:\n", $2);*/ } variable_declarations END_STRUCT  { printf("\nend_struct"); isAStruct=0;}
 	;
@@ -197,7 +197,7 @@ matrix_assignment :
 
 matrix_assignment_aux : 
 	ASSIGN_OP LBRACES matrix_assignment_aux_aux 	{ $$ = fmt_twostrcat("{ ", $3); } 
-
+;
 
 matrix_assignment_aux_aux:
 	set_assignment_aux_aux RBRACES { $$ = fmt_twostrcat($1, " }"); }

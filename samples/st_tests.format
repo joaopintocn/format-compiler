@@ -21,4 +21,6 @@ subprograms :
 
 		real y;
 
+		set_of int uu;
+
 	end_procedure;

@@ -121,7 +121,29 @@ void P_compost_variable_declaration_MATRIX(char * type, char * dimensions, char 
 	//st_insert();
 }
 
-void P_compost_variable_declaration_SET();
+void P_compost_variable_declaration_SET(char *type, char *identifier, char *initVal) {
+	char * key = fmt_generateKeyFor(identifier);
+	struct BucketListRec * entry = st_lookup(key);
+
+	if (entry == NULL) {
+		entry = st_insert(key, identifier);
+		entry->type = fmt_twostrcat("set_of ", type);
+		//entry->value = initVal;
+
+		entry->isRef = FALSE;
+		entry->isSubprogram = FALSE;
+		entry->isConst = FALSE;
+
+		if (strcmp(initVal, "") == 0) {
+			printf("set_of %s %s", identifier, type);
+		} else {
+			printf("set_of %s %s %s", identifier, type, initVal);
+		}
+	} else {
+		printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", identifier);
+	}
+}
+
 void P_compost_variable_declaration_ENUM();
 
 void P_compost_variable_declaration_STRUCT(char *identifier) {
