@@ -185,7 +185,7 @@ type :
 compost_variable_declaration :
 	MATRIX_OF type LBRACKETS dimensions RBRACKETS IDENTIFIER matrix_assignment 		{ P_compost_variable_declaration_MATRIX($2, $4, $6, $7); }
 	| SET_OF type IDENTIFIER set_assignment 										{ P_compost_variable_declaration_SET($2, $3, $4); }
-	| ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM 					{ P_compost_variable_declaration_ENUM($2, $4, $5); }
+	| ENUM IDENTIFIER COLON IDENTIFIER { inicializaControleENUM($2, $4); } identifier_list END_ENUM 					{ P_compost_variable_declaration_ENUM($2, $4, $6); isENUM = 0;}
 	| STRUCT IDENTIFIER COLON { P_compost_variable_declaration_STRUCT($2); /*printf("struct %s:\n", $2);*/ } variable_declarations END_STRUCT  { printf("\nend_struct"); isAStruct=0;}
 	;
 
@@ -231,7 +231,7 @@ values_list :
 	;
 
 identifier_list :
-	COMMA IDENTIFIER identifier_list	{ $$ = fmt_threestrcat(", ", $2, $3); } 
+	COMMA IDENTIFIER identifier_list	{ P_simple_variable_declaration("", "int", $2, ""); $$ = fmt_threestrcat(", ", $2, $3); } 
 	|									{ $$ = ""; }
 	;
 
@@ -426,6 +426,7 @@ term :
 
 	}
 	| subprogram_call   { $$ = $1; }
+	;
 
 term_tail :
 	LBRACKETS dimensions RBRACKETS 	{ $$ = fmt_twostrcat("[%s]", $2); } 

@@ -12,7 +12,8 @@ char *structName; //guarda o nome da struct
 //-------
 
 //para armazenar os valores da ENUM
-int ordemQueAparece;
+int isENUM; 
+int ordemQueApareceNaENUM;
 char *nameENUM;
 //------------
 
@@ -73,6 +74,6 @@ void P_compost_variable_declaration_SET(char *type, char *identifier, char *init
 void P_compost_variable_declaration_ENUM(char *identifier, char *val1, char *listVal);
 void P_compost_variable_declaration_STRUCT(char *name);
 
-void inicializaControleENUM(char *identifier);
+void inicializaControleENUM(char *identifier, char *val1);
 
 #endif

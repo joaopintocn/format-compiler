@@ -59,6 +59,9 @@ void P_simple_variable_declaration(char *modifier, char *type, char *name, char*
 		if (isAStruct == 1) {
 			name = fmt_threestrcat(structName, ".", name);
 		}
+		if (isENUM == 1) {
+			name = fmt_threestrcat(nameENUM, ".", name);
+		}
 
 		char * key = fmt_generateKeyFor(name);	
 		struct BucketListRec * entry = st_lookup(key);
@@ -66,7 +69,13 @@ void P_simple_variable_declaration(char *modifier, char *type, char *name, char*
 		if (entry == NULL) {
 			entry = st_insert(key, name);
 			entry->type = type;
-			entry->value = initVal;
+
+			if (isENUM == 0) {
+				//entry->value = ordemQueApareceNaENUM;
+				ordemQueApareceNaENUM++;
+			} else {
+				entry->value = initVal;
+			}
 
 			entry->isRef = FALSE;
 			entry->isSubprogram = FALSE;
@@ -144,8 +153,11 @@ void P_compost_variable_declaration_SET(char *type, char *identifier, char *init
 	}
 }
 
-void inicializaControleENUM(char *identifier) {
-	ordemQueAparece = 0;
+void inicializaControleENUM(char *identifier, char *val1) {
+	isENUM = 1;
+	ordemQueApareceNaENUM = 0;
+	nameENUM = identifier;
+	P_simple_variable_declaration("", "int", val1, ""); //adiciona o valor obrigatório na tabela
 	//strcpy(nameENUM, identifier);
 }
 
