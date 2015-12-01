@@ -11,6 +11,11 @@ int isAStruct; //0 não é de struct - 1 é de struct
 char *structName; //guarda o nome da struct
 //-------
 
+//para armazenar os valores da ENUM
+int ordemQueAparece;
+char *nameENUM;
+//------------
+
 int yyerror (char *s);
 
 int yylex();
@@ -64,8 +69,10 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name, ch
 
 
 void P_compost_variable_declaration_MATRIX(char * type, char * dimensions, char * identifier, char * initVal);
-void P_compost_variable_declaration_SET();
-void P_compost_variable_declaration_ENUM(char *name);
+void P_compost_variable_declaration_SET(char *type, char *identifier, char *initVal);
+void P_compost_variable_declaration_ENUM(char *identifier, char *val1, char *listVal);
 void P_compost_variable_declaration_STRUCT(char *name);
+
+void inicializaControleENUM(char *identifier);
 
 #endif

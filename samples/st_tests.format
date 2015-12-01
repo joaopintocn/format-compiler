@@ -1,4 +1,5 @@
 variables:
+	enum rgbColor: RED, GREEN, BLUE end_enum;
 	boolean c;
 
 subprograms :
@@ -11,16 +12,6 @@ subprograms :
 			boolean airbag;
 		end_struct;
 
-		boolean x;
-
-		struct bus:
-			boolean isEscolar;
-			int nAssentos;
-			int pneus;
-		end_struct;
-
 		real y;
-
 		set_of int uu;
-
 	end_procedure;

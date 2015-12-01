@@ -74,8 +74,7 @@ void importSystemFunctions(char *fileName) {
 
 void printSymTab() {
     struct BucketListRec *s;
-
-      printf("      Key           Name            Type      NºPar Subpr  Const   Ref\n");  
+      printf("\n      Key           Name            Type      NºPar Subpr  Const   Ref\n");  
       printf("-------------- -------------- -------------- ------ ------ ------ -----\n");
 
     for(s=hashTable; s != NULL; s=(struct BucketListRec*)(s->hh.next)) {

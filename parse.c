@@ -144,7 +144,34 @@ void P_compost_variable_declaration_SET(char *type, char *identifier, char *init
 	}
 }
 
-void P_compost_variable_declaration_ENUM();
+void inicializaControleENUM(char *identifier) {
+	ordemQueAparece = 0;
+	//strcpy(nameENUM, identifier);
+}
+
+void P_compost_variable_declaration_ENUM(char *identifier, char *val1, char *listVal) {
+	
+	char * key = fmt_generateKeyFor(identifier);
+	struct BucketListRec * entry = st_lookup(key);
+
+	if (entry == NULL) {
+		entry = st_insert(key, identifier);
+		entry->type = "enum";
+		//entry->value = initVal;
+
+		entry->isRef = FALSE;
+		entry->isSubprogram = FALSE;
+		entry->isConst = FALSE;
+
+		if (strcmp(listVal, "") == 0) {
+			printf("enum %s: %s end_enum", identifier, val1);
+		} else {
+			printf("enum %s: %s%s end_enum", identifier, val1, listVal);
+		}
+	} else {
+		printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", identifier);
+	}
+}
 
 void P_compost_variable_declaration_STRUCT(char *identifier) {
 	isAStruct = 1;
