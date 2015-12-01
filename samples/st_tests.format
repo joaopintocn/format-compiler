@@ -1,0 +1,24 @@
+variables:
+	boolean c;
+
+subprograms :
+	procedure main():
+		ref int b;
+		matrix_of int [3, 3] matA;
+
+		struct carro:
+			int portas;
+			boolean airbag;
+		end_struct;
+
+		boolean x;
+
+		struct bus:
+			boolean isEscolar;
+			int nAssentos;
+			int pneus;
+		end_struct;
+
+		real y;
+
+	end_procedure;
