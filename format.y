@@ -185,8 +185,8 @@ type :
 compost_variable_declaration :
 	MATRIX_OF type LBRACKETS dimensions RBRACKETS IDENTIFIER matrix_assignment 		{ P_compost_variable_declaration_MATRIX($2, $4, $6, $7); }
 	| SET_OF type IDENTIFIER set_assignment 										{ P_compost_variable_declaration_SET($2, $3, $4); }
-	| ENUM IDENTIFIER COLON IDENTIFIER identifier_list END_ENUM 					{ printf("enum %s: %s%s end_enum", $2, $4, $5); }
-	| STRUCT IDENTIFIER COLON { printf("struct %s:\n", $2); } variable_declarations END_STRUCT  { printf("\nend_struct"); }
+	| ENUM IDENTIFIER COLON IDENTIFIER { inicializaControleENUM($2, $4); } identifier_list END_ENUM 					{ P_compost_variable_declaration_ENUM($2, $4, $6); isENUM = 0;}
+	| STRUCT IDENTIFIER COLON { P_compost_variable_declaration_STRUCT($2); /*printf("struct %s:\n", $2);*/ } variable_declarations END_STRUCT  { printf("\nend_struct"); isAStruct=0;}
 	;
 
 matrix_assignment : 
@@ -197,7 +197,7 @@ matrix_assignment :
 
 matrix_assignment_aux : 
 	ASSIGN_OP LBRACES matrix_assignment_aux_aux 	{ $$ = fmt_twostrcat("{ ", $3); } 
-
+	;
 
 matrix_assignment_aux_aux:
 	set_assignment_aux_aux RBRACES { $$ = fmt_twostrcat($1, " }"); }
@@ -231,7 +231,7 @@ values_list :
 	;
 
 identifier_list :
-	COMMA IDENTIFIER identifier_list	{ $$ = fmt_threestrcat(", ", $2, $3); } 
+	COMMA IDENTIFIER identifier_list	{ P_simple_variable_declaration("", "int", $2, ""); $$ = fmt_threestrcat(", ", $2, $3); } 
 	|									{ $$ = ""; }
 	;
 
@@ -260,15 +260,15 @@ subprogram_declaration :
 	;
 
 procedure_declaration :
-	PROCEDURE IDENTIFIER LPAREN { printf("procedure %s(", $2); } parameter_list RPAREN COLON { printf("):\n"); }
+	PROCEDURE IDENTIFIER LPAREN { printf("procedure %s(", $2); st_beginScope($2);} parameter_list RPAREN COLON { printf("):\n"); st_beginScope($2);}
 		statement_list
-	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); } 
+	END_PROCEDURE SEMICOLON { printf("\nend_procedure;\n"); st_endScope();} 
 	;
 
 function_declaration :
-	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4); } LPAREN { printf("("); } parameter_list RPAREN COLON { printf("):\n"); }
+	FUNCTION { printf("function "); } type IDENTIFIER { printf("%s", $4); st_beginScope($4); } LPAREN { printf("("); } parameter_list RPAREN COLON { printf("):\n"); }
 		statement_list
-	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); } 
+	END_FUNCTION SEMICOLON { printf("\nend_function;\n"); st_endScope();} 
 	;
 
 parameter_list :
@@ -325,14 +325,14 @@ identifier_tail :
 	;
 
 if_statement :    
-	IF LPAREN { printf("if (" ); } expression RPAREN COLON { printf(") :\n" ); }
+	IF LPAREN { printf("if (" ); st_beginScope("if");} expression RPAREN COLON { printf(") :\n" ); }
 		statement_list
 	else_clausule
-	END_IF SEMICOLON { printf("end_if;\n" ); }
+	END_IF SEMICOLON { printf("end_if;\n" ); st_endScope();}
 	;
 
 else_clausule :
-	ELSE COLON { printf("else: \n" ); } statement_list
+	ELSE COLON { printf("else: \n" ); st_endScope(); st_beginScope("else");} statement_list
 	|
 	;
 
@@ -344,32 +344,32 @@ switch_statement :
 	;
 
 case_clasule :
-	CASE LPAREN { printf("case (" ); } expression RPAREN COLON { printf(") :" ); }
+	CASE LPAREN { st_beginScope("case"); printf("case (" ); } expression RPAREN COLON { printf(") :" ); }
 		statement_list
-	BREAK SEMICOLON { printf("break; (" ); }
+	BREAK SEMICOLON { st_endScope(); printf("break; (" ); }
 	case_clasule
 	|
 	;
 
 other_clasule :
-	OTHER COLON { printf("other :" ); } statement_list
+	OTHER COLON { st_beginScope("other"); printf("other :" ); } statement_list { st_endScope(); }
 	|
 	;
 
 while_statement :
-	WHILE LPAREN { printf("while (" ); } expression RPAREN COLON { printf(") :\n" ); }
+	WHILE LPAREN { st_beginScope("while"); printf("while (" ); } expression RPAREN COLON { printf(") :\n" ); }
 		statement_list
-	END_WHILE SEMICOLON { printf("end_while;\n" ); }
+	END_WHILE SEMICOLON { printf("end_while;\n" ); st_endScope(); }
 	;
 
 for_statement :
-	FOR { printf("for " ); } IDENTIFIER { printf("%s", $3 ); } IN { printf(" in " ); } IDENTIFIER { printf("%s", $7 ); } COLON { printf(":\n" ); }
+	FOR { st_beginScope("for"); printf("for " ); } IDENTIFIER { printf("%s", $3 ); } IN { printf(" in " ); } IDENTIFIER { printf("%s", $7 ); } COLON { printf(":\n" ); }
 		statement_list
-	END_FOR SEMICOLON { printf("end_for;\n" ); }
+	END_FOR SEMICOLON { printf("end_for;\n" ); st_endScope(); }
 	;
 
 subprogram_call : 
-	IDENTIFIER { printf("%s", $1 ); } LPAREN { printf("( " ); } argument_list RPAREN { printf(" )" ); } SEMICOLON { printf(";\n" ); }
+	IDENTIFIER { printf("%s", $1 ); } LPAREN { printf("( " ); } argument_list RPAREN { printf(" )" ); } //SEMICOLON { printf(";\n" ); }
 	;
 
 argument_list :
@@ -415,7 +415,9 @@ term :
 	| IDENTIFIER term_tail	{ 
 
 
+		//char * key = fmt_getKeyFor($1);
 		char * key = $1;
+		printf("fhsddjfkjdlfj%s\n", key);
 		struct BucketListRec * entry = st_lookup(key);
 
 		if (entry == NULL) {
@@ -436,6 +438,10 @@ term_tail :
 
 %%
 int main(int argc, char **argv){
+
+	struct BucketListRec * entry;
+	st_beginScope("global");
+	importSystemFunctions("SystemFunctions.csv");
 	//yyin = fopen( argv[1], "r" );
 	yyparse();
 

@@ -23,6 +23,26 @@ struct BucketListRec
 	 UT_hash_handle hh;
    };
 
+typedef struct node{
+
+  char * name;  //guarda o nome da variável
+  char * path;  //guarda os escopos onde a variável está inserida
+  struct node * next;
+
+} node_variable;
+
+typedef struct node_scope{
+
+  char * name; 
+  node_variable * variables;
+  struct node_scope * next;
+  char * prev_scope;
+
+} Scope;
+
+
+Scope * currScope;
+
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
  * loc = memory location is inserted only the
@@ -30,10 +50,24 @@ struct BucketListRec
  */
 struct BucketListRec * st_insert(char *key, char *name);
 
+void st_remove(char *key);
+
 /* Function st_lookup returns the memory 
  * location of a variable or -1 if not found
  */
 struct BucketListRec * st_lookup ( char * name );
+
+/* Start a new "scope" in "t".  Scopes are nested. */
+void st_beginScope(char * name);
+
+/* Remove any bindings entered since the current scope began,
+   and end the current scope. */
+void st_endScope();
+
+/*
+ *
+ */
+char * st_updateScope(char * name);
 
 void importSystemFunctions(char *fileName);
 
@@ -43,61 +77,7 @@ void importSystemFunctions(char *fileName);
  */
 void printSymTab();
 
-/*
+void printScope();
 
-//Arquivo que implementa as funções da tabela de símbolos
-
-int i; //para contra lar o loop
-int verRepeticao; //para ser usada quando for ver repetição de símbolo no mesmo escopo
-int foiDeclarada; //para ser usada quando for ver se uma variável foi declarada antes de usada
-
-int op=1; //1 = deslocGlobal | 2 = deslocLocal
-int deslocamentoLocal=1;  //para quando for uma variável local ou parâmetro
-int deslocamentoGlobal=1; //para quando for uma variável global ou subprograma
-
-int nivel=1; //para ir armazendo o nível em que a variável está no escopo
-
-char *nome_provis; //para armazenar um nome de variável antes de inserir
-char *tipo_provis; //para armazenar um nome de tipo antes de inserir
-
-typedef struct tab {
-	char *nome;
-	char *tipo;
-	int nivel;
-	int deslocamento;
-	struct tab *prox;
-} Tabela;
-
-Tabela *tabela;
-
-
-//remover o topo da tabela
-void pop(Tabela *t) {
-	Tabela *p;
-
-	if (t->prox != NULL) {
-		p = t->prox;
-		t->prox = p->prox;
-		free(p);
-	} else {
-		printf("Pilha vazia!\n");
-	};
-}
-
-int findRepeatedSymbol(char *nome, int nivel, Tabela *t) { //ainda não está pronta
-	if (t->prox == NULL) {
-		return(0);
-	} else if (strcmp(nome, t->prox->nome) == 0) {
-		if (nivel == t->prox->nivel) {
-			return(1);		
-		} else {
-			return(0);
-		}
-	} else {
-		return(findRepeatedSymbol(nome, nivel, t->prox));
-	}
-}
-
-*/
 
 #endif

@@ -17,6 +17,15 @@ struct BucketListRec * st_insert(char *key, char *name) {
 } /* st_insert */
 
 
+void st_remove(char *key) {
+  struct BucketListRec *entry;
+  HASH_FIND_STR(hashTable, key, entry);
+
+  HASH_DEL( hashTable, entry);
+  free(entry);
+} /* st_remove */
+
+
 struct BucketListRec * st_lookup ( char * name ) {
   struct BucketListRec *s;
 
@@ -27,6 +36,72 @@ struct BucketListRec * st_lookup ( char * name ) {
     HASH_FIND_STR( hashTable, key, s );  /* s: output pointer */
     return s;
 } /* st_lookup */
+
+void st_beginScope(char * name) {
+
+  if (currScope == NULL) {
+    currScope = malloc(sizeof(Scope)); 
+    currScope->name = name;
+    currScope->next = NULL;
+    currScope->variables = NULL;
+    currScope->prev_scope = name;   
+
+  } else {
+    Scope * newScope = malloc(sizeof(Scope));
+    char * path = malloc(100*sizeof(char));
+    strcpy(path,currScope->prev_scope);
+    strcat(path,"#");
+    strcat(path,name);
+    newScope->name = name;
+    newScope->next = currScope;
+    newScope->prev_scope = path;
+    newScope->variables = NULL;
+    currScope = newScope; 
+  }
+}
+
+char * st_updateScope(char * name) {
+
+  node_variable * p = malloc(sizeof(node_variable));
+  char * path = malloc(100*sizeof(char));
+  node_variable * iterator = currScope->variables;
+
+  if(currScope->variables != NULL){
+    while(iterator->next != NULL){
+      iterator= iterator->next;
+    }        
+  }
+
+  strcpy(path,currScope->prev_scope);
+  strcat(path,"#");
+  strcpy(path,currScope->name);
+  strcat(path,"#");        
+  strcat(path,name);
+  p->path = path;
+  p->name = name;
+  p->next = NULL;
+  if (currScope->variables == NULL) {
+    currScope->variables = p;  
+  } else {
+    iterator->next = p;  
+  }
+
+  return p->path;
+}
+
+
+void st_endScope() {
+  Scope * ptr = currScope->next;
+  node_variable * iterator = currScope->variables;
+
+  while(iterator != NULL){
+      st_remove(iterator->path);
+      iterator = iterator->next;
+  }
+
+  free(currScope);
+  currScope = ptr; 
+}
 
 
 void importSystemFunctions(char *fileName) {
@@ -75,7 +150,7 @@ void importSystemFunctions(char *fileName) {
 void printSymTab() {
     struct BucketListRec *s;
       printf("\n      Key           Name            Type      NºPar Subpr  Const   Ref\n");  
-      printf("----------------------   --------------   --------------   ------   ------   ------   -----\n");
+      printf("--------------------------   --------------   --------------   ------   ------   ------   -----\n");
 
     for(s=hashTable; s != NULL; s=(struct BucketListRec*)(s->hh.next)) {
       printf("%-25s  |  %-20s  |  %-20s  |  %-4d  |  %-4s  |  %-5s  |  %-5s\n",
@@ -89,3 +164,23 @@ void printSymTab() {
     }
     printf("\n");
 } /* printSymTab */
+
+
+
+void printScope() {
+  if(currScope != NULL){
+    Scope * ptr = currScope;
+    while(ptr != NULL){
+      // printf("\n%s->",ptr->name);
+      node_variable * ptr_var = currScope->variables;
+      while(ptr_var!=NULL){
+        printf("%s\n",ptr_var->path );
+        ptr_var = ptr_var->next;
+      }
+      printf("\n");
+      ptr = ptr->next;
+    
+    }
+  }
+
+} /* printScope */

@@ -23,16 +23,56 @@ char * fmt_generateKeyFor(char * name) {
 	return name;
 }
 
+char * fmt_getKeyFor(char * name){
+
+    Scope * ptr_aux = currScope;
+    if (ptr_aux->next == NULL){
+      node_variable * p = ptr_aux->variables;
+      while(p->next != NULL){
+        p = p->next;
+        if (p->name == name)
+             return p->path;
+      }
+      
+    }else{
+
+    while(ptr_aux != NULL){
+
+      node_variable * p = ptr_aux->variables;
+      if (ptr_aux->variables != NULL){
+
+        if(p->next == NULL){
+
+          if (p->name == name)
+             return p->path;
+         
+        }else{
+          while(p->next!=NULL){
+          p=p->next;
+          if (p->name==name)
+             return p->path;
+        }
+      }
+
+      }
+      ptr_aux=ptr_aux->next;
+    }
+  }
+    return NULL;
+
+}
+
+
 // -----------------
 
 /*
  *
  */
 void P_program() {
-
-	struct BucketListRec * entry;
-	importSystemFunctions("SystemFunctions.csv");
+	isAStruct = 0;
+	st_endScope();
 	printSymTab();
+	printScope();
 }
 
 
@@ -55,15 +95,30 @@ return NULL;
 }
 
 void P_simple_variable_declaration(char * modifier, char * type, char * name, char * initVal) {
+		char * key = st_updateScope(name);
 
-		char * key = fmt_generateKeyFor(name);	
+		if (isAStruct == 1) {
+			name = fmt_threestrcat(structName, ".", name);
+		}
+		if (isENUM == 1) {
+			name = fmt_threestrcat(nameENUM, ".", name);
+		}
+
 		struct BucketListRec * entry = st_lookup(key);
-
 		if (entry == NULL) {
-
 			entry = st_insert(key, name);
 			entry->type = type;
-			entry->value = initVal;
+
+			if (isENUM == 0) {
+				//entry->value = ordemQueApareceNaENUM;
+				ordemQueApareceNaENUM++;
+			} else {
+				entry->value = initVal;
+			}
+
+			entry->isRef = FALSE;
+			entry->isSubprogram = FALSE;
+			entry->isConst = FALSE;
 
 			if (strcmp(modifier, "")) {
 				if (strcmp(modifier, "ref") == 0) {
@@ -83,11 +138,10 @@ void P_simple_variable_declaration(char * modifier, char * type, char * name, ch
 		} else {
 			printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", name);
 		}
-
 }
 
 void P_compost_variable_declaration_MATRIX(char * type, char * dimensions, char * identifier, char * initVal) {
-	char * key = fmt_generateKeyFor(identifier);
+	char * key = st_updateScope(identifier);
 	struct BucketListRec * entry = st_lookup(key);
 
 	if (entry == NULL) {
@@ -114,7 +168,7 @@ void P_compost_variable_declaration_MATRIX(char * type, char * dimensions, char 
 }
 
 void P_compost_variable_declaration_SET(char *type, char *identifier, char *initVal) {
-	char * key = fmt_generateKeyFor(identifier);
+	char * key = st_updateScope(identifier);
 	struct BucketListRec * entry = st_lookup(key);
 
 	if (entry == NULL) {
@@ -136,5 +190,55 @@ void P_compost_variable_declaration_SET(char *type, char *identifier, char *init
 	}
 }
 
-void P_compost_variable_declaration_ENUM();
-void P_compost_variable_declaration_STRUCT();
+void inicializaControleENUM(char *identifier, char *val1) {
+	isENUM = 1;
+	ordemQueApareceNaENUM = 0;
+	nameENUM = identifier;
+	P_simple_variable_declaration("", "int", val1, ""); //adiciona o valor obrigatório na tabela
+	//strcpy(nameENUM, identifier);
+}
+
+void P_compost_variable_declaration_ENUM(char *identifier, char *val1, char *listVal) {
+	
+	char * key = st_updateScope(identifier);
+	struct BucketListRec * entry = st_lookup(key);
+
+	if (entry == NULL) {
+		entry = st_insert(key, identifier);
+		entry->type = "enum";
+		//entry->value = initVal;
+
+		entry->isRef = FALSE;
+		entry->isSubprogram = FALSE;
+		entry->isConst = FALSE;
+
+		if (strcmp(listVal, "") == 0) {
+			printf("enum %s: %s end_enum", identifier, val1);
+		} else {
+			printf("enum %s: %s%s end_enum", identifier, val1, listVal);
+		}
+	} else {
+		printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", identifier);
+	}
+}
+
+void P_compost_variable_declaration_STRUCT(char *identifier) {
+	isAStruct = 1;
+	structName = fmt_twostrcat(identifier, "");
+
+	char * key = st_updateScope(identifier);
+	struct BucketListRec * entry = st_lookup(key);
+
+	if (entry == NULL) {
+		entry = st_insert(key, identifier);
+		entry->type = "struct";
+
+		entry->isRef = FALSE;
+		entry->isSubprogram = FALSE;
+		entry->isConst = FALSE;
+
+		printf("struct %s:\n", identifier);
+	} else {
+		printf("\n---------\nErro: A variável '%s' foi declarada repetidamente no mesmo escopo!\n----------\n", identifier);
+	}
+}
