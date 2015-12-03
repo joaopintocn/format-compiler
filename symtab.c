@@ -39,7 +39,8 @@ void importSystemFunctions(char *fileName) {
 	fscanf(archive, "%i", &nItems); 
 	//printf("%i\n", nItems);
 
-	for (int i = 0; i < nItems; i++) {
+	int i=0;
+	for (i = 0; i < nItems; i++) {
 		char aux; //para ler os ponto e virgula separadores e itens
 		char str[100];
 		char *key;
@@ -73,15 +74,18 @@ void importSystemFunctions(char *fileName) {
 
 void printSymTab() {
     struct BucketListRec *s;
-
-      printf("      Key           Name            Type      NºPar Subpr  Const   Ref\n");  
-      printf("-------------- -------------- -------------- ------ ------ ------ -----\n");
+      printf("\n      Key           Name            Type      NºPar Subpr  Const   Ref\n");  
+      printf("----------------------   --------------   --------------   ------   ------   ------   -----\n");
 
     for(s=hashTable; s != NULL; s=(struct BucketListRec*)(s->hh.next)) {
-      char * sp = (s->isSubprogram)?"subprog":"var";
-      char * c = (s->isConst)?"const":"";
-      char * r = (s->isRef)?"ref":"";
-      printf("%-25s   %-15s   %-10s   %-5s   %-3s   %-15s   %-15s\n", s->key, s->name, sp, c, r, s->type, s->value);
+      printf("%-25s  |  %-20s  |  %-20s  |  %-4d  |  %-4s  |  %-5s  |  %-5s\n",
+    		s->key,
+    		s->name,
+    		s->type,
+    		s->numParameter,
+    		(s->isSubprogram)?"subprog":"var",
+    		(s->isConst)?"const":"",
+    		(s->isRef)?"ref":"");
     }
     printf("\n");
 } /* printSymTab */
